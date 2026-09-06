@@ -1,0 +1,19 @@
+{
+    "admin": {
+        "nombre": "Administración",
+        "email": "admin@vallehermoso.com",
+        "password": "cambia123"
+    },
+    "usuarios": [
+        { "id": "USR-1001", "nombre": "Carlos Mendoza", "email": "carlos.m@email.com", "password": "123" },
+        { "id": "USR-1002", "nombre": "Ana Rojas", "email": "ana.r@email.com", "password": "123" },
+        { "id": "USR-1003", "nombre": "Luis Fernández", "email": "luis.f@email.com", "password": "123" }
+    ],
+    "pagos": [
+        { "id_pago": "P-001", "id_usuario": "USR-1001", "fecha": "2026-08-01", "concepto": "Mensualidad Agosto", "monto": 150.00, "estado": "Pagado" },
+        { "id_pago": "P-002", "id_usuario": "USR-1001", "fecha": "2026-08-15", "concepto": "Materiales Adicionales", "monto": 45.50, "estado": "Pagado" },
+        { "id_pago": "P-003", "id_usuario": "USR-1001", "fecha": "2026-09-01", "concepto": "Mensualidad Septiembre", "monto": 150.00, "estado": "Pendiente" },
+        { "id_pago": "P-004", "id_usuario": "USR-1002", "fecha": "2026-08-10", "concepto": "Mensualidad Agosto", "monto": 150.00, "estado": "Pagado" },
+        { "id_pago": "P-005", "id_usuario": "USR-1002", "fecha": "2026-09-05", "concepto": "Mensualidad Septiembre", "monto": 150.00, "estado": "Pendiente" }
+    ]
+}

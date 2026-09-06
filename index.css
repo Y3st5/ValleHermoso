@@ -1,0 +1,882 @@
+/* ==========================================================
+   VALLE HERMOSO · Portal de Pagos
+   Diseño corporativo — verde valle + acento dorado
+   ========================================================== */
+
+:root {
+    --brand: #0e7a5f;
+    --brand-dark: #0a5c48;
+    --brand-soft: #e3f3ec;
+    --accent: #d9a441;
+    --accent-soft: #fdf6e4;
+    --bg: #f4f7f6;
+    --surface: #ffffff;
+    --text: #1f2d2b;
+    --text-muted: #5f7370;
+    --border: #e4eae9;
+    --success: #1b9e68;
+    --success-soft: #e7f6ee;
+    --danger: #d64550;
+    --danger-soft: #fdecee;
+    --shadow-sm: 0 1px 2px rgba(16, 42, 38, 0.06), 0 4px 12px rgba(16, 42, 38, 0.06);
+    --shadow-md: 0 2px 6px rgba(16, 42, 38, 0.07), 0 14px 34px rgba(16, 42, 38, 0.1);
+    --radius: 14px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', system-ui, -apple-system, Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(900px 340px at 8% -8%, rgba(14, 122, 95, 0.10), transparent 60%),
+        radial-gradient(800px 320px at 100% 0%, rgba(217, 164, 65, 0.10), transparent 55%),
+        linear-gradient(180deg, #eef3f1 0%, var(--bg) 100%);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Barra superior / marca ---------- */
+.topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.topbar-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0.8rem 1.5rem;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.brand-mark {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+    box-shadow: 0 4px 12px rgba(14, 122, 95, 0.35);
+}
+
+.brand-mark svg {
+    width: 24px;
+    height: 24px;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.brand-text strong {
+    font-size: 1.15rem;
+    letter-spacing: 0.2px;
+    color: var(--text);
+}
+
+.brand-text span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+/* ---------- Contenido principal ---------- */
+.main {
+    flex: 1;
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 3rem;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ---------- Estilos compartidos de botones e inputs ---------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.72rem 1.3rem;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn-primary {
+    color: #fff;
+    background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+    box-shadow: 0 6px 16px rgba(14, 122, 95, 0.3);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 8px 22px rgba(14, 122, 95, 0.38);
+    background: linear-gradient(135deg, #0f8a6a, var(--brand-dark));
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn-ghost {
+    color: var(--brand-dark);
+    background: var(--brand-soft);
+    border: 1px solid rgba(14, 122, 95, 0.25);
+}
+
+.btn-ghost:hover {
+    background: #d3eee1;
+}
+
+.field {
+    margin-bottom: 1.1rem;
+    text-align: left;
+}
+
+.field label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+.field input {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text);
+    background: #fbfcfc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.field input::placeholder {
+    color: #a5b4b1;
+}
+
+.field input:focus {
+    outline: none;
+    background: #fff;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(14, 122, 95, 0.16);
+}
+
+/* ---------- Login ---------- */
+.login-card {
+    max-width: 420px;
+    margin: 2rem auto 0;
+    padding: 2.2rem 2rem 1.8rem;
+    text-align: center;
+}
+
+.login-head {
+    margin-bottom: 1.7rem;
+}
+
+.login-icon {
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    color: var(--brand);
+    background: var(--brand-soft);
+}
+
+.login-icon svg {
+    width: 26px;
+    height: 26px;
+}
+
+.login-head h2 {
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 0.35rem;
+}
+
+.login-head p {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--danger);
+    background: var(--danger-soft);
+    border: 1px solid rgba(214, 69, 80, 0.25);
+    border-radius: 10px;
+    animation: shake 0.35s ease;
+}
+
+.error[hidden] {
+    display: none;
+    animation: none;
+}
+
+.error svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.login-note {
+    margin-top: 1.4rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ---------- Dashboard ---------- */
+.dashboard-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.4rem;
+}
+
+.dashboard-head h2 {
+    font-size: 1.35rem;
+    color: var(--text);
+}
+
+.dashboard-head .user-id {
+    margin-top: 0.2rem;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+.user-id span {
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Tarjetas de resumen */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    margin-bottom: 1.4rem;
+}
+
+.stat {
+    padding: 1.3rem 1.4rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-top {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 0.8rem;
+}
+
+.stat-emoji {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+}
+
+.stat-emoji svg {
+    width: 20px;
+    height: 20px;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.stat-ok .stat-emoji    { color: var(--success); background: var(--success-soft); }
+.stat-warn .stat-emoji  { color: var(--danger); background: var(--danger-soft); }
+
+.stat-value {
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+}
+
+.stat-ok .stat-value  { color: var(--success); }
+.stat-warn .stat-value { color: var(--danger); }
+
+.stat-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Tabla */
+.table-card {
+    padding: 1.4rem 1.6rem 1.6rem;
+}
+
+.table-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.table-head h3 {
+    font-size: 1.08rem;
+    color: var(--text);
+}
+
+.table-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 0.85rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+th {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: #f7faf9;
+}
+
+td {
+    font-size: 0.93rem;
+}
+
+tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+tbody tr:hover {
+    background: #f6faf8;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.monto {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.boleta {
+    font-family: Consolas, Menlo, 'Courier New', monospace;
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    background: #f7faf9;
+    border-radius: 8px;
+    letter-spacing: 0.4px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+}
+
+.badge::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.badge-pagado {
+    color: var(--success);
+    background: var(--success-soft);
+}
+
+.badge-pendiente {
+    color: var(--danger);
+    background: var(--danger-soft);
+}
+
+.table-empty {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Botón de acción por fila */
+.btn-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-icon:hover {
+    color: var(--brand);
+    border-color: var(--brand);
+    background: var(--brand-soft);
+    box-shadow: 0 2px 8px rgba(14, 122, 95, 0.18);
+}
+
+.btn-icon svg {
+    width: 17px;
+    height: 17px;
+}
+
+.accion-cell {
+    text-align: center;
+}
+
+/* ---------- Impresión de la boleta (PDF) ---------- */
+.print-content {
+    display: none;
+}
+
+@media print {
+    @page {
+        size: auto;
+        margin: 14mm;
+    }
+
+    body {
+        background: #fff !important;
+    }
+
+    .topbar, .main, .footer {
+        display: none !important;
+    }
+
+    .print-content {
+        display: block !important;
+    }
+
+    .receipt {
+        width: 280px;
+        margin: 0 auto;
+        font-family: Consolas, Menlo, 'Courier New', monospace;
+        color: #1f2d2b;
+        text-align: center;
+    }
+
+    .receipt-brand {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: #0e7a5f;
+        letter-spacing: 0.6px;
+    }
+
+    .receipt-sub {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 1.6px;
+        color: #5f7370;
+        margin-bottom: 0.5rem;
+    }
+
+    .receipt-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 2.5px;
+        border-top: 1px dashed #b9c6c3;
+        border-bottom: 1px dashed #b9c6c3;
+        padding: 0.45rem 0;
+        margin-bottom: 1rem;
+    }
+
+    .receipt-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        font-size: 0.72rem;
+        margin-bottom: 0.45rem;
+        text-align: left;
+    }
+
+    .receipt-key {
+        color: #5f7370;
+        flex-shrink: 0;
+    }
+
+    .receipt-val {
+        font-weight: 600;
+        text-align: right;
+    }
+
+    .receipt-hr {
+        border-top: 1px dashed #b9c6c3;
+        margin: 0.8rem 0;
+    }
+
+    .receipt-total {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+
+    .receipt-amount {
+        font-size: 1.15rem;
+        color: #0e7a5f;
+    }
+
+    .receipt-state {
+        display: inline-block;
+        padding: 0.25rem 0.8rem;
+        border-radius: 999px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+    }
+
+    .estado-pagado {
+        color: #1b9e68;
+        border: 1.5px solid #1b9e68;
+    }
+
+    .estado-pendiente {
+        color: #d64550;
+        border: 1.5px solid #d64550;
+    }
+
+    .receipt-foot {
+        margin-top: 1rem;
+        padding-top: 0.6rem;
+        border-top: 1px dashed #b9c6c3;
+        font-size: 0.6rem;
+        color: #5f7370;
+        line-height: 1.5;
+    }
+}
+
+/* ---------- Pie de página ---------- */
+.footer {
+    text-align: center;
+    padding: 1.2rem 1rem 1.6rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ---------- Pestañas de rol en el login ---------- */
+.role-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+    background: #eef4f1;
+    padding: 0.35rem;
+    border-radius: 12px;
+    margin-bottom: 1.6rem;
+}
+
+.role-tab {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.55rem 0;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.role-tab:hover {
+    color: var(--text);
+}
+
+.role-tab.active {
+    background: var(--surface);
+    color: var(--brand-dark);
+    box-shadow: 0 1px 4px rgba(16, 42, 38, 0.14);
+}
+
+/* ---------- Variables y utilidades del panel admin ---------- */
+.stats-four {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.stat-pagos .stat-emoji { color: #2c6fbb; background: #e9f1fb; }
+
+.btn-sm {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+}
+
+.btn-danger {
+    color: var(--danger);
+}
+
+.btn-danger:hover {
+    color: #b3313b;
+    border-color: var(--danger);
+    background: var(--danger-soft);
+    box-shadow: 0 2px 8px rgba(214, 69, 80, 0.18);
+}
+
+/* Banner de publicación */
+.publish-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem 1.3rem;
+    margin-bottom: 1.4rem;
+    background: linear-gradient(90deg, #fdf8ea, #fefaf1);
+    border: 1px solid rgba(217, 164, 65, 0.35);
+}
+
+.publish-bar > svg {
+    width: 26px;
+    height: 26px;
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.publish-bar strong {
+    font-size: 0.92rem;
+    color: var(--text);
+}
+
+.publish-bar p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 0.15rem;
+    line-height: 1.45;
+}
+
+.publish-bar .btn {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Pestañas del panel */
+.tabs {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+    padding: 0.3rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    width: fit-content;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.tab-btn {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.55rem 1.1rem;
+    border-radius: 9px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tab-btn:hover {
+    color: var(--text);
+}
+
+.tab-btn.active {
+    background: var(--brand);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(14, 122, 95, 0.3);
+}
+
+.tab-panel {
+    margin-bottom: 1.4rem;
+}
+
+/* Grupo de acciones en las tablas del admin */
+.action-group {
+    display: flex;
+    gap: 0.4rem;
+    justify-content: flex-start;
+}
+
+/* Formularios dentro del modal */
+.field select {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text);
+    background: #fbfcfc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.field select:focus {
+    outline: none;
+    background: #fff;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(14, 122, 95, 0.16);
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(15, 30, 28, 0.45);
+    backdrop-filter: blur(3px);
+}
+
+.modal-overlay[hidden] {
+    display: none;
+}
+
+.modal {
+    width: 100%;
+    max-width: 440px;
+    padding: 1.5rem 1.6rem 1.7rem;
+    box-shadow: var(--shadow-md);
+}
+
+.modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.3rem;
+}
+
+.modal-head h3 {
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+    .main {
+        padding: 1.2rem 1rem 2rem;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-four {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .dashboard-head {
+        padding: 1.1rem 1.2rem;
+    }
+
+    .table-card {
+        padding: 1.1rem 1.2rem 1.3rem;
+    }
+
+    .login-card {
+        margin-top: 1rem;
+        padding: 1.8rem 1.4rem 1.5rem;
+    }
+
+    .publish-bar {
+        flex-wrap: wrap;
+    }
+
+    .publish-bar .btn {
+        margin-left: 0;
+        width: 100%;
+    }
+}
