@@ -655,6 +655,191 @@ tbody tr:last-child td {
     margin-bottom: 1.6rem;
 }
 
+/* Selector de año por pills */
+.year-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 1.1rem;
+}
+
+.year-pill {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.year-pill:hover {
+    color: var(--brand-dark);
+    border-color: var(--brand);
+}
+
+.year-pill.active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+    border-color: var(--brand);
+    box-shadow: 0 3px 10px rgba(14, 122, 95, 0.3);
+}
+
+.year-pill.all {
+    color: var(--brand-dark);
+    background: var(--brand-soft);
+    border-color: rgba(14, 122, 95, 0.25);
+}
+
+.detalle-vacio {
+    padding: 1.2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+}
+
+.texto-nulo {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Libro de cuenta: obligaciones + aportaciones + totales */
+.ledger {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    align-items: start;
+}
+
+.ledger-sec {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.2rem 0.2rem;
+    background: #fdfdfd;
+    overflow-x: auto;
+}
+
+.ledger-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    margin-bottom: 0.7rem;
+}
+
+.ledger-head h4 {
+    font-size: 0.95rem;
+    color: var(--text);
+    letter-spacing: 0.2px;
+}
+
+.totales {
+    grid-column: 1 / -1;
+    max-width: 420px;
+    margin: 0 auto;
+    width: 100%;
+    border: 1px dashed #c4d4cf;
+    border-radius: 12px;
+    padding: 0.9rem 1.2rem;
+    background: #fbfdfc;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.95rem;
+    padding: 0.4rem 0;
+}
+
+.total-row + .total-row {
+    border-top: 1px dashed #dfe9e5;
+}
+
+.total-row span {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+
+.total-row strong {
+    font-size: 1rem;
+    color: var(--text);
+}
+
+.btn-totales {
+    margin-top: 0.7rem;
+    width: 100%;
+}
+
+/* Tabla resumen por años */
+.tabla-anios td:first-child,
+.tabla-anios th:first-child {
+    white-space: nowrap;
+}
+
+/* Filtros del admin (por año) */
+.filtros-admin {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    padding: 1rem 1.2rem;
+    background: #f7faf9;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.filtro label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.filtro select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+}
+
+.filtro select:focus {
+    outline: none;
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(14, 122, 95, 0.16);
+}
+
+.label-min {
+    margin-top: 0.55rem;
+    font-size: 0.78rem;
+}
+
+.modal-actions {
+    margin-top: 0.6rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 800px) {
+    .ledger {
+        grid-template-columns: 1fr;
+    }
+
+    .totales {
+        grid-column: 1;
+    }
+}
+
 .role-tab {
     border: none;
     background: transparent;
@@ -679,11 +864,18 @@ tbody tr:last-child td {
 }
 
 /* ---------- Variables y utilidades del panel admin ---------- */
+.stats-three {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
 .stats-four {
     grid-template-columns: repeat(4, 1fr);
 }
 
 .stat-pagos .stat-emoji { color: #2c6fbb; background: #e9f1fb; }
+
+.stat-brand .stat-value { color: var(--brand-dark); }
+.stat-brand .stat-emoji { color: var(--brand); background: var(--brand-soft); }
 
 .btn-sm {
     padding: 0.5rem 0.85rem;

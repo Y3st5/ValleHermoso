@@ -1,31 +1,24 @@
 // ==========================================================
-// VALLE HERMOSO · PORTAL DE PAGOS
+// VALLE HERMOSO · PORTAL DE SOCIOS
 // Página estática (GitHub Pages). Los datos viven en data.json.
-// El administrador edita, descarga el data.json actualizado y
-// lo publica en el repositorio para que los clientes lo vean.
+// Cada socio tiene un estado de cuenta POR AÑO (obligaciones +
+// aportaciones + totales). El admin edita, descarga el data.json
+// actualizado y lo publica en el repositorio para los socios.
 // ==========================================================
 
 // 1. DATOS DE RESPALDO (si no se puede leer data.json)
 const DATOS_INICIALES = {
-    admin: { nombre: "Administración", email: "Williams@vallehermoso.com", password: "261201" },
-    usuarios: [
-        { id: "USR-1001", nombre: "Carlos Mendoza", email: "carlos.m@email.com", password: "123" },
-        { id: "USR-1002", nombre: "Ana Rojas", email: "ana.r@email.com", password: "123" },
-        { id: "USR-1003", nombre: "Luis Fernández", email: "luis.f@email.com", password: "123" }
-    ],
-    pagos: [
-        { id_pago: "P-001", id_usuario: "USR-1001", fecha: "2026-08-01", concepto: "Mensualidad Agosto", monto: 150.00, estado: "Pagado" },
-        { id_pago: "P-002", id_usuario: "USR-1001", fecha: "2026-08-15", concepto: "Materiales Adicionales", monto: 45.50, estado: "Pagado" },
-        { id_pago: "P-003", id_usuario: "USR-1001", fecha: "2026-09-01", concepto: "Mensualidad Septiembre", monto: 150.00, estado: "Pendiente" },
-        { id_pago: "P-004", id_usuario: "USR-1002", fecha: "2026-08-10", concepto: "Mensualidad Agosto", monto: 150.00, estado: "Pagado" },
-        { id_pago: "P-005", id_usuario: "USR-1002", fecha: "2026-09-05", concepto: "Mensualidad Septiembre", monto: 150.00, estado: "Pendiente" }
-    ]
+    admin: { nombre: "Administración", email: "admin@vallehermoso.com", password: "cambia123" },
+    socios: []
 };
 
 // 2. ESTADO GLOBAL
-let DATOS = null;                          // datos cargados (admin, usuarios, pagos)
-let rolActivo = 'cliente';                 // 'cliente' | 'admin'
-let usuarioActual = null;                  // cliente con sesión iniciada
+let DATOS = null;                           // datos cargados (admin, socios)
+let rolActivo = 'socio';                    // 'socio' | 'admin'
+let socioActual = null;                     // socio con sesión iniciada
+let anioSeleccionado = null;                // año seleccionado por el socio
+let adminSocioSel = null;                   // socio seleccionado en "Por año"
+let adminAnioSel = null;                    // año seleccionado en "Por año"
 
 // 3. CAPA DE DATOS
 async function cargarDatos() {
@@ -63,19 +56,19 @@ const loginSubtitle = document.getElementById('login-subtitle');
 // 5. PESTAÑAS DE ROL EN EL LOGIN
 function activarRol(rol) {
     rolActivo = rol;
-    tabCliente.classList.toggle('active', rol === 'cliente');
+    tabCliente.classList.toggle('active', rol === 'socio');
     tabAdmin.classList.toggle('active', rol === 'admin');
     if (rol === 'admin') {
         loginTitle.textContent = 'Acceso administrativo';
-        loginSubtitle.textContent = 'Ingresa con tu cuenta de administración para gestionar clientes y pagos.';
+        loginSubtitle.textContent = 'Ingresa con tu cuenta de administración para gestionar socios y estados de cuenta.';
     } else {
         loginTitle.textContent = 'Bienvenido';
-        loginSubtitle.textContent = 'Ingresa con tu correo y contraseña para consultar tus pagos.';
+        loginSubtitle.textContent = 'Ingresa con tu correo y contraseña para consultar tu estado de cuenta.';
     }
     msgError.style.display = 'none';
 }
 
-tabCliente.addEventListener('click', () => activarRol('cliente'));
+tabCliente.addEventListener('click', () => activarRol('socio'));
 tabAdmin.addEventListener('click', () => activarRol('admin'));
 
 // 6. LÓGICA DE INICIO DE SESIÓN
@@ -92,18 +85,17 @@ btnLogin.addEventListener('click', () => {
         return;
     }
 
-    // Login de cliente
-    const usuarioEncontrado = DATOS.usuarios.find(user =>
-        user.email === emailIngresado && user.password === passwordIngresada
+    const socioEncontrado = DATOS.socios.find(s =>
+        s.email === emailIngresado && s.password === passwordIngresada
     );
 
-    if (usuarioEncontrado) {
+    if (socioEncontrado) {
         msgError.style.display = 'none';
         sectionLogin.style.display = 'none';
         sectionAdmin.style.display = 'none';
         sectionDashboard.style.display = 'block';
-        usuarioActual = usuarioEncontrado;
-        cargarDashboard(usuarioEncontrado);
+        socioActual = socioEncontrado;
+        renderSocio(socioEncontrado);
     } else {
         msgError.style.display = 'block';
     }
@@ -123,244 +115,519 @@ function entrarAdmin(admin) {
 function cerrarSesion() {
     document.getElementById('email-input').value = '';
     document.getElementById('password-input').value = '';
-    usuarioActual = null;
+    socioActual = null;
     sectionDashboard.style.display = 'none';
     sectionAdmin.style.display = 'none';
     sectionLogin.style.display = 'block';
-    activarRol('cliente');
+    activarRol('socio');
 }
 
 btnLogout.addEventListener('click', cerrarSesion);
 btnLogoutAdmin.addEventListener('click', cerrarSesion);
 
-// 9. LÓGICA PARA RENDERIZAR EL DASHBOARD DEL CLIENTE
-function cargarDashboard(usuario) {
-    document.getElementById('user-name').textContent = usuario.nombre;
-    document.getElementById('user-id').textContent = usuario.id;
-
-    const misPagos = DATOS.pagos.filter(pago => pago.id_usuario === usuario.id);
-
-    let totalPagado = 0;
-    let totalDeuda = 0;
-    const tablaBodega = document.getElementById('tabla-pagos');
-    const tablaVacia = document.getElementById('table-empty');
-
-    tablaBodega.innerHTML = '';
-
-    misPagos.forEach(pago => {
-        if (pago.estado === "Pagado") {
-            totalPagado += pago.monto;
-        } else if (pago.estado === "Pendiente") {
-            totalDeuda += pago.monto;
-        }
-
-        const fila = document.createElement('tr');
-        fila.innerHTML = `
-            <td>${pago.fecha}</td>
-            <td class="boleta">${pago.id_pago}</td>
-            <td>${pago.concepto}</td>
-            <td class="monto">S/ ${pago.monto.toFixed(2)}</td>
-            <td><span class="badge ${pago.estado === 'Pagado' ? 'badge-pagado' : 'badge-pendiente'}">${pago.estado}</span></td>
-            <td>
-                <button class="btn-icon btn-download" title="Descargar boleta en PDF" aria-label="Descargar boleta en PDF">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                </button>
-            </td>
-        `;
-        fila.querySelector('.btn-download').addEventListener('click', () => imprimirBoleta(pago, usuario));
-        tablaBodega.appendChild(fila);
-    });
-
-    tablaVacia.hidden = misPagos.length > 0;
-
-    document.getElementById('total-pagado').textContent = `S/ ${totalPagado.toFixed(2)}`;
-    document.getElementById('total-deuda').textContent = `S/ ${totalDeuda.toFixed(2)}`;
+// 9. UTILIDADES COMUNES
+function formatearMonto(valor) {
+    if (valor === null || valor === undefined || valor === '') return '—';
+    const n = Number(valor);
+    if (isNaN(n)) return String(valor);
+    return 'S/ ' + n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-// 10. BOLETA EN PDF
-function imprimirBoleta(pago, usuario) {
-    const fechaLegible = pago.fecha.split('-').reverse().join('/');
+function textoCelda(valor, textoExtra) {
+    if (textoExtra) return '<span class="texto-nulo">' + textoExtra + '</span>';
+    return valor === null || valor === undefined || valor === '' ? '<span class="texto-nulo">—</span>' : formatearMonto(valor);
+}
+
+function badgeEstado(deuda, etiquetaAlDia) {
+    const alDia = !deuda || deuda <= 0;
+    return alDia
+        ? '<span class="badge badge-pagado">' + (etiquetaAlDia || 'AL DÍA') + '</span>'
+        : '<span class="badge badge-pendiente">PENDIENTE</span>';
+}
+
+function getAnio(socio, anio) {
+    let reg = socio.anios.find(a => a.anio === anio);
+    if (!reg) {
+        reg = { anio, obligaciones: [], aportaciones: [], totales: [] };
+        socio.anios.push(reg);
+    }
+    return reg;
+}
+
+function saldoFinalDe(anioReg) {
+    if (!anioReg) return 0;
+    const t = anioReg.totales.find(x => x.concepto.toUpperCase().includes('SALDO FINAL'));
+    return t && t.monto !== null && t.monto !== undefined ? Number(t.monto) : 0;
+}
+
+function deudaVigenteDe(socio) {
+    if (!socio.anios || !socio.anios.length) return 0;
+    const ultimo = socio.anios[socio.anios.length - 1];
+    return saldoFinalDe(ultimo);
+}
+
+function totalAportadoDe(socio) {
+    let total = 0;
+    (socio.anios || []).forEach(a => {
+        (a.aportaciones || []).forEach(ap => {
+            if (ap.monto !== null && ap.monto !== undefined && ap.monto !== '') total += Number(ap.monto);
+        });
+    });
+    return total;
+}
+
+function nuevoIdSocio() {
+    let max = 0;
+    DATOS.socios.forEach(s => {
+        const n = parseInt(s.id.replace(/\D/g, ''), 10);
+        if (n > max) max = n;
+    });
+    return 'SOC-' + String(max + 1).padStart(4, '0');
+}
+
+// 10. VISTA DEL SOCIO
+function renderSocio(socio) {
+    anioSeleccionado = null;
+
+    document.getElementById('user-name').textContent = socio.nombre;
+    document.getElementById('user-id').textContent = socio.id;
+
+    const tc = document.getElementById('socio-tcambio');
+    if (socio.t_cambio) {
+        tc.hidden = false;
+        tc.textContent = 'T.CAMBIO S/ ' + String(socio.t_cambio).replace('.', ',');
+    } else {
+        tc.hidden = true;
+    }
+
+    document.getElementById('total-aportado').textContent = formatearMonto(totalAportadoDe(socio));
+    document.getElementById('deuda-vigente').textContent = formatearMonto(deudaVigenteDe(socio));
+    document.getElementById('anios-registrados').textContent = socio.anios.length;
+
+    renderPills(socio);
+    renderDetalleSocio(socio);
+}
+
+function renderPills(socio) {
+    const cont = document.getElementById('year-pills');
+    cont.innerHTML = '';
+
+    const anios = socio.anios.slice().sort((a, b) => a.anio - b.anio).map(a => a.anio);
+
+    const hacerPill = (texto, anio, activo) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'year-pill' + (activo ? ' active' : '');
+        b.textContent = texto;
+        b.addEventListener('click', () => {
+            anioSeleccionado = anio;
+            cont.querySelectorAll('.year-pill').forEach(p => p.classList.remove('active'));
+            b.classList.add('active');
+            renderDetalleSocio(socio, anio);
+        });
+        return b;
+    };
+
+    const pillGeneral = hacerPill('General', null, anioSeleccionado === null);
+    pillGeneral.classList.add('all');
+    cont.appendChild(pillGeneral);
+
+    anios.forEach(a => cont.appendChild(hacerPill(String(a), a, anioSeleccionado === a)));
+}
+
+function renderDetalleSocio(socio, anio) {
+    const cont = document.getElementById('year-detail');
+    cont.innerHTML = '';
+
+    if (!socio.anios.length) {
+        cont.innerHTML = '<p class="detalle-vacio">Todavía no hay registros en tu estado de cuenta.</p>';
+        return;
+    }
+
+    if (!anio) {
+        cont.appendChild(renderResumenAniosTabla(socio, false));
+        return;
+    }
+
+    const reg = getAnio(socio, anio);
+    cont.appendChild(renderEstadoAnio(reg, { pdf: true, gestion: false }));
+}
+
+function renderResumenAniosTabla(socio, gestion) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-wrap';
+
+    const tabla = document.createElement('table');
+    tabla.className = 'tabla-anios';
+    const thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>Año</th><th>Aportado</th><th>Deuda total</th><th>Saldo final</th><th>Estado</th></tr>';
+    tabla.appendChild(thead);
+    const tbody = document.createElement('tbody');
+    tabla.appendChild(tbody);
+
+    socio.anios.slice().sort((a, b) => a.anio - b.anio).forEach(reg => {
+        const aportado = (reg.aportaciones || []).reduce((acc, ap) => {
+            if (ap.monto !== null && ap.monto !== undefined && ap.monto !== '') return acc + Number(ap.monto);
+            return acc;
+        }, 0);
+        const deudaTotal = (reg.totales.find(t => t.concepto.toUpperCase().includes('DEUDA TOTAL')) || {}).monto;
+        const saldo = saldoFinalDe(reg);
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+            <td class="monto">${reg.anio}</td>
+            <td>${formatearMonto(aportado)}</td>
+            <td>${formatearMonto(deudaTotal)}</td>
+            <td>${formatearMonto(saldo)}</td>
+            <td>${badgeEstado(saldo)}</td>
+        `;
+        tbody.appendChild(fila);
+    });
+
+    wrapper.appendChild(tabla);
+    return wrapper;
+}
+
+// 11. RENDERIZAR EL ESTADO DE UN AÑO (obligaciones + aportaciones + totales)
+function renderEstadoAnio(reg, opciones) {
+    const cont = document.createElement('div');
+    cont.className = 'ledger';
+
+    // ---- Obligaciones ----
+    const secObl = document.createElement('section');
+    secObl.className = 'ledger-sec';
+    const headObl = document.createElement('div');
+    headObl.className = 'ledger-head';
+    headObl.innerHTML = '<h4>Obligaciones ' + reg.anio + '</h4>';
+    secObl.appendChild(headObl);
+    if (opciones.gestion) {
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'btn btn-primary btn-sm';
+        boton.textContent = '+ Obligación';
+        boton.addEventListener('click', () => abrirFormObligacion(reg, null));
+        headObl.appendChild(boton);
+    }
+    secObl.appendChild(armarTablaObligaciones(reg, opciones));
+    cont.appendChild(secObl);
+
+    // ---- Aportaciones ----
+    const secApo = document.createElement('section');
+    secApo.className = 'ledger-sec';
+    const headApo = document.createElement('div');
+    headApo.className = 'ledger-head';
+    headApo.innerHTML = '<h4>Aportaciones ' + reg.anio + '</h4>';
+    secApo.appendChild(headApo);
+    if (opciones.gestion) {
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'btn btn-primary btn-sm';
+        boton.textContent = '+ Aportación';
+        boton.addEventListener('click', () => abrirFormAportacion(reg, null));
+        headApo.appendChild(boton);
+    }
+    secApo.appendChild(armarTablaAportaciones(reg, opciones));
+    cont.appendChild(secApo);
+
+    // ---- Totales ----
+    const bloqueTotales = document.createElement('div');
+    bloqueTotales.className = 'totales';
+    reg.totales.forEach(t => {
+        const fila = document.createElement('div');
+        fila.className = 'total-row';
+        fila.innerHTML = `<span>${t.concepto}</span><strong>${formatearMonto(t.monto)}</strong>`;
+        bloqueTotales.appendChild(fila);
+    });
+    if (opciones.gestion) {
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'btn btn-ghost btn-sm btn-totales';
+        boton.textContent = 'Editar totales';
+        boton.addEventListener('click', () => abrirFormTotales(reg));
+        bloqueTotales.appendChild(boton);
+    }
+    cont.appendChild(bloqueTotales);
+
+    return cont;
+}
+
+function armarTablaObligaciones(reg, opciones) {
+    const wrap = document.createElement('div');
+    wrap.className = 'table-wrap';
+    const tabla = document.createElement('table');
+    const thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>Conceptos</th><th>Recibo</th><th>Monto</th>' + (opciones.gestion ? '<th>Acción</th>' : '') + '</tr>';
+    tabla.appendChild(thead);
+    const tbody = document.createElement('tbody');
+    tabla.appendChild(tbody);
+
+    reg.obligaciones.forEach((ob, i) => {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+            <td>${ob.concepto}</td>
+            <td class="boleta">${ob.recibo || '—'}</td>
+            <td>${textoCelda(ob.monto, ob.texto)}</td>
+            ${opciones.gestion ? '<td class="accion-cell"><div class="action-group">' +
+                '<button class="btn-icon btn-editar" title="Editar" aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>' +
+                '<button class="btn-icon btn-danger btn-eliminar" title="Eliminar" aria-label="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
+                '</div></td>' : ''}
+        `;
+        if (opciones.gestion) {
+            fila.querySelector('.btn-editar').addEventListener('click', () => abrirFormObligacion(reg, ob, i));
+            fila.querySelector('.btn-eliminar').addEventListener('click', () => eliminarObligacion(reg, i));
+        }
+        tbody.appendChild(fila);
+    });
+
+    wrap.appendChild(tabla);
+    return wrap;
+}
+
+function armarTablaAportaciones(reg, opciones) {
+    const wrap = document.createElement('div');
+    wrap.className = 'table-wrap';
+    const tabla = document.createElement('table');
+    const thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>N° Recibo</th><th>Concepto</th><th>Monto</th>' + (opciones.pdf || opciones.gestion ? '<th>' + (opciones.gestion ? 'Acción' : 'Boleta') + '</th>' : '') + '</tr>';
+    tabla.appendChild(thead);
+    const tbody = document.createElement('tbody');
+    tabla.appendChild(tbody);
+
+    reg.aportaciones.forEach((ap, i) => {
+        const fila = document.createElement('tr');
+        let extras = '';
+        if (opciones.gestion) {
+            extras = '<td class="accion-cell"><div class="action-group">' +
+                '<button class="btn-icon btn-editar" title="Editar" aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>' +
+                '<button class="btn-icon btn-danger btn-eliminar" title="Eliminar" aria-label="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
+                '</div></td>';
+        } else if (opciones.pdf) {
+            extras = '<td class="accion-cell"><button class="btn-icon btn-download" title="Boleta PDF" aria-label="Boleta PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></td>';
+        }
+        fila.innerHTML = `
+            <td class="boleta">${ap.recibo || '—'}</td>
+            <td>${ap.concepto || '—'}</td>
+            <td>${textoCelda(ap.monto)}</td>
+            ${extras}
+        `;
+        if (opciones.gestion) {
+            fila.querySelector('.btn-editar').addEventListener('click', () => abrirFormAportacion(reg, ap, i));
+            fila.querySelector('.btn-eliminar').addEventListener('click', () => eliminarAportacion(reg, i));
+        } else if (opciones.pdf) {
+            fila.querySelector('.btn-download').addEventListener('click', () => imprimirBoleta(ap, socioActual, reg.anio));
+        }
+        tbody.appendChild(fila);
+    });
+
+    wrap.appendChild(tabla);
+    return wrap;
+}
+
+// 12. BOLETA EN PDF (aportación / recibo)
+function imprimirBoleta(aportacion, socio, anio) {
+    const nroRecibo = aportacion.recibo || '—';
 
     const area = document.getElementById('print-receipt');
     area.innerHTML = `
         <div class="receipt">
             <div class="receipt-brand">Valle Hermoso</div>
-            <div class="receipt-sub">Portal de Pagos</div>
-            <div class="receipt-title">Boleta de pago</div>
+            <div class="receipt-sub">Aportaciones · Portal de Socios</div>
+            <div class="receipt-title">Boleta de ingreso</div>
 
-            <div class="receipt-row"><span class="receipt-key">N° Boleta</span><span class="receipt-val">${pago.id_pago}</span></div>
-            <div class="receipt-row"><span class="receipt-key">Fecha</span><span class="receipt-val">${fechaLegible}</span></div>
-            <div class="receipt-row"><span class="receipt-key">Cliente</span><span class="receipt-val">${usuario.nombre}</span></div>
-            <div class="receipt-row"><span class="receipt-key">ID Cliente</span><span class="receipt-val">${usuario.id}</span></div>
-            <div class="receipt-row"><span class="receipt-key">Concepto</span><span class="receipt-val">${pago.concepto}</span></div>
+            <div class="receipt-row"><span class="receipt-key">N° Recibo</span><span class="receipt-val">${nroRecibo}</span></div>
+            <div class="receipt-row"><span class="receipt-key">Año</span><span class="receipt-val">${anio}</span></div>
+            <div class="receipt-row"><span class="receipt-key">Socio</span><span class="receipt-val">${socio.nombre}</span></div>
+            <div class="receipt-row"><span class="receipt-key">ID Socio</span><span class="receipt-val">${socio.id}</span></div>
+            <div class="receipt-row"><span class="receipt-key">Concepto</span><span class="receipt-val">${aportacion.concepto || 'APORTACION'}</span></div>
 
             <div class="receipt-hr"></div>
 
             <div class="receipt-total">
-                <span>Total</span>
-                <span class="receipt-amount">S/ ${pago.monto.toFixed(2)}</span>
+                <span>Monto</span>
+                <span class="receipt-amount">${formatearMonto(aportacion.monto)}</span>
             </div>
 
             <div class="receipt-hr"></div>
-            <div class="receipt-state ${pago.estado === 'Pagado' ? 'estado-pagado' : 'estado-pendiente'}">${pago.estado.toUpperCase()}</div>
+            <div class="receipt-state estado-pagado">ABONADO</div>
 
-            <div class="receipt-foot">Este comprobante se generó desde el Portal de Pagos.<br>Valle Hermoso · Gracias por tu puntualidad.</div>
+            <div class="receipt-foot">Este comprobante se generó desde el Portal de Socios.<br>Asociación Valle Hermoso · Gracias por tu aportación.</div>
         </div>
     `;
 
     window.print();
 }
 
-// 11. UTILIDADES DEL ADMINISTRADOR
-function formatearSoles(valor) {
-    return 'S/ ' + Number(valor).toFixed(2);
-}
-
-function badgeEstado(estado) {
-    const clase = estado === 'Pagado' ? 'badge-pagado' : 'badge-pendiente';
-    return `<span class="badge ${clase}">${estado}</span>`;
-}
-
-function nombreCliente(idUsuario) {
-    const u = DATOS.usuarios.find(us => us.id === idUsuario);
-    return u ? u.nombre : idUsuario;
-}
-
-function totalesDeCliente(idUsuario) {
-    let pagado = 0, deuda = 0;
-    DATOS.pagos.filter(p => p.id_usuario === idUsuario).forEach(p => {
-        if (p.estado === 'Pagado') pagado += p.monto;
-        else deuda += p.monto;
-    });
-    return { pagado, deuda };
-}
-
-function nuevoIdUsuario() {
-    let max = 1000;
-    DATOS.usuarios.forEach(u => {
-        const n = parseInt(u.id.replace(/\D/g, ''), 10);
-        if (n > max) max = n;
-    });
-    return 'USR-' + (max + 1);
-}
-
-function nuevoIdPago() {
-    let max = 0;
-    DATOS.pagos.forEach(p => {
-        const n = parseInt(p.id_pago.replace(/\D/g, ''), 10);
-        if (n > max) max = n;
-    });
-    return 'P-' + String(max + 1).padStart(3, '0');
-}
-
-// 12. RENDERIZADO GENERAL DEL PANEL ADMIN
+// 13. PANEL DEL ADMINISTRADOR
 function renderAdminAll() {
-    renderResumen();
-    renderTablaResumen();
-    renderTablaClientes();
-    renderTablaPagos();
+    renderResumenAdmin();
+    renderTablaResumenAdmin();
+    renderTablaSocios();
+    renderFiltrosAnios();
 }
 
-function renderResumen() {
+function renderResumenAdmin() {
     let cobrado = 0, deuda = 0;
-    DATOS.pagos.forEach(p => {
-        if (p.estado === 'Pagado') cobrado += p.monto;
-        else deuda += p.monto;
+    const aniosSet = new Set();
+
+    DATOS.socios.forEach(s => {
+        (s.anios || []).forEach(a => aniosSet.add(a.anio));
+        cobrado += totalAportadoDe(s);
+        deuda += deudaVigenteDe(s);
     });
-    document.getElementById('res-clientes').textContent = DATOS.usuarios.length;
-    document.getElementById('res-pagos').textContent = DATOS.pagos.length;
-    document.getElementById('res-cobrado').textContent = formatearSoles(cobrado);
-    document.getElementById('res-deuda').textContent = formatearSoles(deuda);
+
+    document.getElementById('res-socios').textContent = DATOS.socios.length;
+    document.getElementById('res-anios').textContent = aniosSet.size;
+    document.getElementById('res-cobrado').textContent = formatearMonto(cobrado);
+    document.getElementById('res-deuda').textContent = formatearMonto(deuda);
 }
 
-function renderTablaResumen() {
+function renderTablaResumenAdmin() {
     const tbody = document.getElementById('tabla-resumen');
     tbody.innerHTML = '';
 
-    DATOS.usuarios.forEach(usuario => {
-        const { pagado, deuda } = totalesDeCliente(usuario.id);
-        const estado = deuda === 0 ? badgeEstado('Pagado') : badgeEstado('Pendiente');
+    DATOS.socios.forEach(s => {
+        const deuda = deudaVigenteDe(s);
         const fila = document.createElement('tr');
         fila.innerHTML = `
-            <td class="monto">${usuario.nombre}</td>
-            <td>${DATOS.pagos.filter(p => p.id_usuario === usuario.id).length} pagos</td>
-            <td class="monto">${formatearSoles(pagado)}</td>
-            <td class="monto">${formatearSoles(deuda)}</td>
-            <td>${estado}</td>
+            <td class="monto">${s.nombre}</td>
+            <td>${s.anios.length} ${s.anios.length === 1 ? 'año' : 'años'}</td>
+            <td>${formatearMonto(totalAportadoDe(s))}</td>
+            <td>${formatearMonto(deuda)}</td>
+            <td>${badgeEstado(deuda)}</td>
         `;
         tbody.appendChild(fila);
     });
 }
 
-function renderTablaClientes() {
-    const tbody = document.getElementById('tabla-clientes');
+function renderTablaSocios() {
+    const tbody = document.getElementById('tabla-socios');
     tbody.innerHTML = '';
 
-    DATOS.usuarios.forEach(usuario => {
-        const { pagado, deuda } = totalesDeCliente(usuario.id);
+    DATOS.socios.forEach(s => {
+        const deuda = deudaVigenteDe(s);
         const fila = document.createElement('tr');
         fila.innerHTML = `
-            <td class="boleta">${usuario.id}</td>
-            <td>${usuario.nombre}</td>
-            <td>${usuario.email}</td>
-            <td class="monto">${formatearSoles(pagado)}</td>
-            <td class="monto">${formatearSoles(deuda)}</td>
+            <td class="boleta">${s.id}</td>
+            <td>${s.nombre}</td>
+            <td>${s.email}</td>
+            <td>${s.t_cambio ? 'S/ ' + String(s.t_cambio).replace('.', ',') : '—'}</td>
+            <td>${s.anios.length}</td>
+            <td>${formatearMonto(deuda)}</td>
             <td class="accion-cell">
                 <div class="action-group">
-                    <button class="btn-icon btn-editar" title="Editar cliente" aria-label="Editar cliente">
+                    <button class="btn-icon btn-editar" title="Editar socio" aria-label="Editar socio">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
                     </button>
-                    <button class="btn-icon btn-danger btn-eliminar" title="Eliminar cliente" aria-label="Eliminar cliente">
+                    <button class="btn-icon btn-danger btn-eliminar" title="Eliminar socio" aria-label="Eliminar socio">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     </button>
                 </div>
             </td>
         `;
-        fila.querySelector('.btn-editar').addEventListener('click', () => abrirFormCliente(usuario));
-        fila.querySelector('.btn-eliminar').addEventListener('click', () => eliminarCliente(usuario));
+        fila.querySelector('.btn-editar').addEventListener('click', () => abrirFormSocio(s));
+        fila.querySelector('.btn-eliminar').addEventListener('click', () => eliminarSocio(s));
         tbody.appendChild(fila);
     });
 }
 
-function renderTablaPagos() {
-    const tbody = document.getElementById('tabla-pagos-admin');
-    tbody.innerHTML = '';
+// 13b. FILTROS POR SOCIO Y AÑO (admin)
+function renderFiltrosAnios() {
+    const selSocio = document.getElementById('filtro-socio');
+    const selAnio = document.getElementById('filtro-anio');
 
-    DATOS.pagos.forEach(pago => {
-        const fila = document.createElement('tr');
-        fila.innerHTML = `
-            <td class="boleta">${pago.id_pago}</td>
-            <td>${nombreCliente(pago.id_usuario)}</td>
-            <td>${pago.fecha}</td>
-            <td>${pago.concepto}</td>
-            <td class="monto">${formatearSoles(pago.monto)}</td>
-            <td>${badgeEstado(pago.estado)}</td>
-            <td class="accion-cell">
-                <div class="action-group">
-                    <button class="btn-icon btn-editar" title="Editar pago" aria-label="Editar pago">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-                    </button>
-                    <button class="btn-icon btn-danger btn-eliminar" title="Eliminar pago" aria-label="Eliminar pago">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                    </button>
-                </div>
-            </td>
-        `;
-        fila.querySelector('.btn-editar').addEventListener('click', () => abrirFormPago(pago));
-        fila.querySelector('.btn-eliminar').addEventListener('click', () => eliminarPago(pago));
-        tbody.appendChild(fila);
+    selSocio.innerHTML = '';
+    DATOS.socios.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = s.nombre;
+        selSocio.appendChild(opt);
     });
+    if (DATOS.socios.length) selSocio.value = adminSocioSel ? adminSocioSel : DATOS.socios[0].id;
+
+    selAnio.innerHTML = '';
+    const socio = DATOS.socios.find(s => s.id === selSocio.value);
+    (socio.anios || []).slice().sort((a, b) => a.anio - b.anio).forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a.anio;
+        opt.textContent = 'Año ' + a.anio;
+        selAnio.appendChild(opt);
+    });
+
+    if (selAnio.options.length) {
+        selAnio.value = (adminAnioSel && [...selAnio.options].some(o => Number(o.value) === adminAnioSel))
+            ? String(adminAnioSel) : selAnio.options[selAnio.options.length - 1].value;
+        selAnio.hidden = false;
+    } else {
+        selAnio.hidden = true;
+    }
+
+    renderDetalleAnioAdmin();
 }
 
-// 13. PESTAÑAS DEL PANEL ADMIN
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
-        document.querySelectorAll('.tab-panel').forEach(p => {
-            p.hidden = p.id !== 'tab-' + btn.dataset.tab;
-        });
-    });
+document.getElementById('filtro-socio').addEventListener('change', (e) => {
+    adminSocioSel = e.target.value;
+    renderFiltrosAnios();
 });
+
+document.getElementById('filtro-anio').addEventListener('change', (e) => {
+    adminAnioSel = Number(e.target.value);
+    renderDetalleAnioAdmin();
+});
+
+function renderDetalleAnioAdmin() {
+    const cont = document.getElementById('detalle-anio-admin');
+    cont.innerHTML = '';
+
+    const selSocio = document.getElementById('filtro-socio');
+    const selAnio = document.getElementById('filtro-anio');
+
+    if (!DATOS.socios.length) {
+        cont.innerHTML = '<p class="detalle-vacio">Primero registra un socio.</p>';
+        return;
+    }
+    if (!selAnio.options.length) {
+        cont.innerHTML = '<p class="detalle-vacio">Este socio aún no tiene años registrados.</p>';
+        return;
+    }
+
+    const socio = DATOS.socios.find(s => s.id === selSocio.value);
+    const anio = Number(selAnio.value);
+    const reg = getAnio(socio, anio);
+
+    cont.appendChild(renderEstadoAnio(reg, { pdf: false, gestion: true }));
+
+    // Botón para agregar un año nuevo
+    const boton = document.createElement('button');
+    boton.type = 'button';
+    boton.className = 'btn btn-ghost btn-sm';
+    boton.textContent = '+ Agregar otro año';
+    boton.addEventListener('click', () => abrirFormNuevoAnio(socio));
+    boton.style.marginTop = '1rem';
+    cont.appendChild(boton);
+    cont.appendChild(document.createElement('br'));
+}
+
+function abrirFormNuevoAnio(socio) {
+    abrirModal('Nuevo año para ' + socio.nombre, `
+        <div class="field">
+            <label for="f-anio">Año</label>
+            <input type="number" id="f-anio" min="2000" max="2100" value="${new Date().getFullYear()}" required>
+        </div>
+        <button id="modal-submit" class="btn btn-primary btn-block" type="button">Crear año</button>
+    `);
+    document.getElementById('modal-submit').addEventListener('click', () => {
+        const anio = Number(document.getElementById('f-anio').value);
+        if (!anio) return alert('Indica un año válido.');
+        if (socio.anios.some(a => a.anio === anio)) return alert('Ese año ya existe para este socio.');
+
+        socio.anios.push({ anio, obligaciones: [], aportaciones: [], totales: [] });
+        socio.anios.sort((a, b) => a.anio - b.anio);
+        guardarLocal();
+        adminAnioSel = anio;
+        adminSocioSel = socio.id;
+        renderAdminAll();
+        cerrarModal();
+    });
+}
 
 // 14. VENTANA MODAL
 const modal = document.getElementById('modal');
@@ -383,23 +650,27 @@ modal.addEventListener('click', (e) => {
     if (e.target === modal) cerrarModal();
 });
 
-// 15. FORMULARIO DE CLIENTE (nuevo/editar)
-function abrirFormCliente(cliente) {
-    const esNuevo = !cliente;
-    const c = esNuevo ? { nombre: '', email: '', password: '123' } : cliente;
+// 15. SOCIO: NUEVO / EDITAR / ELIMINAR
+function abrirFormSocio(socio) {
+    const esNuevo = !socio;
+    const s = esNuevo ? { id: '', nombre: '', email: '', password: '123', t_cambio: '' } : socio;
 
-    abrirModal(esNuevo ? 'Nuevo cliente' : 'Editar cliente', `
+    abrirModal(esNuevo ? 'Nuevo socio' : 'Editar socio', `
         <div class="field">
             <label for="f-nombre">Nombre completo</label>
-            <input type="text" id="f-nombre" value="${c.nombre}" required>
+            <input type="text" id="f-nombre" value="${s.nombre}" required>
         </div>
         <div class="field">
             <label for="f-email">Correo electrónico</label>
-            <input type="email" id="f-email" value="${c.email}" required>
+            <input type="email" id="f-email" value="${s.email}" required>
         </div>
         <div class="field">
             <label for="f-password">Contraseña</label>
-            <input type="text" id="f-password" value="${c.password}" required>
+            <input type="text" id="f-password" value="${s.password}" required>
+        </div>
+        <div class="field">
+            <label for="f-tcambio">Tipo de cambio (opcional)</label>
+            <input type="text" id="f-tcambio" value="${s.t_cambio || ''}" placeholder="3.321">
         </div>
         <button id="modal-submit" class="btn btn-primary btn-block" type="button">Guardar</button>
     `);
@@ -408,25 +679,34 @@ function abrirFormCliente(cliente) {
         const nombre = document.getElementById('f-nombre').value.trim();
         const email = document.getElementById('f-email').value.trim();
         const password = document.getElementById('f-password').value;
+        const tCambioRaw = document.getElementById('f-tcambio').value.trim();
 
         if (!nombre || !email || !password) {
-            alert('Completa todos los campos.');
+            alert('Completa los campos obligatorios.');
             return;
         }
-        const emailDuplicado = DATOS.usuarios.some(u =>
-            u.email === email && (esNuevo || u.id !== c.id)
+        const emailDuplicado = DATOS.socios.some(u =>
+            u.email === email && (esNuevo || u.id !== s.id)
         );
         if (emailDuplicado) {
-            alert('Ya existe un cliente con ese correo.');
+            alert('Ya existe un socio con ese correo.');
             return;
         }
 
         if (esNuevo) {
-            DATOS.usuarios.push({ id: nuevoIdUsuario(), nombre, email, password });
+            DATOS.socios.push({
+                id: nuevoIdSocio(),
+                nombre,
+                email,
+                password,
+                t_cambio: tCambioRaw === '' ? null : Number(tCambioRaw.replace(',', '.')),
+                anios: []
+            });
         } else {
-            c.nombre = nombre;
-            c.email = email;
-            c.password = password;
+            s.nombre = nombre;
+            s.email = email;
+            s.password = password;
+            s.t_cambio = tCambioRaw === '' ? null : Number(tCambioRaw.replace(',', '.'));
         }
 
         guardarLocal();
@@ -435,95 +715,194 @@ function abrirFormCliente(cliente) {
     });
 }
 
-// 16. FORMULARIO DE PAGO (nuevo/editar)
-function abrirFormPago(pago) {
-    const esNuevo = !pago;
-    const opcionesUsuarios = DATOS.usuarios
-        .map(u => `<option value="${u.id}" ${pago && pago.id_usuario === u.id ? 'selected' : ''}>${u.id} · ${u.nombre}</option>`)
-        .join('');
+function eliminarSocio(socio) {
+    if (!confirm('¿Eliminar al socio ' + socio.nombre + '? También se borrará todo su estado de cuenta.')) return;
 
-    abrirModal(esNuevo ? 'Nuevo pago' : 'Editar pago', `
-        <div class="field">
-            <label for="f-usuario">Cliente</label>
-            <select id="f-usuario" required>${opcionesUsuarios}</select>
-        </div>
-        <div class="field">
-            <label for="f-fecha">Fecha</label>
-            <input type="date" id="f-fecha" value="${pago ? pago.fecha : new Date().toISOString().slice(0, 10)}" required>
-        </div>
+    DATOS.socios = DATOS.socios.filter(s => s.id !== socio.id);
+    if (adminSocioSel === socio.id) adminSocioSel = null;
+    if (socioActual && socioActual.id === socio.id) socioActual = null;
+    guardarLocal();
+    renderAdminAll();
+}
+
+document.getElementById('btn-nuevo-socio').addEventListener('click', () => abrirFormSocio(null));
+
+// 16. OBLIGACIÓN: NUEVO / EDITAR / ELIMINAR
+function abrirFormObligacion(reg, ob, idx) {
+    const esNuevo = !ob;
+    const o = esNuevo ? { concepto: '', monto: '', recibo: '', texto: '' } : ob;
+
+    abrirModal(esNuevo ? 'Nueva obligación ' + reg.anio : 'Editar obligación ' + reg.anio, `
         <div class="field">
             <label for="f-concepto">Concepto</label>
-            <input type="text" id="f-concepto" value="${pago ? pago.concepto : ''}" placeholder="Mensualidad Agosto" required>
+            <input type="text" id="f-concepto" value="${o.concepto}" placeholder="CUOTA MENSUAL 2026" required>
         </div>
         <div class="field">
-            <label for="f-monto">Monto (S/)</label>
-            <input type="number" id="f-monto" value="${pago ? pago.monto : ''}" min="0" step="0.01" required>
+            <label for="f-monto">Monto (S/) · vacío = sin monto</label>
+            <input type="number" id="f-monto" min="0" step="0.01" value="${o.monto ?? ''}">
         </div>
         <div class="field">
-            <label for="f-estado">Estado</label>
-            <select id="f-estado" required>
-                <option value="Pagado" ${pago && pago.estado === 'Pagado' ? 'selected' : ''}>Pagado</option>
-                <option value="Pendiente" ${pago && pago.estado === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
-            </select>
+            <label for="f-recibo">N° Recibo (opcional)</label>
+            <input type="text" id="f-recibo" value="${o.recibo || ''}">
+        </div>
+        <div class="field">
+            <label for="f-texto">Texto especial (opcional, p. ej. RELACION / DSCTO MENS)</label>
+            <input type="text" id="f-texto" value="${o.texto || ''}">
         </div>
         <button id="modal-submit" class="btn btn-primary btn-block" type="button">Guardar</button>
     `);
 
     document.getElementById('modal-submit').addEventListener('click', () => {
-        const idUsuario = document.getElementById('f-usuario').value;
-        const fecha = document.getElementById('f-fecha').value;
         const concepto = document.getElementById('f-concepto').value.trim();
-        const monto = Number(document.getElementById('f-monto').value);
-        const estado = document.getElementById('f-estado').value;
+        const montoRaw = document.getElementById('f-monto').value;
+        const monto = montoRaw === '' ? null : Number(montoRaw);
+        const recibo = document.getElementById('f-recibo').value.trim();
+        const texto = document.getElementById('f-texto').value.trim();
 
-        if (!idUsuario || !fecha || !concepto || !(monto >= 0)) {
-            alert('Completa todos los campos correctamente.');
+        if (!concepto) {
+            alert('Indica el concepto.');
             return;
         }
 
         if (esNuevo) {
-            DATOS.pagos.push({ id_pago: nuevoIdPago(), id_usuario: idUsuario, fecha, concepto, monto, estado });
+            reg.obligaciones.push({ concepto, monto, recibo: recibo || '', texto: texto || '' });
         } else {
-            pago.id_usuario = idUsuario;
-            pago.fecha = fecha;
-            pago.concepto = concepto;
-            pago.monto = monto;
-            pago.estado = estado;
+            o.concepto = concepto;
+            o.monto = monto;
+            o.recibo = recibo;
+            o.texto = texto || '';
+            if (texto) o.texto = texto;
+            else delete o.texto;
         }
 
         guardarLocal();
-        renderAdminAll();
+        renderDetalleAnioAdmin();
         cerrarModal();
     });
 }
 
-document.getElementById('btn-nuevo-cliente').addEventListener('click', () => abrirFormCliente(null));
-document.getElementById('btn-nuevo-pago').addEventListener('click', () => abrirFormPago(null));
-
-// 17. ELIMINAR CLIENTES Y PAGOS
-function eliminarCliente(cliente) {
-    const tienePagos = DATOS.pagos.some(p => p.id_usuario === cliente.id);
-    const aviso = tienePagos
-        ? 'Este cliente tiene pagos registrados, también se eliminarán.\n\n¿Eliminar a ' + cliente.nombre + '?'
-        : '¿Eliminar a ' + cliente.nombre + '?';
-
-    if (!confirm(aviso)) return;
-
-    DATOS.usuarios = DATOS.usuarios.filter(u => u.id !== cliente.id);
-    DATOS.pagos = DATOS.pagos.filter(p => p.id_usuario !== cliente.id);
+function eliminarObligacion(reg, idx) {
+    if (!confirm('¿Eliminar la obligación "' + reg.obligaciones[idx].concepto + '"?')) return;
+    reg.obligaciones.splice(idx, 1);
     guardarLocal();
-    renderAdminAll();
+    renderDetalleAnioAdmin();
 }
 
-function eliminarPago(pago) {
-    if (!confirm('¿Eliminar la boleta ' + pago.id_pago + ' (' + pago.concepto + ')?')) return;
+// 17. APORTACIÓN: NUEVO / EDITAR / ELIMINAR
+function abrirFormAportacion(reg, ap, idx) {
+    const esNuevo = !ap;
+    const a = esNuevo ? { recibo: '', concepto: '', monto: '' } : ap;
 
-    DATOS.pagos = DATOS.pagos.filter(p => p.id_pago !== pago.id_pago);
-    guardarLocal();
-    renderAdminAll();
+    abrirModal(esNuevo ? 'Nueva aportación ' + reg.anio : 'Editar aportación ' + reg.anio, `
+        <div class="field">
+            <label for="f-recibo">N° Recibo</label>
+            <input type="text" id="f-recibo" value="${a.recibo || ''}" placeholder="740">
+        </div>
+        <div class="field">
+            <label for="f-concepto">Concepto</label>
+            <input type="text" id="f-concepto" value="${a.concepto || ''}" placeholder="INGRESOS VARIOS">
+        </div>
+        <div class="field">
+            <label for="f-monto">Monto (S/)</label>
+            <input type="number" id="f-monto" min="0" step="0.01" value="${a.monto ?? ''}">
+        </div>
+        <button id="modal-submit" class="btn btn-primary btn-block" type="button">Guardar</button>
+    `);
+
+    document.getElementById('modal-submit').addEventListener('click', () => {
+        const recibo = document.getElementById('f-recibo').value.trim();
+        const concepto = document.getElementById('f-concepto').value.trim();
+        const montoRaw = document.getElementById('f-monto').value;
+        const monto = montoRaw === '' ? null : Number(montoRaw);
+
+        if (!recibo && !concepto && monto === null) {
+            alert('Completa al menos recibo o concepto con un monto.');
+            return;
+        }
+
+        if (esNuevo) {
+            reg.aportaciones.push({ recibo, concepto, monto });
+        } else {
+            a.recibo = recibo;
+            a.concepto = concepto;
+            a.monto = monto;
+        }
+
+        guardarLocal();
+        renderDetalleAnioAdmin();
+        cerrarModal();
+    });
 }
 
-// 18. DESCARGAR data.json PARA PUBLICAR EN GITHUB
+function eliminarAportacion(reg, idx) {
+    const ap = reg.aportaciones[idx];
+    if (!confirm('¿Eliminar la aportación ' + (ap.recibo || '(sin recibo)') + ' (' + (ap.concepto || '—') + ')?')) return;
+    reg.aportaciones.splice(idx, 1);
+    guardarLocal();
+    renderDetalleAnioAdmin();
+}
+
+// 18. TOTALES DE UN AÑO: EDITAR
+function abrirFormTotales(reg) {
+    const filas = reg.totales
+        .map((t, i) => `
+            <div class="field">
+                <label>Total ${i + 1} · concepto</label>
+                <input type="text" class="f-total-concepto" value="${t.concepto}">
+                <label class="label-min">Monto (S/) · vacío = sin monto</label>
+                <input type="number" class="f-total-monto" min="0" step="0.01" value="${t.monto ?? ''}">
+            </div>
+        `)
+        .join('');
+
+    abrirModal('Totales ' + reg.anio, `
+        ${filas}
+        <button id="btn-add-total" class="btn btn-ghost btn-sm" type="button">+ Agregar total</button>
+        <div class="modal-actions">
+            <button id="modal-submit" class="btn btn-primary btn-block" type="button">Guardar</button>
+        </div>
+    `);
+
+    document.getElementById('btn-add-total').addEventListener('click', () => {
+        const campo = document.createElement('div');
+        campo.className = 'field';
+        campo.innerHTML = `
+            <label>Total · concepto</label>
+            <input type="text" class="f-total-concepto" placeholder="TOTAL INGRESOS">
+            <label class="label-min">Monto (S/)</label>
+            <input type="number" class="f-total-monto" min="0" step="0.01">
+        `;
+        document.getElementById('btn-add-total').before(campo);
+    });
+
+    document.getElementById('modal-submit').addEventListener('click', () => {
+        const conceptos = [...document.querySelectorAll('.f-total-concepto')].map(i => i.value.trim());
+        const montos = [...document.querySelectorAll('.f-total-monto')].map(i => {
+            const v = i.value;
+            return v === '' ? null : Number(v);
+        });
+
+        reg.totales = conceptos
+            .map((c, i) => ({ concepto: c, monto: montos[i] }))
+            .filter(t => t.concepto !== '');
+
+        guardarLocal();
+        renderDetalleAnioAdmin();
+        cerrarModal();
+    });
+}
+
+// 19. PESTAÑAS DEL PANEL ADMIN
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+        document.querySelectorAll('.tab-panel').forEach(p => {
+            p.hidden = p.id !== 'tab-' + btn.dataset.tab;
+        });
+    });
+});
+
+// 20. DESCARGAR data.json PARA PUBLICAR EN GITHUB
 document.getElementById('btn-descargar').addEventListener('click', () => {
     const blob = new Blob([JSON.stringify(DATOS, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -534,8 +913,8 @@ document.getElementById('btn-descargar').addEventListener('click', () => {
     URL.revokeObjectURL(url);
 
     const texto = document.getElementById('publish-text');
-    texto.innerHTML = 'Archivo descargado. Ahora <strong>reemplázalo</strong> en tu repositorio local (data.json), haz <strong>push</strong> a GitHub y los clientes verán los cambios.';
+    texto.innerHTML = 'Archivo descargado. Ahora <strong>reemplázalo</strong> en tu repositorio local (data.json), haz <strong>push</strong> a GitHub y los socios verán los cambios.';
 });
 
-// 19. INICIO
+// 21. INICIO
 cargarDatos();

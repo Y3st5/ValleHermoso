@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portal de pagos y estados de cuenta de la familia Valle Hermoso.">
-    <title>Valle Hermoso · Portal de Pagos</title>
+    <meta name="description" content="Portal de estados de cuenta de los socios de la Asociación Valle Hermoso.">
+    <title>Valle Hermoso · Portal de Socios</title>
     <link rel="stylesheet" href="index.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%230e7a5f' d='M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z'/></svg>">
 </head>
@@ -20,7 +20,7 @@
                 </span>
                 <span class="brand-text">
                     <strong>Valle Hermoso</strong>
-                    <span>Portal de Pagos</span>
+                    <span>Portal de Socios</span>
                 </span>
             </div>
         </div>
@@ -31,7 +31,7 @@
         <!-- SECCIÓN DE LOGIN -->
         <div id="login-section" class="card login-card">
             <div class="role-tabs">
-                <button id="tab-cliente" class="role-tab active" type="button">Cliente</button>
+                <button id="tab-cliente" class="role-tab active" type="button">Socio</button>
                 <button id="tab-admin" class="role-tab" type="button">Administrador</button>
             </div>
 
@@ -44,7 +44,7 @@
                     </svg>
                 </span>
                 <h2 id="login-title">Bienvenido</h2>
-                <p id="login-subtitle">Ingresa con tu correo y contraseña para consultar tus pagos.</p>
+                <p id="login-subtitle">Ingresa con tu correo y contraseña para consultar tu estado de cuenta.</p>
             </div>
 
             <div class="field">
@@ -69,12 +69,12 @@
             <p class="login-note">¿Problemas para ingresar? Contacta a administración.</p>
         </div>
 
-        <!-- SECCIÓN DEL DASHBOARD CLIENTE (Oculta al inicio) -->
+        <!-- SECCIÓN DEL SOCIO (Oculta al inicio) -->
         <div id="dashboard-section" style="display: none;">
             <div class="dashboard-head card">
                 <div>
-                    <h2>Hola, <span id="user-name">Usuario</span></h2>
-                    <p class="user-id">ID de cliente: <span id="user-id">---</span></p>
+                    <h2>Hola, <span id="user-name">Socio</span></h2>
+                    <p class="user-id">ID de socio: <span id="user-id">---</span></p>
                 </div>
                 <button id="logout-btn" class="btn btn-ghost">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -86,56 +86,37 @@
                 </button>
             </div>
 
-            <div class="stats">
+            <div class="stats stats-three">
                 <div class="stat stat-ok">
                     <div class="stat-top">
-                        <span class="stat-emoji" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
-                                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                            </svg>
-                        </span>
-                        <span class="stat-label">Total pagado</span>
+                        <span class="stat-label">Total aportado</span>
                     </div>
-                    <div class="stat-value" id="total-pagado">S/ 0.00</div>
-                    <div class="stat-note">Historial hasta la fecha</div>
+                    <div class="stat-value" id="total-aportado">S/ 0.00</div>
+                    <div class="stat-note">Suma de tus recibos</div>
                 </div>
-
                 <div class="stat stat-warn">
                     <div class="stat-top">
-                        <span class="stat-emoji" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                            </svg>
-                        </span>
-                        <span class="stat-label">Deuda pendiente</span>
+                        <span class="stat-label">Deuda vigente</span>
                     </div>
-                    <div class="stat-value" id="total-deuda">S/ 0.00</div>
-                    <div class="stat-note">Para mantenerte al día</div>
+                    <div class="stat-value" id="deuda-vigente">S/ 0.00</div>
+                    <div class="stat-note">Según el último saldo</div>
+                </div>
+                <div class="stat stat-brand">
+                    <div class="stat-top">
+                        <span class="stat-label">Años con registro</span>
+                    </div>
+                    <div class="stat-value" id="anios-registrados">0</div>
+                    <div class="stat-note">En tu estado de cuenta</div>
                 </div>
             </div>
 
             <div class="card table-card">
                 <div class="table-head">
-                    <h3>Historial de pagos</h3>
-                    <span class="table-badge">Estado de cuenta</span>
+                    <h3>Mi estado de cuenta</h3>
+                    <span class="table-badge" id="socio-tcambio" hidden>T.CAMBIO S/ ---</span>
                 </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Boleta de pago</th>
-                                <th>Concepto</th>
-                                <th>Monto</th>
-                                <th>Estado</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-pagos">
-                        </tbody>
-                    </table>
-                </div>
-                <p id="table-empty" class="table-empty" hidden>No hay pagos registrados todavía.</p>
+                <div class="year-pills" id="year-pills"></div>
+                <div id="year-detail"></div>
             </div>
         </div>
 
@@ -159,16 +140,16 @@
             <div class="stats stats-four">
                 <div class="stat stat-ok">
                     <div class="stat-top">
-                        <span class="stat-label">Clientes</span>
+                        <span class="stat-label">Socios</span>
                     </div>
-                    <div class="stat-value" id="res-clientes">0</div>
-                    <div class="stat-note">Activos en el portal</div>
+                    <div class="stat-value" id="res-socios">0</div>
+                    <div class="stat-note">Registrados</div>
                 </div>
                 <div class="stat stat-pagos">
                     <div class="stat-top">
-                        <span class="stat-label">Pagos registrados</span>
+                        <span class="stat-label">Años con registro</span>
                     </div>
-                    <div class="stat-value" id="res-pagos">0</div>
+                    <div class="stat-value" id="res-anios">0</div>
                     <div class="stat-note">En total</div>
                 </div>
                 <div class="stat stat-ok">
@@ -176,11 +157,11 @@
                         <span class="stat-label">Total cobrado</span>
                     </div>
                     <div class="stat-value" id="res-cobrado">S/ 0.00</div>
-                    <div class="stat-note">Pagos recibidos</div>
+                    <div class="stat-note">Suma de aportaciones</div>
                 </div>
                 <div class="stat stat-warn">
                     <div class="stat-top">
-                        <span class="stat-label">Deuda total</span>
+                        <span class="stat-label">Deuda vigente</span>
                     </div>
                     <div class="stat-value" id="res-deuda">S/ 0.00</div>
                     <div class="stat-note">Pendiente de cobro</div>
@@ -193,31 +174,31 @@
                 </svg>
                 <div>
                     <strong>Estás editando los datos.</strong>
-                    <p id="publish-text">Los cambios se guardan en este navegador. Para que los clientes los vean, descarga el archivo actualizado y haz push en tu repositorio de GitHub.</p>
+                    <p id="publish-text">Los cambios se guardan en este navegador. Para que los socios los vean, descarga el archivo actualizado y haz push en tu repositorio de GitHub.</p>
                 </div>
                 <button id="btn-descargar" class="btn btn-primary btn-sm" type="button">Descargar data.json</button>
             </div>
 
             <div class="tabs">
                 <button class="tab-btn active" data-tab="resumen" type="button">Resumen</button>
-                <button class="tab-btn" data-tab="clientes" type="button">Clientes</button>
-                <button class="tab-btn" data-tab="pagos" type="button">Pagos</button>
+                <button class="tab-btn" data-tab="socios" type="button">Socios</button>
+                <button class="tab-btn" data-tab="anios" type="button">Por año</button>
             </div>
 
             <div id="tab-resumen" class="tab-panel">
                 <div class="card table-card">
                     <div class="table-head">
-                        <h3>Resumen por cliente</h3>
+                        <h3>Estado general por socio</h3>
                         <span class="table-badge">Reunión general</span>
                     </div>
                     <div class="table-wrap">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Cliente</th>
-                                    <th>Pagos</th>
-                                    <th>Pagado</th>
-                                    <th>Deuda</th>
+                                    <th>Socio</th>
+                                    <th>Años</th>
+                                    <th>Aportado</th>
+                                    <th>Deuda vigente</th>
                                     <th>Estado</th>
                                 </tr>
                             </thead>
@@ -228,11 +209,11 @@
                 </div>
             </div>
 
-            <div id="tab-clientes" class="tab-panel" hidden>
+            <div id="tab-socios" class="tab-panel" hidden>
                 <div class="card table-card">
                     <div class="table-head">
-                        <h3>Clientes registrados</h3>
-                        <button id="btn-nuevo-cliente" class="btn btn-primary btn-sm" type="button">+ Nuevo cliente</button>
+                        <h3>Socios registrados</h3>
+                        <button id="btn-nuevo-socio" class="btn btn-primary btn-sm" type="button">+ Nuevo socio</button>
                     </div>
                     <div class="table-wrap">
                         <table>
@@ -241,41 +222,36 @@
                                     <th>ID</th>
                                     <th>Nombre</th>
                                     <th>Correo</th>
-                                    <th>Pagado</th>
-                                    <th>Deuda</th>
+                                    <th>T.CAMBIO</th>
+                                    <th>Años</th>
+                                    <th>Deuda vigente</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabla-clientes">
+                            <tbody id="tabla-socios">
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <div id="tab-pagos" class="tab-panel" hidden>
+            <div id="tab-anios" class="tab-panel" hidden>
                 <div class="card table-card">
                     <div class="table-head">
-                        <h3>Pagos registrados</h3>
-                        <button id="btn-nuevo-pago" class="btn btn-primary btn-sm" type="button">+ Nuevo pago</button>
+                        <h3>Gestión por año</h3>
+                        <span class="table-badge">Obligaciones y aportaciones</span>
                     </div>
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Boleta</th>
-                                    <th>Cliente</th>
-                                    <th>Fecha</th>
-                                    <th>Concepto</th>
-                                    <th>Monto</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-pagos-admin">
-                            </tbody>
-                        </table>
+                    <div class="filtros-admin">
+                        <div class="filtro">
+                            <label for="filtro-socio">Socio</label>
+                            <select id="filtro-socio"></select>
+                        </div>
+                        <div class="filtro">
+                            <label for="filtro-anio">Año</label>
+                            <select id="filtro-anio"></select>
+                        </div>
                     </div>
+                    <div id="detalle-anio-admin"></div>
                 </div>
             </div>
         </div>
