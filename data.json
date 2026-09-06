@@ -1,8 +1,8 @@
 {
     "admin": {
         "nombre": "Administración",
-        "email": "admin@vallehermoso.com",
-        "password": "cambia123"
+        "email": "Williams@vallehermoso.com",
+        "password": "261201"
     },
     "usuarios": [
         { "id": "USR-1001", "nombre": "Carlos Mendoza", "email": "carlos.m@email.com", "password": "123" },

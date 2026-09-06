@@ -7,7 +7,7 @@
 
 // 1. DATOS DE RESPALDO (si no se puede leer data.json)
 const DATOS_INICIALES = {
-    admin: { nombre: "Administración", email: "admin@vallehermoso.com", password: "cambia123" },
+    admin: { nombre: "Administración", email: "Williams@vallehermoso.com", password: "261201" },
     usuarios: [
         { id: "USR-1001", nombre: "Carlos Mendoza", email: "carlos.m@email.com", password: "123" },
         { id: "USR-1002", nombre: "Ana Rojas", email: "ana.r@email.com", password: "123" },
