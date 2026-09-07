@@ -7,6 +7,13 @@
     <title>Valle Hermoso · Portal de Socios</title>
     <link rel="stylesheet" href="index.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%230e7a5f' d='M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z'/></svg>">
+    <script>
+        (function () {
+            var t = localStorage.getItem('vh_tema');
+            if (!t) t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
 </head>
 <body>
 
@@ -23,6 +30,23 @@
                     <span>Portal de Socios</span>
                 </span>
             </div>
+
+            <button id="theme-btn" class="theme-btn" type="button" title="Cambiar tema" aria-label="Cambiar a modo nocturno">
+                <svg class="icon-luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+                <svg class="icon-sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+            </button>
         </div>
     </header>
 
@@ -30,11 +54,6 @@
 
         <!-- SECCIÓN DE LOGIN -->
         <div id="login-section" class="card login-card">
-            <div class="role-tabs">
-                <button id="tab-cliente" class="role-tab active" type="button">Socio</button>
-                <button id="tab-admin" class="role-tab" type="button">Administrador</button>
-            </div>
-
             <div class="login-head">
                 <span class="login-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
@@ -58,6 +77,8 @@
             </div>
 
             <button id="login-btn" class="btn btn-primary btn-block">Ingresar</button>
+
+            <p class="login-toggle"><a href="#" id="admin-toggle-link"><span id="admin-toggle-text">¿Eres administrador?</span></a></p>
 
             <p id="error-message" class="error" hidden>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">

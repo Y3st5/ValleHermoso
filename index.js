@@ -50,28 +50,27 @@ const sectionLogin = document.getElementById('login-section');
 const sectionDashboard = document.getElementById('dashboard-section');
 const sectionAdmin = document.getElementById('admin-section');
 const msgError = document.getElementById('error-message');
-const tabCliente = document.getElementById('tab-cliente');
-const tabAdmin = document.getElementById('tab-admin');
 const loginTitle = document.getElementById('login-title');
 const loginSubtitle = document.getElementById('login-subtitle');
 
-// 5. PESTAÑAS DE ROL EN EL LOGIN
+// 5. ACCESO POR ROL EN EL LOGIN (enlace discreto de administración)
 function activarRol(rol) {
     rolActivo = rol;
-    tabCliente.classList.toggle('active', rol === 'socio');
-    tabAdmin.classList.toggle('active', rol === 'admin');
-    if (rol === 'admin') {
-        loginTitle.textContent = 'Acceso administrativo';
-        loginSubtitle.textContent = 'Ingresa con tu cuenta de administración para gestionar socios y estados de cuenta.';
-    } else {
-        loginTitle.textContent = 'Bienvenido';
-        loginSubtitle.textContent = 'Ingresa con tu correo y contraseña para consultar tu estado de cuenta.';
-    }
+    const esAdmin = rol === 'admin';
+    loginTitle.textContent = esAdmin ? 'Acceso administrativo' : 'Bienvenido';
+    loginSubtitle.textContent = esAdmin
+        ? 'Ingresa con tu cuenta de administración para gestionar socios y estados de cuenta.'
+        : 'Ingresa con tu correo y contraseña para consultar tu estado de cuenta.';
+    document.getElementById('admin-toggle-text').textContent = esAdmin
+        ? '← Volver al acceso de socio'
+        : '¿Eres administrador?';
     msgError.style.display = 'none';
 }
 
-tabCliente.addEventListener('click', () => activarRol('socio'));
-tabAdmin.addEventListener('click', () => activarRol('admin'));
+document.getElementById('admin-toggle-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    activarRol(rolActivo === 'admin' ? 'socio' : 'admin');
+});
 
 // 6. LÓGICA DE INICIO DE SESIÓN
 btnLogin.addEventListener('click', () => {
@@ -297,16 +296,24 @@ function renderResumenAniosTabla(socio, gestion) {
     const tbody = document.createElement('tbody');
     tabla.appendChild(tbody);
 
-    socio.anios.slice().sort((a, b) => a.anio - b.anio).forEach(reg => {
+    const anios = socio.anios.slice().sort((a, b) => a.anio - b.anio);
+    let totalAportado = 0;
+    let totalDeuda = 0;
+
+    anios.forEach((reg, i) => {
         const aportado = (reg.aportaciones || []).reduce((acc, ap) => {
             if (ap.monto !== null && ap.monto !== undefined && ap.monto !== '') return acc + Number(ap.monto);
             return acc;
         }, 0);
         const deudaTotal = (reg.totales.find(t => t.concepto.toUpperCase().includes('DEUDA TOTAL')) || {}).monto;
         const saldo = saldoFinalDe(reg);
+        totalAportado += aportado;
+        if (deudaTotal !== null && deudaTotal !== undefined) totalDeuda += Number(deudaTotal);
+
         const fila = document.createElement('tr');
+        fila.className = i === anios.length - 1 ? 'fila-actual' : '';
         fila.innerHTML = `
-            <td class="monto">${reg.anio}</td>
+            <td class="monto">${reg.anio}${i === anios.length - 1 ? ' <span class="fila-actual-badge">actual</span>' : ''}</td>
             <td>${formatearMonto(aportado)}</td>
             <td>${formatearMonto(deudaTotal)}</td>
             <td>${formatearMonto(saldo)}</td>
@@ -314,6 +321,18 @@ function renderResumenAniosTabla(socio, gestion) {
         `;
         tbody.appendChild(fila);
     });
+
+    const tfoot = document.createElement('tfoot');
+    tfoot.innerHTML = `
+        <tr class="fila-total">
+            <td class="monto">Totales</td>
+            <td>${formatearMonto(totalAportado)}</td>
+            <td>${formatearMonto(totalDeuda)}</td>
+            <td class="texto-nulo">—</td>
+            <td></td>
+        </tr>
+    `;
+    tabla.appendChild(tfoot);
 
     wrapper.appendChild(tabla);
     return wrapper;
@@ -419,7 +438,7 @@ function armarTablaAportaciones(reg, opciones) {
     wrap.className = 'table-wrap';
     const tabla = document.createElement('table');
     const thead = document.createElement('thead');
-    thead.innerHTML = '<tr><th>N° Recibo</th><th>Concepto</th><th>Monto</th>' + (opciones.pdf || opciones.gestion ? '<th>' + (opciones.gestion ? 'Acción' : 'Boleta') + '</th>' : '') + '</tr>';
+    thead.innerHTML = '<tr><th>N° Recibo</th><th>Concepto</th><th>Monto</th>' + (opciones.pdf || opciones.gestion ? '<th>' + (opciones.gestion ? 'Acción' : 'Boleta PDF') + '</th>' : '') + '</tr>';
     tabla.appendChild(thead);
     const tbody = document.createElement('tbody');
     tabla.appendChild(tbody);
@@ -433,7 +452,7 @@ function armarTablaAportaciones(reg, opciones) {
                 '<button class="btn-icon btn-danger btn-eliminar" title="Eliminar" aria-label="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
                 '</div></td>';
         } else if (opciones.pdf) {
-            extras = '<td class="accion-cell"><button class="btn-icon btn-download" title="Boleta PDF" aria-label="Boleta PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></td>';
+            extras = '<td class="accion-cell"><button class="btn-download boleta-btn" title="Descargar boleta en PDF" aria-label="Descargar boleta en PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Boleta</button></td>';
         }
         fila.innerHTML = `
             <td class="boleta">${esc(ap.recibo || '—')}</td>
@@ -1285,4 +1304,32 @@ window.addEventListener('beforeunload', (e) => {
         e.preventDefault();
         e.returnValue = '';
     }
+});
+
+// 24. INDICADOR DE MÁS CONTENIDO EN TABLAS CON DESBORDAMIENTO (móvil)
+function actualizarMascaraTablas() {
+    document.querySelectorAll('.table-wrap').forEach(w => {
+        const tieneOverflow = w.scrollWidth > w.clientWidth + 1;
+        w.classList.toggle('has-overflow', tieneOverflow);
+    });
+}
+
+const observerTablas = new MutationObserver(() => {
+    requestAnimationFrame(actualizarMascaraTablas);
+});
+observerTablas.observe(document.body, { childList: true, subtree: true });
+window.addEventListener('resize', actualizarMascaraTablas);
+actualizarMascaraTablas();
+
+// 25. MODO CLARO / NOCTURNO
+const btnTema = document.getElementById('theme-btn');
+const temaInicial = document.documentElement.getAttribute('data-theme') || 'light';
+btnTema.setAttribute('aria-label', temaInicial === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo nocturno');
+
+btnTema.addEventListener('click', () => {
+    const actual = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const nuevo = actual === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', nuevo);
+    localStorage.setItem('vh_tema', nuevo);
+    btnTema.setAttribute('aria-label', nuevo === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo nocturno');
 });
