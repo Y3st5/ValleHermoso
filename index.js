@@ -8,7 +8,7 @@
 
 // 1. DATOS DE RESPALDO (si no se puede leer data.json)
 const DATOS_INICIALES = {
-    admin: { nombre: "Administración", email: "admin@vallehermoso.com", password: "cambia123" },
+    admin: { nombre: "Administración", email: "Williams@vallehermoso.com", password: "261201" },
     socios: []
 };
 
@@ -109,6 +109,10 @@ function entrarAdmin(admin) {
     sectionAdmin.style.display = 'block';
     document.getElementById('admin-email').textContent = admin.email;
     renderAdminAll();
+
+    if (!admin.password || admin.password.length < 8) {
+        setTimeout(() => alert('ADVERTENCIA DE SEGURIDAD: la contraseña del administrador es demasiado corta. Se recomienda cambiarla en data.json (mínimo 8 caracteres).'), 0);
+    }
 }
 
 // 8. LÓGICA DE CERRAR SESIÓN
@@ -456,7 +460,130 @@ function imprimirBoleta(aportacion, socio, anio) {
     window.print();
 }
 
-// 13. PANEL DEL ADMINISTRADOR
+// 12b. REPORTE PDF DEL ESTADO DE CUENTA (un año o todos los años)
+function esc(s) {
+    return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function htmlCabeceraReporte(socio, titulo) {
+    const tc = socio.t_cambio
+        ? '<div class="report-meta-row"><span>TC</span>S/ ' + String(socio.t_cambio).replace('.', ',') + '</div>'
+        : '';
+    return `
+        <div class="report-head">
+            <div class="report-brand">Valle Hermoso</div>
+            <div class="report-title">${titulo}</div>
+            <div class="report-meta">
+                <div class="report-meta-row"><span>Socio</span>${esc(socio.nombre)}</div>
+                <div class="report-meta-row"><span>ID</span>${socio.id}</div>
+                <div class="report-meta-row"><span>Emitido</span>${new Date().toLocaleDateString('es-PE')}</div>
+                ${tc}
+            </div>
+        </div>
+    `;
+}
+
+function htmlObligacionesReporte(reg) {
+    let filas = '';
+    reg.obligaciones.forEach(ob => {
+        const monto = (ob.monto === null || ob.monto === undefined || ob.monto === '')
+            ? '<span class="texto-nulo">' + (esc(ob.texto) || '—') + '</span>'
+            : formatearMonto(ob.monto);
+        filas += '<tr><td>' + esc(ob.concepto) + '</td><td>' + esc(ob.recibo || '—') + '</td><td>' + monto + '</td></tr>';
+    });
+    if (!filas) filas = '<tr><td colspan="3" class="texto-nulo">Sin obligaciones registradas.</td></tr>';
+    return `
+        <h3 class="sec-title">Obligaciones ${reg.anio}</h3>
+        <table>
+            <thead><tr><th>Conceptos</th><th>Recibo</th><th>Monto</th></tr></thead>
+            <tbody>${filas}</tbody>
+        </table>
+    `;
+}
+
+function htmlAportacionesReporte(reg) {
+    let filas = '';
+    reg.aportaciones.forEach(ap => {
+        const monto = (ap.monto === null || ap.monto === undefined || ap.monto === '')
+            ? '<span class="texto-nulo">—</span>'
+            : formatearMonto(ap.monto);
+        filas += '<tr><td>' + esc(ap.recibo || '—') + '</td><td>' + esc(ap.concepto || '—') + '</td><td>' + monto + '</td></tr>';
+    });
+    if (!filas) filas = '<tr><td colspan="3" class="texto-nulo">Sin aportaciones registradas.</td></tr>';
+    return `
+        <h3 class="sec-title">Aportaciones ${reg.anio}</h3>
+        <table>
+            <thead><tr><th>N° Recibo</th><th>Concepto</th><th>Monto</th></tr></thead>
+            <tbody>${filas}</tbody>
+        </table>
+    `;
+}
+
+function htmlTotalesReporte(reg) {
+    let filas = '';
+    reg.totales.forEach(t => {
+        filas += '<div class="report-total-row"><span>' + esc(t.concepto) + '</span><strong>' + formatearMonto(t.monto) + '</strong></div>';
+    });
+    if (!filas) return '';
+    return '<div class="report-totales">' + filas + '</div>';
+}
+
+function htmlEstadoAnioReporte(reg) {
+    return `
+        <div class="report-year">
+            ${htmlObligacionesReporte(reg)}
+            ${htmlAportacionesReporte(reg)}
+            ${htmlTotalesReporte(reg)}
+        </div>
+    `;
+}
+
+function htmlResumenReporte(socio) {
+    let filas = '';
+    socio.anios.slice().sort((a, b) => a.anio - b.anio).forEach(reg => {
+        const aportado = (reg.aportaciones || []).reduce((acc, ap) => {
+            if (ap.monto !== null && ap.monto !== undefined && ap.monto !== '') return acc + Number(ap.monto);
+            return acc;
+        }, 0);
+        const deudaTotal = (reg.totales.find(t => t.concepto.toUpperCase().includes('DEUDA TOTAL')) || {}).monto;
+        filas += '<tr><td>' + reg.anio + '</td><td>' + formatearMonto(aportado) + '</td><td>' + formatearMonto(deudaTotal) + '</td><td>' + formatearMonto(saldoFinalDe(reg)) + '</td></tr>';
+    });
+    return `
+        <h3 class="sec-title">Resumen por año</h3>
+        <table>
+            <thead><tr><th>Año</th><th>Aportado</th><th>Deuda total</th><th>Saldo final</th></tr></thead>
+            <tbody>${filas}</tbody>
+        </table>
+    `;
+}
+
+function imprimirReporte(socio, anio) {
+    const cuerpo = anio
+        ? htmlEstadoAnioReporte(getAnio(socio, anio))
+        : htmlResumenReporte(socio) + socio.anios.slice().sort((a, b) => a.anio - b.anio).map(htmlEstadoAnioReporte).join('');
+
+    const area = document.getElementById('print-receipt');
+    area.innerHTML = '<div class="print-report">' + htmlCabeceraReporte(socio, anio ? 'Estado de cuenta ' + anio : 'Estado de cuenta completo') + cuerpo + '</div>';
+    window.print();
+}
+
+document.getElementById('btn-pdf-anio').addEventListener('click', () => {
+    if (!socioActual) return;
+    if (!anioSeleccionado) {
+        alert('Selecciona un año en las pestañas para descargar su PDF.');
+        return;
+    }
+    imprimirReporte(socioActual, anioSeleccionado);
+});
+
+document.getElementById('btn-pdf-todos').addEventListener('click', () => {
+    if (!socioActual) return;
+    if (!socioActual.anios.length) {
+        alert('Todavía no hay años registrados en tu estado de cuenta.');
+        return;
+    }
+    imprimirReporte(socioActual, null);
+});
 function renderAdminAll() {
     renderResumenAdmin();
     renderTablaResumenAdmin();
@@ -545,6 +672,11 @@ function renderFiltrosAnios() {
 
     selAnio.innerHTML = '';
     const socio = DATOS.socios.find(s => s.id === selSocio.value);
+    if (!socio) {
+        selAnio.hidden = true;
+        renderDetalleAnioAdmin();
+        return;
+    }
     (socio.anios || []).slice().sort((a, b) => a.anio - b.anio).forEach(a => {
         const opt = document.createElement('option');
         opt.value = a.anio;
@@ -573,6 +705,34 @@ document.getElementById('filtro-anio').addEventListener('change', (e) => {
     renderDetalleAnioAdmin();
 });
 
+// 13c. PDF DEL ESTADO DE CUENTA (panel admin, pestaña "Por año")
+document.getElementById('btn-admin-pdf-anio').addEventListener('click', () => {
+    const selSocio = document.getElementById('filtro-socio');
+    const selAnio = document.getElementById('filtro-anio');
+    if (!selSocio.options.length || !selAnio.options.length) {
+        alert('Selecciona un socio y un año para descargar su PDF.');
+        return;
+    }
+    const socio = DATOS.socios.find(s => s.id === selSocio.value);
+    if (!socio) return;
+    imprimirReporte(socio, Number(selAnio.value));
+});
+
+document.getElementById('btn-admin-pdf-todos').addEventListener('click', () => {
+    const selSocio = document.getElementById('filtro-socio');
+    if (!selSocio.options.length) {
+        alert('Primero registra un socio.');
+        return;
+    }
+    const socio = DATOS.socios.find(s => s.id === selSocio.value);
+    if (!socio) return;
+    if (!socio.anios.length) {
+        alert('Este socio aún no tiene años registrados.');
+        return;
+    }
+    imprimirReporte(socio, null);
+});
+
 function renderDetalleAnioAdmin() {
     const cont = document.getElementById('detalle-anio-admin');
     cont.innerHTML = '';
@@ -584,12 +744,24 @@ function renderDetalleAnioAdmin() {
         cont.innerHTML = '<p class="detalle-vacio">Primero registra un socio.</p>';
         return;
     }
+
+    const socio = DATOS.socios.find(s => s.id === selSocio.value);
+
     if (!selAnio.options.length) {
-        cont.innerHTML = '<p class="detalle-vacio">Este socio aún no tiene años registrados.</p>';
+        const aviso = document.createElement('p');
+        aviso.className = 'detalle-vacio';
+        aviso.textContent = 'Este socio aún no tiene años registrados.';
+        cont.appendChild(aviso);
+
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'btn btn-primary btn-sm';
+        boton.textContent = '+ Agregar primer año';
+        boton.addEventListener('click', () => abrirFormNuevoAnio(socio));
+        cont.appendChild(boton);
         return;
     }
 
-    const socio = DATOS.socios.find(s => s.id === selSocio.value);
     const anio = Number(selAnio.value);
     const reg = getAnio(socio, anio);
 
@@ -685,6 +857,10 @@ function abrirFormSocio(socio) {
             alert('Completa los campos obligatorios.');
             return;
         }
+        if (password.length < 4) {
+            alert('La contraseña debe tener al menos 4 caracteres.');
+            return;
+        }
         const emailDuplicado = DATOS.socios.some(u =>
             u.email === email && (esNuevo || u.id !== s.id)
         );
@@ -694,14 +870,16 @@ function abrirFormSocio(socio) {
         }
 
         if (esNuevo) {
-            DATOS.socios.push({
+            const nuevoSocio = {
                 id: nuevoIdSocio(),
                 nombre,
                 email,
                 password,
                 t_cambio: tCambioRaw === '' ? null : Number(tCambioRaw.replace(',', '.')),
                 anios: []
-            });
+            };
+            DATOS.socios.push(nuevoSocio);
+            adminSocioSel = nuevoSocio.id;
         } else {
             s.nombre = nombre;
             s.email = email;
@@ -882,9 +1060,28 @@ function abrirFormTotales(reg) {
             return v === '' ? null : Number(v);
         });
 
-        reg.totales = conceptos
+        const nuevos = conceptos
             .map((c, i) => ({ concepto: c, monto: montos[i] }))
             .filter(t => t.concepto !== '');
+
+        const saldo = nuevos.find(t => t.concepto.toUpperCase().includes('SALDO FINAL'));
+        const deudaTotal = nuevos.find(t => t.concepto.toUpperCase().includes('DEUDA TOTAL'));
+        const ingresos = nuevos.find(t => t.concepto.toUpperCase().includes('TOTAL INGRESOS'));
+
+        if (saldo && deudaTotal && saldo.monto !== null && deudaTotal.monto !== null) {
+            const sumaApartes = (reg.aportaciones || []).reduce((acc, ap) => {
+                if (ap.monto !== null && ap.monto !== undefined && ap.monto !== '') return acc + Number(ap.monto);
+                return acc;
+            }, 0);
+            const esperado = deudaTotal.monto - sumaApartes;
+            if (Math.abs(saldo.monto - esperado) > 0.01) {
+                if (!confirm('El SALDO FINAL (' + formatearMonto(saldo.monto) + ') no cuadra con DEUDA TOTAL - aportaciones (' + formatearMonto(esperado) + '). ¿Guardar de todas formas?')) {
+                    return;
+                }
+            }
+        }
+
+        reg.totales = nuevos;
 
         guardarLocal();
         renderDetalleAnioAdmin();

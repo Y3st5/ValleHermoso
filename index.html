@@ -114,6 +114,24 @@
                 <div class="table-head">
                     <h3>Mi estado de cuenta</h3>
                     <span class="table-badge" id="socio-tcambio" hidden>T.CAMBIO S/ ---</span>
+                    <div class="pdf-actions">
+                        <button id="btn-pdf-anio" class="btn btn-ghost btn-sm" type="button" title="Descarga en PDF el año seleccionado">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            PDF del año
+                        </button>
+                        <button id="btn-pdf-todos" class="btn btn-primary btn-sm" type="button" title="Descarga en PDF todos los años de tu estado de cuenta">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            PDF todos los años
+                        </button>
+                    </div>
                 </div>
                 <div class="year-pills" id="year-pills"></div>
                 <div id="year-detail"></div>
@@ -136,6 +154,16 @@
                     Cerrar sesión
                 </button>
             </div>
+
+            <details class="card guia">
+                <summary><strong>¿Cómo hago esto? Guía rápida (haz clic para verla)</strong></summary>
+                <ol>
+                    <li><strong>Agregar un socio nuevo:</strong> pestaña <em>Socios</em> → botón <em>Nuevo socio</em>. Escribe su nombre, correo y contraseña. Listo.</li>
+                    <li><strong>Llenar los datos de un año:</strong> pestaña <em>Por año</em> → elige el socio a la izquierda y el año arriba. Si es la primera vez que llenas ese socio, primero toca <em>+ Agregar primer año</em>. Luego usa los botones <em>+ Agregar</em> para poner cada concepto (obligaciones), cada pago (aportaciones) y los totales. Los botones <em>Editar/🗑</em> corrigen o borran.</li>
+                    <li><strong>Que los socios vean lo nuevo:</strong> toca <em>Descargar data.json</em>, reemplaza el archivo con ese nombre y súbelo a GitHub (así como haces para publicar cualquier cambio de la página).</li>
+                    <li><em>Por seguridad, estos cambios viven en este navegador hasta que se publiquen con el paso 3.</em></li>
+                </ol>
+            </details>
 
             <div class="stats stats-four">
                 <div class="stat stat-ok">
@@ -240,6 +268,24 @@
                     <div class="table-head">
                         <h3>Gestión por año</h3>
                         <span class="table-badge">Obligaciones y aportaciones</span>
+                        <div class="pdf-actions">
+                            <button id="btn-admin-pdf-anio" class="btn btn-ghost btn-sm" type="button" title="Descarga en PDF el año seleccionado del socio">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                PDF del año
+                            </button>
+                            <button id="btn-admin-pdf-todos" class="btn btn-primary btn-sm" type="button" title="Descarga en PDF todos los años del socio seleccionado">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                PDF todos los años
+                            </button>
+                        </div>
                     </div>
                     <div class="filtros-admin">
                         <div class="filtro">

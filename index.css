@@ -1,5 +1,5 @@
 /* ==========================================================
-   VALLE HERMOSO · Portal de Pagos
+   VALLE HERMOSO · Portal de Socios
    Diseño corporativo — verde valle + acento dorado
    ========================================================== */
 
@@ -376,6 +376,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+    flex-wrap: wrap;
     margin-bottom: 1rem;
 }
 
@@ -636,6 +637,121 @@ tbody tr:last-child td {
     }
 }
 
+/* ---------- Impresión del reporte (estado de cuenta en PDF) ---------- */
+.print-report {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #1f2d2b;
+}
+
+.print-report .report-head {
+    border-bottom: 2px solid var(--brand);
+    padding-bottom: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.print-report .report-brand {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--brand);
+    letter-spacing: 0.5px;
+}
+
+.print-report .report-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+}
+
+.print-report .report-meta {
+    margin-top: 0.6rem;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.print-report .report-meta-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.print-report .report-meta-row span {
+    min-width: 90px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.print-report .sec-title {
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--brand);
+    border-bottom: 1px solid #cfe0da;
+    padding-bottom: 0.25rem;
+    margin: 1.2rem 0 0.5rem;
+}
+
+.print-report table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.74rem;
+}
+
+.print-report th,
+.print-report td {
+    border: 1px solid #d8e3df;
+    padding: 0.3rem 0.5rem;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.print-report th {
+    background: #eef5f2;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+}
+
+.print-report thead {
+    display: table-header-group;
+}
+
+.print-report .report-year {
+    break-inside: avoid;
+}
+
+.print-report .report-totales {
+    margin: 0.8rem 0 1.6rem;
+    max-width: 360px;
+    border: 1px dashed #c4d4cf;
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+}
+
+.print-report .report-total-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.8rem;
+    padding: 0.3rem 0;
+}
+
+.print-report .report-total-row + .report-total-row {
+    border-top: 1px dashed #dfe9e5;
+}
+
+/* Botones de PDF en la vista del socio */
+.pdf-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
 /* ---------- Pie de página ---------- */
 .footer {
     text-align: center;
@@ -830,6 +946,16 @@ tbody tr:last-child td {
 }
 
 /* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+    .stats-four {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-three {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+}
+
 @media (max-width: 800px) {
     .ledger {
         grid-template-columns: 1fr;
@@ -927,6 +1053,31 @@ tbody tr:last-child td {
 .publish-bar .btn {
     margin-left: auto;
     flex-shrink: 0;
+}
+
+/* Guía rápida del panel admin */
+.guia {
+    margin-bottom: 1.4rem;
+    padding: 1rem 1.3rem;
+}
+
+.guia summary {
+    cursor: pointer;
+    color: var(--text);
+    font-size: 0.92rem;
+    user-select: none;
+}
+
+.guia ol {
+    margin: 0.8rem 0 0;
+    padding-left: 1.2rem;
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+
+.guia li {
+    margin-bottom: 0.4rem;
 }
 
 /* Pestañas del panel */
@@ -1037,6 +1188,11 @@ tbody tr:last-child td {
 }
 
 /* ---------- Responsive ---------- */
+.table-wrap {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
 @media (max-width: 640px) {
     .main {
         padding: 1.2rem 1rem 2rem;
@@ -1070,5 +1226,51 @@ tbody tr:last-child td {
     .publish-bar .btn {
         margin-left: 0;
         width: 100%;
+    }
+
+    .modal {
+        max-width: 100%;
+        padding: 1.3rem 1.2rem 1.4rem;
+    }
+
+    .stat-value {
+        font-size: 1.6rem;
+    }
+
+    .dashboard-head h2 {
+        font-size: 1.2rem;
+    }
+
+    th, td {
+        padding: 0.75rem 0.8rem;
+        font-size: 0.88rem;
+    }
+
+    .table-wrap {
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.4rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .stats-four,
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .topbar-inner {
+        padding: 0.7rem 1rem;
+    }
+
+    .modal {
+        padding: 1.1rem 1rem 1.2rem;
+    }
+
+    .role-tabs {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .stat-value {
+        font-size: 1.45rem;
     }
 }
