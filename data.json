@@ -1109,6 +1109,448 @@
                     ]
                 }
             ]
+        },
+        {
+            "id": "SOC-0006",
+            "nombre": "BRAVO SAAVEDRA, Elena Beatriz",
+            "email": "elena.bravo@email.com",
+            "password": "123",
+            "telefono": "",
+            "t_cambio": 3.321,
+            "anios": [
+                {
+                    "anio": 2017,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2016", "monto": 542.50, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2017", "monto": null, "texto": "INTERCAMBIO", "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2017", "monto": 8.50, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "11" },
+                        { "concepto": "CUOTA MENSUAL 2017", "monto": 120.00, "recibo": "9" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "12" },
+                        { "concepto": "FONDO DE EMERGENCIA 2018", "monto": 60.00, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2017", "monto": null, "recibo": "10" }
+                    ],
+                    "aportaciones": [],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": null },
+                        { "concepto": "DEUDA TOTAL", "monto": 731.00 },
+                        { "concepto": "SALDO FINAL", "monto": 731.00 }
+                    ]
+                },
+                {
+                    "anio": 2018,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2017", "monto": 731.00, "recibo": "" },
+                        { "concepto": "CUOTA SANTA ROSA 2018", "monto": null, "texto": "RELACION", "recibo": "" },
+                        { "concepto": "AUTOVALUO 2019 AL 2018", "monto": 48.15, "recibo": "" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "" },
+                        { "concepto": "CUOTA MENSUAL 2018", "monto": 120.00, "recibo": "" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2018", "monto": 60.00, "recibo": "" },
+                        { "concepto": "INAUGURACION PISTA", "monto": 25.00, "recibo": "" },
+                        { "concepto": "MULTA INASISTENCIAS 2018", "monto": null, "recibo": "" }
+                    ],
+                    "aportaciones": [
+                        { "recibo": "915", "concepto": "INAUGURACION PISTA", "monto": 25.00 },
+                        { "recibo": "980", "concepto": "DEUDAS VARIAS", "monto": 100.00 }
+                    ],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": 125.00 },
+                        { "concepto": "DEUDA TOTAL", "monto": 984.15 },
+                        { "concepto": "SALDO FINAL", "monto": 859.15 }
+                    ]
+                },
+                {
+                    "anio": 2019,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2018", "monto": 859.15, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2019", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2019", "monto": 57.09, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2019", "monto": 120.00, "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2019", "monto": 60.00, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2019", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [
+                        { "recibo": "686", "concepto": "CUOTAS VARIAS", "monto": 300.00 }
+                    ],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": 300.00 },
+                        { "concepto": "DEUDA TOTAL", "monto": 1096.24 },
+                        { "concepto": "SALDO FINAL", "monto": 796.24 }
+                    ]
+                },
+                {
+                    "anio": 2020,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2019", "monto": 796.24, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2020", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2020", "monto": 54.73, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2020", "monto": 120.00, "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2020", "monto": 60.00, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2020", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": null },
+                        { "concepto": "DEUDA TOTAL", "monto": 1030.97 },
+                        { "concepto": "SALDO FINAL", "monto": 1030.97 }
+                    ]
+                },
+                {
+                    "anio": 2021,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2020", "monto": 1030.97, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2021", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2021", "monto": 56.94, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2021", "monto": 120.00, "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2021", "monto": 60.00, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2021", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": null },
+                        { "concepto": "DEUDA TOTAL", "monto": 1267.91 },
+                        { "concepto": "SALDO FINAL", "monto": 1267.91 }
+                    ]
+                },
+                {
+                    "anio": 2022,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2021", "monto": 1267.91, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2022", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2022", "monto": 61.80, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2022", "monto": 120.00, "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2022", "monto": 60.00, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2022", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [
+                        { "recibo": "846", "concepto": "MENSUALIDAD Y DEUDAS", "monto": 50.00 }
+                    ],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": 50.00 },
+                        { "concepto": "DEUDA TOTAL", "monto": 1509.71 },
+                        { "concepto": "SALDO FINAL", "monto": 1459.71 }
+                    ]
+                },
+                {
+                    "anio": 2023,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2022", "monto": 1459.71, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2023", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2023", "monto": 31.60, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2023", "monto": null, "texto": "REEMBOLSO", "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2023", "monto": 60.00, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2023", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [
+                        { "recibo": "860", "concepto": "AUTOVALUO 2019-2023", "monto": 263.35 }
+                    ],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": 263.35 },
+                        { "concepto": "DEUDA TOTAL", "monto": 1551.31 },
+                        { "concepto": "SALDO FINAL", "monto": 1287.96 }
+                    ]
+                },
+                {
+                    "anio": 2024,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2022", "monto": 1287.96, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2023", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2023", "monto": 31.60, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2023", "monto": 180.00, "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2023", "monto": null, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2023", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [
+                        { "recibo": "867", "concepto": "PAGO DEUDA AL 2023", "monto": 1287.00 }
+                    ],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": 1287.00 },
+                        { "concepto": "DEUDA TOTAL", "monto": 1499.56 },
+                        { "concepto": "SALDO FINAL", "monto": 212.56 }
+                    ]
+                },
+                {
+                    "anio": 2025,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2022", "monto": 212.56, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2023", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2023", "monto": 28.85, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2023", "monto": 180.00, "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "5" },
+                        { "concepto": "FONDO DE EMERGENCIA 2023", "monto": null, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2023", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": null },
+                        { "concepto": "DEUDA TOTAL", "monto": 421.41 },
+                        { "concepto": "SALDO FINAL", "monto": 421.41 }
+                    ]
+                },
+                {
+                    "anio": 2026,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2025", "monto": 421.41, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO", "monto": null, "recibo": "4" },
+                        { "concepto": "CUOTA MENSUAL", "monto": 105.00, "recibo": "8" },
+                        { "concepto": "MULTA INASISTENCIAS", "monto": null, "recibo": "11" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [
+                        { "recibo": "B001-00000014", "concepto": "INGRESOS VARIOS", "monto": 150.00 }
+                    ],
+                    "totales": [
+                        { "concepto": "DEUDA TOTAL", "monto": 526.41 },
+                        { "concepto": "ABONOS REALIZADOS", "monto": 150.00 },
+                        { "concepto": "SALDO FINAL", "monto": 376.41 }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "SOC-0007",
+            "nombre": "CHAVEZ MOLEROS, Jorge",
+            "email": "jorge.chavez@email.com",
+            "password": "123",
+            "telefono": "",
+            "t_cambio": 3.321,
+            "anios": [
+                {
+                    "anio": 2017,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2016", "monto": 1235.45, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2017", "monto": 50.00, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2017", "monto": 228.50, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "11" },
+                        { "concepto": "CUOTA MENSUAL 2017", "monto": 120.00, "recibo": "9" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "12" },
+                        { "concepto": "FONDO DE EMERGENCIA 2018", "monto": 60.00, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2017", "monto": 150.00, "recibo": "10" }
+                    ],
+                    "aportaciones": [
+                        { "recibo": "671", "concepto": "SANTA ROSA", "monto": 50.00 }
+                    ],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": 50.00 },
+                        { "concepto": "DEUDA TOTAL", "monto": 1843.95 },
+                        { "concepto": "SALDO FINAL", "monto": 1793.95 }
+                    ]
+                },
+                {
+                    "anio": 2018,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2017", "monto": 1793.95, "recibo": "" },
+                        { "concepto": "CUOTA SANTA ROSA 2018", "monto": null, "texto": "RELACION", "recibo": "" },
+                        { "concepto": "AUTOVALUO 2019 AL 2018", "monto": 48.15, "recibo": "" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "" },
+                        { "concepto": "CUOTA MENSUAL 2018", "monto": 120.00, "recibo": "" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2018", "monto": 60.00, "recibo": "" },
+                        { "concepto": "INAUGURACION PISTA", "monto": 25.00, "recibo": "" },
+                        { "concepto": "MULTA INASISTENCIAS 2018", "monto": 50.00, "recibo": "" }
+                    ],
+                    "aportaciones": [
+                        { "recibo": "916", "concepto": "INAUGURACION PISTA", "monto": 25.00 },
+                        { "recibo": "822", "concepto": "INGRESOS VARIOS", "monto": 250.00 }
+                    ],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": 275.00 },
+                        { "concepto": "DEUDA TOTAL", "monto": 2097.10 },
+                        { "concepto": "SALDO FINAL", "monto": 1822.10 }
+                    ]
+                },
+                {
+                    "anio": 2019,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2018", "monto": 1822.10, "recibo": "" },
+                        { "concepto": "CUOTA SANTA ROSA 2019", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2019", "monto": 57.09, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2019", "monto": 120.00, "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2019", "monto": 60.00, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2019", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": null },
+                        { "concepto": "DEUDA TOTAL", "monto": 2059.19 },
+                        { "concepto": "SALDO FINAL", "monto": 2059.19 }
+                    ]
+                },
+                {
+                    "anio": 2020,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2019", "monto": 2059.19, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2020", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2020", "monto": 54.73, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2020", "monto": 120.00, "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2020", "monto": 60.00, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2020", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": null },
+                        { "concepto": "DEUDA TOTAL", "monto": 2293.92 },
+                        { "concepto": "SALDO FINAL", "monto": 2293.92 }
+                    ]
+                },
+                {
+                    "anio": 2021,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2020", "monto": 2293.92, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2021", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2021", "monto": 56.94, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2021", "monto": 120.00, "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2021", "monto": 60.00, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2021", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": null },
+                        { "concepto": "DEUDA TOTAL", "monto": 2530.86 },
+                        { "concepto": "SALDO FINAL", "monto": 2530.86 }
+                    ]
+                },
+                {
+                    "anio": 2022,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2021", "monto": 2530.86, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2022", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2022", "monto": 61.80, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2022", "monto": 120.00, "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2022", "monto": 60.00, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2022", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": null },
+                        { "concepto": "DEUDA TOTAL", "monto": 2772.66 },
+                        { "concepto": "SALDO FINAL", "monto": 2772.66 }
+                    ]
+                },
+                {
+                    "anio": 2023,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2022", "monto": 2772.66, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2023", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2023", "monto": 31.60, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2023", "monto": null, "texto": "DSCTO MENS", "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2023", "monto": 60.00, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2023", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [
+                        { "recibo": "853", "concepto": "AUTOVALUO 2019-2023", "monto": 263.35 },
+                        { "recibo": "865", "concepto": "INGRESOS VARIOS", "monto": 75.00 }
+                    ],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": 338.35 },
+                        { "concepto": "DEUDA TOTAL", "monto": 2864.26 },
+                        { "concepto": "SALDO FINAL", "monto": 2525.91 }
+                    ]
+                },
+                {
+                    "anio": 2024,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2022", "monto": 2525.91, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2023", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2023", "monto": 31.60, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2023", "monto": 180.00, "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "" },
+                        { "concepto": "FONDO DE EMERGENCIA 2023", "monto": null, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2023", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [
+                        { "recibo": "773", "concepto": "CANCELACION PARCIAL-2023", "monto": 1000.00 },
+                        { "recibo": "868", "concepto": "DEUDA 2017-2023", "monto": 100.00 },
+                        { "recibo": "869", "concepto": "DEUDA 2017-2023", "monto": 200.00 },
+                        { "recibo": "890", "concepto": "INGRESOS VARIOS 2024", "monto": 200.00 }
+                    ],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": 1500.00 },
+                        { "concepto": "DEUDA TOTAL", "monto": 2737.51 },
+                        { "concepto": "SALDO FINAL", "monto": 1237.51 }
+                    ]
+                },
+                {
+                    "anio": 2025,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2022", "monto": 1237.51, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA 2023", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO 2019 AL 2023", "monto": 28.85, "recibo": "4" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "9" },
+                        { "concepto": "CUOTA MENSUAL 2023", "monto": 180.00, "recibo": "8" },
+                        { "concepto": "DEUDA DE LETRAS", "monto": null, "recibo": "5" },
+                        { "concepto": "FONDO DE EMERGENCIA 2023", "monto": null, "recibo": "6" },
+                        { "concepto": "INAUGURACION PISTA", "monto": null, "recibo": "7" },
+                        { "concepto": "MULTA INASISTENCIAS 2023", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [],
+                    "totales": [
+                        { "concepto": "TOTAL INGRESOS", "monto": null },
+                        { "concepto": "DEUDA TOTAL", "monto": 1446.36 },
+                        { "concepto": "SALDO FINAL", "monto": 1446.36 }
+                    ]
+                },
+                {
+                    "anio": 2026,
+                    "obligaciones": [
+                        { "concepto": "SALDO DEUDA AL CIERRE 2025", "monto": 1446.36, "recibo": "2" },
+                        { "concepto": "CUOTA SANTA ROSA", "monto": null, "recibo": "3" },
+                        { "concepto": "AUTOVALUO", "monto": null, "recibo": "4" },
+                        { "concepto": "CUOTA MENSUAL", "monto": 120.00, "recibo": "8" },
+                        { "concepto": "MULTA INASISTENCIAS", "monto": null, "recibo": "11" },
+                        { "concepto": "CUOTA INGRESO", "monto": null, "recibo": "11" }
+                    ],
+                    "aportaciones": [
+                        { "recibo": "", "concepto": "DESCUENTO AL SALDO DEL 2016", "monto": 385.00 }
+                    ],
+                    "totales": [
+                        { "concepto": "DEUDA TOTAL", "monto": 1566.36 },
+                        { "concepto": "ABONOS REALIZADOS", "monto": 385.00 },
+                        { "concepto": "SALDO FINAL", "monto": 1181.36 }
+                    ]
+                }
+            ]
         }
         
     ]

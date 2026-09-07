@@ -936,6 +936,16 @@ tbody tr:last-child td {
     box-shadow: 0 0 0 3px rgba(14, 122, 95, 0.16);
 }
 
+.pdf-source {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    width: 794px;
+    background: #fff;
+    color: #000;
+    font-family: inherit;
+}
+
 .filtro-boton {
     align-self: end;
     margin-top: 0.35rem;
@@ -949,10 +959,6 @@ tbody tr:last-child td {
 @media (max-width: 640px) {
     .filtros-admin {
         grid-template-columns: 1fr;
-    }
-
-    .filtro-boton .btn {
-        width: 100%;
     }
 
     #wa-anio {

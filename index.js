@@ -1171,14 +1171,9 @@ document.getElementById('btn-descargar').addEventListener('click', () => {
     texto.innerHTML = 'Archivo descargado. Ahora <strong>reemplázalo</strong> en tu repositorio local (data.json), haz <strong>push</strong> a GitHub y los socios verán los cambios.';
 });
 
-// 21. ENVIAR ESTADO DE CUENTA POR WHATSAPP (panel admin)
+// 21. COMPARTIR STATES DE CUENTA EN PDF POR WHATSAPP (toca 'Compartir PDF', el PDF se envía como archivo)
 function telLimpio(tel) {
     return String(tel || '').replace(/\D/g, '');
-}
-
-function baseURL() {
-    if (location.protocol === 'file:') return location.href;
-    return location.origin + location.pathname;
 }
 
 function renderWhatsappTab() {
@@ -1196,19 +1191,16 @@ function renderWhatsappTab() {
     });
     if (actual) selAnio.value = actual;
 
-    const cab = document.getElementById('wa-todos');
-    if (cab) cab.checked = false;
-
     const tbody = document.getElementById('tabla-whatsapp');
     tbody.innerHTML = '';
     DATOS.socios.forEach(s => {
         const tel = telLimpio(s.telefono);
         const fila = document.createElement('tr');
         fila.innerHTML = `
-            <td><input type="checkbox" class="wa-check" value="${esc(s.id)}" aria-label="Seleccionar a ${esc(s.nombre)}"></td>
             <td>${esc(s.nombre)}</td>
             <td>${tel ? esc(tel) : '<span class="texto-nulo">sin número</span>'}</td>
             <td>${(s.anios || []).length}</td>
+            <td><button class="btn btn-primary btn-sm wa-share" data-id="${esc(s.id)}" type="button" title="Genera el PDF y lo comparte por WhatsApp">Compartir PDF</button></td>
         `;
         tbody.appendChild(fila);
     });
@@ -1217,114 +1209,77 @@ function renderWhatsappTab() {
     nota.hidden = true;
 }
 
-document.getElementById('wa-todos').addEventListener('change', (e) => {
-    document.querySelectorAll('.wa-check').forEach(c => c.checked = e.target.checked);
-});
-
-document.getElementById('btn-wa-enviar').addEventListener('click', () => {
-    const marcados = [...document.querySelectorAll('.wa-check:checked')];
-    if (!marcados.length) {
-        alert('Marca al menos a una persona para enviar.');
-        return;
-    }
-    const anio = document.getElementById('wa-anio').value;
-    const titulo = anio ? 'del año ' + anio : 'de todos los años';
-
-    let sinTel = [];
-    let abiertos = 0;
-    marcados.forEach(c => {
-        const socio = DATOS.socios.find(s => s.id === c.value);
-        if (!socio) return;
-        const tel = telLimpio(socio.telefono);
-        if (!tel) { sinTel.push(socio.nombre); return; }
-        const link = baseURL() + '?share=' + encodeURIComponent(socio.id) + (anio ? '&anio=' + anio : '');
-        const msg = '👋 Hola, ' + socio.nombre + '. Te compartimos tu estado de cuenta '
-            + titulo + ' de la Asociación Valle Hermoso. Puedes consultarlo aquí: ' + link;
-        window.open('https://wa.me/' + tel + '?text=' + encodeURIComponent(msg), '_blank');
-        abiertos++;
-    });
-
-    const nota = document.getElementById('wa-note');
-    nota.textContent = abiertos
-        ? 'Se abrieron ' + abiertos + ' chat(s) de WhatsApp con el enlace al estado de cuenta.'
-        : 'No se pudo abrir ningún chat.';
-    if (sinTel.length) {
-        nota.textContent += ' Sin número registrado (agrégalo con "Editar socio"): ' + sinTel.join(', ');
-    }
-    nota.hidden = false;
-});
-
-// 22. VISTA PÚBLICA: ESTADO DE CUENTA COMPARTIDO POR ENLACE (?share=SOC-XXXX[&anio=YYYY])
-function iniciarModoPublico(socio, anioInicial) {
-    document.getElementById('login-section').style.display = 'none';
-    document.getElementById('dashboard-section').style.display = 'none';
-    document.getElementById('admin-section').style.display = 'none';
-    document.getElementById('public-section').style.display = 'block';
-
-    document.getElementById('public-nombre').textContent = socio.nombre + ' · Estado de cuenta';
-    document.getElementById('public-cerrar').href = baseURL();
-
-    let anioSel = anioInicial && (socio.anios || []).some(a => a.anio === anioInicial) ? anioInicial : null;
-
-    const contPills = document.getElementById('public-pills');
-    const contDet = document.getElementById('public-detail');
-
-    function renderPub() {
-        contDet.innerHTML = '';
-        if (!(socio.anios || []).length) {
-            contDet.innerHTML = '<p class="detalle-vacio">Todavía no hay registros en su estado de cuenta.</p>';
-            return;
-        }
-        if (!anioSel) {
-            contDet.appendChild(renderResumenAniosTabla(socio, false));
-            socio.anios.slice().sort((a, b) => a.anio - b.anio).forEach(reg => {
-                contDet.appendChild(renderEstadoAnio(reg, { pdf: false, gestion: false }));
-            });
-            return;
-        }
-        contDet.appendChild(renderEstadoAnio(getAnio(socio, anioSel), { pdf: false, gestion: false }));
-    }
-
-    function renderPillsPub() {
-        contPills.innerHTML = '';
-        const hacerPill = (txt, anioVal, activo) => {
-            const b = document.createElement('button');
-            b.type = 'button';
-            b.className = 'year-pill' + (anioVal === null ? ' all' : '') + (activo ? ' active' : '');
-            b.textContent = txt;
-            b.addEventListener('click', () => {
-                anioSel = anioVal;
-                renderPillsPub();
-                renderPub();
-            });
-            contPills.appendChild(b);
-        };
-        hacerPill('General', null, anioSel === null);
-        socio.anios.slice().sort((a, b) => a.anio - b.anio).forEach(a => {
-            hacerPill(String(a.anio), a.anio, anioSel === a.anio);
-        });
-    }
-
-    renderPillsPub();
-    renderPub();
-    window.scrollTo(0, 0);
+function nombreArchivo(socio, title) {
+    return (socio.nombre + ' - ' + title).replace(/[^A-Za-z0-9ñÑáéíóúÁÉÍÓÚüÜ .\-_]/g, '_').replace(/\s+/g, ' ').trim() + '.pdf';
 }
 
-// 23. INICIO
-cargarDatos().then(() => {
-    const params = new URLSearchParams(location.search);
-    const share = params.get('share');
-    if (share) {
-        const socio = DATOS.socios.find(s => s.id === share);
-        if (socio) {
-            iniciarModoPublico(socio, Number(params.get('anio')) || null);
-            return;
-        }
-    }
-    // Modo normal: se muestra la pantalla de inicio (login/socio admin).
+window.addEventListener('load', () => {
+    document.getElementById('tabla-whatsapp').addEventListener('click', (e) => {
+        const btn = e.target.closest('.wa-share');
+        if (!btn) return;
+        const socio = DATOS.socios.find(s => s.id === btn.dataset.id);
+        if (!socio) return;
+        const anio = document.getElementById('wa-anio').value
+            ? Number(document.getElementById('wa-anio').value) : null;
+        compartirPDF(socio, anio, btn);
+    });
 });
 
-// 24. AVISO DE CAMBIOS SIN PUBLICAR (al recargar o cerrar la página)
+async function compartirPDF(socio, anio, btn) {
+    const titulo = anio ? 'Estado de cuenta ' + anio : 'Estado de cuenta completo';
+    const cuerpo = anio
+        ? htmlEstadoAnioReporte(getAnio(socio, anio))
+        : htmlResumenReporte(socio) + socio.anios.slice().sort((a, b) => a.anio - b.anio).map(htmlEstadoAnioReporte).join('');
+    const html = '<div class="print-report">' + htmlCabeceraReporte(socio, titulo) + cuerpo + '</div>';
+
+    const hayShareArchivos = navigator.share && navigator.canShare
+        && navigator.canShare({ files: [new File(['x'], 'x.pdf', { type: 'application/pdf' })] });
+    if (!window.html2pdf || !hayShareArchivos) {
+        document.getElementById('print-receipt').innerHTML = html;
+        window.print();
+        return;
+    }
+
+    const src = document.getElementById('pdf-source');
+    src.innerHTML = html;
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Generando…'; }
+
+    try {
+        const blob = await new Promise((resolve, reject) => {
+            html2pdf()
+                .from(src)
+                .set({
+                    margin: [8, 8, 8, 8],
+                    filename: nombreArchivo(socio, titulo),
+                    pagebreak: { mode: ['css', 'legacy'] },
+                    html2canvas: { scale: 2, useCORS: true }
+                })
+                .toPdf()
+                .get('pdf')
+                .then(pdf => resolve(pdf.output('blob')))
+                .catch(reject);
+        });
+        await navigator.share({
+            files: [new File([blob], nombreArchivo(socio, titulo), { type: 'application/pdf' })],
+            title: titulo,
+            text: 'Estado de cuenta Valle Hermoso'
+        });
+    } catch (e) {
+        if (!(e && e.name === 'AbortError')) {
+            alert('No se pudo compartir desde este dispositivo. Se abrirá el PDF para guardarlo o imprimirlo.');
+            document.getElementById('print-receipt').innerHTML = html;
+            window.print();
+        }
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Compartir PDF'; }
+    }
+}
+
+// 22. INICIO
+cargarDatos();
+
+// 23. AVISO DE CAMBIOS SIN PUBLICAR (al recargar o cerrar la página)
 window.addEventListener('beforeunload', (e) => {
     if (!datosSincronizados) {
         e.preventDefault();
