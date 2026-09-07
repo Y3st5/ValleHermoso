@@ -10,6 +10,7 @@
             "nombre": "AVILES ROMERO, Carlos Douglas",
             "email": "carlos.aviles@email.com",
             "password": "123",
+            "telefono": "942853549",
             "t_cambio": 3.321,
             "anios": [
                 {
@@ -228,6 +229,7 @@
             "nombre": "PERALTA CUENTAS, Edwin",
             "email": "edwin.peralta@email.com",
             "password": "123",
+            "telefono": "",
             "t_cambio": 3.321,
             "anios": [
                 {
@@ -451,6 +453,7 @@
             "nombre": "PERALTA ZANABRIA, Leonardo",
             "email": "leonardo.peralta@email.com",
             "password": "123",
+            "telefono": "",
             "t_cambio": 3.321,
             "anios": [
                 {
@@ -669,6 +672,7 @@
             "nombre": "AVILES TORRES, Lorgio",
             "email": "lorgio.aviles@email.com",
             "password": "123",
+            "telefono": "",
             "t_cambio": 3.321,
             "anios": [
                 {
@@ -890,6 +894,7 @@
             "nombre": "BLAS BASURTO, Josep Edwin",
             "email": "josep.blas@email.com",
             "password": "123",
+            "telefono": "",
             "t_cambio": 3.321,
             "anios": [
                 {

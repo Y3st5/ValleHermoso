@@ -19,6 +19,7 @@ let socioActual = null;                     // socio con sesión iniciada
 let anioSeleccionado = null;                // año seleccionado por el socio
 let adminSocioSel = null;                   // socio seleccionado en "Por año"
 let adminAnioSel = null;                    // año seleccionado en "Por año"
+let datosSincronizados = true;              // true = todo lo local ya se descargó/publicó
 
 // 3. CAPA DE DATOS
 async function cargarDatos() {
@@ -37,6 +38,7 @@ async function cargarDatos() {
 }
 
 function guardarLocal() {
+    datosSincronizados = false;
     localStorage.setItem('vh_datos', JSON.stringify(DATOS));
 }
 
@@ -137,8 +139,33 @@ function formatearMonto(valor) {
     return 'S/ ' + n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+function parseMonto(raw) {
+    const s = String(raw ?? '').trim().replace(/[Ss$]/g, '').replace(/\s/g, '');
+    if (s === '') return null;
+    let t = s;
+    if (s.includes(',') && s.includes('.')) {
+        const c = s.lastIndexOf(',');
+        const p = s.lastIndexOf('.');
+        t = c > p ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, '');
+    } else if (s.includes(',')) {
+        const partesComa = s.split(',');
+        if (partesComa.length === 2 && partesComa[1].length === 3) {
+            t = s.replace(/,/g, '');
+        } else {
+            t = s.replace(/,/g, '.');
+        }
+    } else if (s.includes('.')) {
+        const partes = s.split('.');
+        if (partes.length === 2 && partes[1].length === 3) {
+            t = s.replace('.', '');
+        }
+    }
+    const n = Number(t);
+    return isNaN(n) ? null : n;
+}
+
 function textoCelda(valor, textoExtra) {
-    if (textoExtra) return '<span class="texto-nulo">' + textoExtra + '</span>';
+    if (textoExtra) return '<span class="texto-nulo">' + esc(textoExtra) + '</span>';
     return valor === null || valor === undefined || valor === '' ? '<span class="texto-nulo">—</span>' : formatearMonto(valor);
 }
 
@@ -154,6 +181,7 @@ function getAnio(socio, anio) {
     if (!reg) {
         reg = { anio, obligaciones: [], aportaciones: [], totales: [] };
         socio.anios.push(reg);
+        socio.anios.sort((a, b) => a.anio - b.anio);
     }
     return reg;
 }
@@ -166,7 +194,7 @@ function saldoFinalDe(anioReg) {
 
 function deudaVigenteDe(socio) {
     if (!socio.anios || !socio.anios.length) return 0;
-    const ultimo = socio.anios[socio.anios.length - 1];
+    const ultimo = socio.anios.reduce((max, a) => (a.anio > max.anio ? a : max), socio.anios[0]);
     return saldoFinalDe(ultimo);
 }
 
@@ -338,7 +366,7 @@ function renderEstadoAnio(reg, opciones) {
     reg.totales.forEach(t => {
         const fila = document.createElement('div');
         fila.className = 'total-row';
-        fila.innerHTML = `<span>${t.concepto}</span><strong>${formatearMonto(t.monto)}</strong>`;
+        fila.innerHTML = `<span>${esc(t.concepto)}</span><strong>${formatearMonto(t.monto)}</strong>`;
         bloqueTotales.appendChild(fila);
     });
     if (opciones.gestion) {
@@ -367,8 +395,8 @@ function armarTablaObligaciones(reg, opciones) {
     reg.obligaciones.forEach((ob, i) => {
         const fila = document.createElement('tr');
         fila.innerHTML = `
-            <td>${ob.concepto}</td>
-            <td class="boleta">${ob.recibo || '—'}</td>
+            <td>${esc(ob.concepto)}</td>
+            <td class="boleta">${esc(ob.recibo || '—')}</td>
             <td>${textoCelda(ob.monto, ob.texto)}</td>
             ${opciones.gestion ? '<td class="accion-cell"><div class="action-group">' +
                 '<button class="btn-icon btn-editar" title="Editar" aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>' +
@@ -408,8 +436,8 @@ function armarTablaAportaciones(reg, opciones) {
             extras = '<td class="accion-cell"><button class="btn-icon btn-download" title="Boleta PDF" aria-label="Boleta PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button></td>';
         }
         fila.innerHTML = `
-            <td class="boleta">${ap.recibo || '—'}</td>
-            <td>${ap.concepto || '—'}</td>
+            <td class="boleta">${esc(ap.recibo || '—')}</td>
+            <td>${esc(ap.concepto || '—')}</td>
             <td>${textoCelda(ap.monto)}</td>
             ${extras}
         `;
@@ -428,7 +456,7 @@ function armarTablaAportaciones(reg, opciones) {
 
 // 12. BOLETA EN PDF (aportación / recibo)
 function imprimirBoleta(aportacion, socio, anio) {
-    const nroRecibo = aportacion.recibo || '—';
+    const nroRecibo = esc(aportacion.recibo || '—');
 
     const area = document.getElementById('print-receipt');
     area.innerHTML = `
@@ -439,9 +467,9 @@ function imprimirBoleta(aportacion, socio, anio) {
 
             <div class="receipt-row"><span class="receipt-key">N° Recibo</span><span class="receipt-val">${nroRecibo}</span></div>
             <div class="receipt-row"><span class="receipt-key">Año</span><span class="receipt-val">${anio}</span></div>
-            <div class="receipt-row"><span class="receipt-key">Socio</span><span class="receipt-val">${socio.nombre}</span></div>
-            <div class="receipt-row"><span class="receipt-key">ID Socio</span><span class="receipt-val">${socio.id}</span></div>
-            <div class="receipt-row"><span class="receipt-key">Concepto</span><span class="receipt-val">${aportacion.concepto || 'APORTACION'}</span></div>
+            <div class="receipt-row"><span class="receipt-key">Socio</span><span class="receipt-val">${esc(socio.nombre)}</span></div>
+            <div class="receipt-row"><span class="receipt-key">ID Socio</span><span class="receipt-val">${esc(socio.id)}</span></div>
+            <div class="receipt-row"><span class="receipt-key">Concepto</span><span class="receipt-val">${esc(aportacion.concepto || 'APORTACION')}</span></div>
 
             <div class="receipt-hr"></div>
 
@@ -459,6 +487,11 @@ function imprimirBoleta(aportacion, socio, anio) {
 
     window.print();
 }
+
+window.addEventListener('afterprint', () => {
+    const area = document.getElementById('print-receipt');
+    if (area) area.innerHTML = '';
+});
 
 // 12b. REPORTE PDF DEL ESTADO DE CUENTA (un año o todos los años)
 function esc(s) {
@@ -589,6 +622,7 @@ function renderAdminAll() {
     renderTablaResumenAdmin();
     renderTablaSocios();
     renderFiltrosAnios();
+    renderWhatsappTab();
 }
 
 function renderResumenAdmin() {
@@ -615,7 +649,7 @@ function renderTablaResumenAdmin() {
         const deuda = deudaVigenteDe(s);
         const fila = document.createElement('tr');
         fila.innerHTML = `
-            <td class="monto">${s.nombre}</td>
+            <td class="monto">${esc(s.nombre)}</td>
             <td>${s.anios.length} ${s.anios.length === 1 ? 'año' : 'años'}</td>
             <td>${formatearMonto(totalAportadoDe(s))}</td>
             <td>${formatearMonto(deuda)}</td>
@@ -633,9 +667,9 @@ function renderTablaSocios() {
         const deuda = deudaVigenteDe(s);
         const fila = document.createElement('tr');
         fila.innerHTML = `
-            <td class="boleta">${s.id}</td>
-            <td>${s.nombre}</td>
-            <td>${s.email}</td>
+            <td class="boleta">${esc(s.id)}</td>
+            <td>${esc(s.nombre)}</td>
+            <td>${esc(s.email)}</td>
             <td>${s.t_cambio ? 'S/ ' + String(s.t_cambio).replace('.', ',') : '—'}</td>
             <td>${s.anios.length}</td>
             <td>${formatearMonto(deuda)}</td>
@@ -825,24 +859,28 @@ modal.addEventListener('click', (e) => {
 // 15. SOCIO: NUEVO / EDITAR / ELIMINAR
 function abrirFormSocio(socio) {
     const esNuevo = !socio;
-    const s = esNuevo ? { id: '', nombre: '', email: '', password: '123', t_cambio: '' } : socio;
+    const s = esNuevo ? { id: '', nombre: '', email: '', password: '123', telefono: '', t_cambio: '' } : socio;
 
     abrirModal(esNuevo ? 'Nuevo socio' : 'Editar socio', `
         <div class="field">
             <label for="f-nombre">Nombre completo</label>
-            <input type="text" id="f-nombre" value="${s.nombre}" required>
+            <input type="text" id="f-nombre" value="${esc(s.nombre)}" required>
         </div>
         <div class="field">
             <label for="f-email">Correo electrónico</label>
-            <input type="email" id="f-email" value="${s.email}" required>
+            <input type="email" id="f-email" value="${esc(s.email)}" required>
         </div>
         <div class="field">
             <label for="f-password">Contraseña</label>
-            <input type="text" id="f-password" value="${s.password}" required>
+            <input type="text" id="f-password" value="${esc(s.password)}" required>
+        </div>
+        <div class="field">
+            <label for="f-telefono">Teléfono / WhatsApp</label>
+            <input type="tel" id="f-telefono" value="${esc(s.telefono || '')}" placeholder="519XXXXXXXXX (con código de país)">
         </div>
         <div class="field">
             <label for="f-tcambio">Tipo de cambio (opcional)</label>
-            <input type="text" id="f-tcambio" value="${s.t_cambio || ''}" placeholder="3.321">
+            <input type="text" id="f-tcambio" value="${esc(s.t_cambio || '')}" placeholder="3.321">
         </div>
         <button id="modal-submit" class="btn btn-primary btn-block" type="button">Guardar</button>
     `);
@@ -851,6 +889,7 @@ function abrirFormSocio(socio) {
         const nombre = document.getElementById('f-nombre').value.trim();
         const email = document.getElementById('f-email').value.trim();
         const password = document.getElementById('f-password').value;
+        const telefono = document.getElementById('f-telefono').value.trim().replace(/[^\d]/g, '');
         const tCambioRaw = document.getElementById('f-tcambio').value.trim();
 
         if (!nombre || !email || !password) {
@@ -859,6 +898,10 @@ function abrirFormSocio(socio) {
         }
         if (password.length < 4) {
             alert('La contraseña debe tener al menos 4 caracteres.');
+            return;
+        }
+        if (telefono && telLimpio(telefono).length < 8) {
+            alert('Revisa el teléfono: debe incluir el código de país, ej. 519XXXXXXXXX.');
             return;
         }
         const emailDuplicado = DATOS.socios.some(u =>
@@ -875,6 +918,7 @@ function abrirFormSocio(socio) {
                 nombre,
                 email,
                 password,
+                telefono,
                 t_cambio: tCambioRaw === '' ? null : Number(tCambioRaw.replace(',', '.')),
                 anios: []
             };
@@ -884,6 +928,7 @@ function abrirFormSocio(socio) {
             s.nombre = nombre;
             s.email = email;
             s.password = password;
+            s.telefono = telefono;
             s.t_cambio = tCambioRaw === '' ? null : Number(tCambioRaw.replace(',', '.'));
         }
 
@@ -913,19 +958,19 @@ function abrirFormObligacion(reg, ob, idx) {
     abrirModal(esNuevo ? 'Nueva obligación ' + reg.anio : 'Editar obligación ' + reg.anio, `
         <div class="field">
             <label for="f-concepto">Concepto</label>
-            <input type="text" id="f-concepto" value="${o.concepto}" placeholder="CUOTA MENSUAL 2026" required>
+            <input type="text" id="f-concepto" value="${esc(o.concepto)}" placeholder="CUOTA MENSUAL 2026" required>
         </div>
         <div class="field">
             <label for="f-monto">Monto (S/) · vacío = sin monto</label>
-            <input type="number" id="f-monto" min="0" step="0.01" value="${o.monto ?? ''}">
+            <input type="text" id="f-monto" inputmode="decimal" value="${esc(o.monto ?? '')}" placeholder="120 o 1,222.45">
         </div>
         <div class="field">
             <label for="f-recibo">N° Recibo (opcional)</label>
-            <input type="text" id="f-recibo" value="${o.recibo || ''}">
+            <input type="text" id="f-recibo" value="${esc(o.recibo || '')}">
         </div>
         <div class="field">
             <label for="f-texto">Texto especial (opcional, p. ej. RELACION / DSCTO MENS)</label>
-            <input type="text" id="f-texto" value="${o.texto || ''}">
+            <input type="text" id="f-texto" value="${esc(o.texto || '')}">
         </div>
         <button id="modal-submit" class="btn btn-primary btn-block" type="button">Guardar</button>
     `);
@@ -933,12 +978,16 @@ function abrirFormObligacion(reg, ob, idx) {
     document.getElementById('modal-submit').addEventListener('click', () => {
         const concepto = document.getElementById('f-concepto').value.trim();
         const montoRaw = document.getElementById('f-monto').value;
-        const monto = montoRaw === '' ? null : Number(montoRaw);
+        const monto = parseMonto(montoRaw);
         const recibo = document.getElementById('f-recibo').value.trim();
         const texto = document.getElementById('f-texto').value.trim();
 
         if (!concepto) {
             alert('Indica el concepto.');
+            return;
+        }
+        if (montoRaw.trim() !== '' && monto === null) {
+            alert('El monto no es válido. Ejemplos: 120 o 1,222.45');
             return;
         }
 
@@ -948,13 +997,12 @@ function abrirFormObligacion(reg, ob, idx) {
             o.concepto = concepto;
             o.monto = monto;
             o.recibo = recibo;
-            o.texto = texto || '';
             if (texto) o.texto = texto;
             else delete o.texto;
         }
 
         guardarLocal();
-        renderDetalleAnioAdmin();
+        renderAdminAll();
         cerrarModal();
     });
 }
@@ -963,7 +1011,7 @@ function eliminarObligacion(reg, idx) {
     if (!confirm('¿Eliminar la obligación "' + reg.obligaciones[idx].concepto + '"?')) return;
     reg.obligaciones.splice(idx, 1);
     guardarLocal();
-    renderDetalleAnioAdmin();
+    renderAdminAll();
 }
 
 // 17. APORTACIÓN: NUEVO / EDITAR / ELIMINAR
@@ -974,15 +1022,15 @@ function abrirFormAportacion(reg, ap, idx) {
     abrirModal(esNuevo ? 'Nueva aportación ' + reg.anio : 'Editar aportación ' + reg.anio, `
         <div class="field">
             <label for="f-recibo">N° Recibo</label>
-            <input type="text" id="f-recibo" value="${a.recibo || ''}" placeholder="740">
+            <input type="text" id="f-recibo" value="${esc(a.recibo || '')}" placeholder="740">
         </div>
         <div class="field">
             <label for="f-concepto">Concepto</label>
-            <input type="text" id="f-concepto" value="${a.concepto || ''}" placeholder="INGRESOS VARIOS">
+            <input type="text" id="f-concepto" value="${esc(a.concepto || '')}" placeholder="INGRESOS VARIOS">
         </div>
         <div class="field">
             <label for="f-monto">Monto (S/)</label>
-            <input type="number" id="f-monto" min="0" step="0.01" value="${a.monto ?? ''}">
+            <input type="text" id="f-monto" inputmode="decimal" value="${esc(a.monto ?? '')}" placeholder="120 o 1,222.45">
         </div>
         <button id="modal-submit" class="btn btn-primary btn-block" type="button">Guardar</button>
     `);
@@ -991,8 +1039,12 @@ function abrirFormAportacion(reg, ap, idx) {
         const recibo = document.getElementById('f-recibo').value.trim();
         const concepto = document.getElementById('f-concepto').value.trim();
         const montoRaw = document.getElementById('f-monto').value;
-        const monto = montoRaw === '' ? null : Number(montoRaw);
+        const monto = parseMonto(montoRaw);
 
+        if (montoRaw.trim() !== '' && monto === null) {
+            alert('El monto no es válido. Ejemplos: 120 o 1,222.45');
+            return;
+        }
         if (!recibo && !concepto && monto === null) {
             alert('Completa al menos recibo o concepto con un monto.');
             return;
@@ -1007,7 +1059,7 @@ function abrirFormAportacion(reg, ap, idx) {
         }
 
         guardarLocal();
-        renderDetalleAnioAdmin();
+        renderAdminAll();
         cerrarModal();
     });
 }
@@ -1017,7 +1069,7 @@ function eliminarAportacion(reg, idx) {
     if (!confirm('¿Eliminar la aportación ' + (ap.recibo || '(sin recibo)') + ' (' + (ap.concepto || '—') + ')?')) return;
     reg.aportaciones.splice(idx, 1);
     guardarLocal();
-    renderDetalleAnioAdmin();
+    renderAdminAll();
 }
 
 // 18. TOTALES DE UN AÑO: EDITAR
@@ -1026,9 +1078,9 @@ function abrirFormTotales(reg) {
         .map((t, i) => `
             <div class="field">
                 <label>Total ${i + 1} · concepto</label>
-                <input type="text" class="f-total-concepto" value="${t.concepto}">
+                <input type="text" class="f-total-concepto" value="${esc(t.concepto)}">
                 <label class="label-min">Monto (S/) · vacío = sin monto</label>
-                <input type="number" class="f-total-monto" min="0" step="0.01" value="${t.monto ?? ''}">
+                <input type="text" class="f-total-monto" inputmode="decimal" value="${esc(t.monto ?? '')}" placeholder="120 o 1,222.45">
             </div>
         `)
         .join('');
@@ -1048,17 +1100,22 @@ function abrirFormTotales(reg) {
             <label>Total · concepto</label>
             <input type="text" class="f-total-concepto" placeholder="TOTAL INGRESOS">
             <label class="label-min">Monto (S/)</label>
-            <input type="number" class="f-total-monto" min="0" step="0.01">
+            <input type="text" class="f-total-monto" inputmode="decimal" placeholder="120 o 1,222.45">
         `;
         document.getElementById('btn-add-total').before(campo);
     });
 
     document.getElementById('modal-submit').addEventListener('click', () => {
         const conceptos = [...document.querySelectorAll('.f-total-concepto')].map(i => i.value.trim());
-        const montos = [...document.querySelectorAll('.f-total-monto')].map(i => {
-            const v = i.value;
-            return v === '' ? null : Number(v);
-        });
+        const montos = [...document.querySelectorAll('.f-total-monto')].map(i => parseMonto(i.value));
+
+        for (let i = 0; i < montos.length; i++) {
+            const inp = document.querySelectorAll('.f-total-monto')[i];
+            if (inp.value.trim() !== '' && montos[i] === null) {
+                alert('El monto "' + (conceptos[i] || 'Total ' + (i + 1)) + '" no es válido. Ejemplos: 120 o 1,222.45');
+                return;
+            }
+        }
 
         const nuevos = conceptos
             .map((c, i) => ({ concepto: c, monto: montos[i] }))
@@ -1084,7 +1141,7 @@ function abrirFormTotales(reg) {
         reg.totales = nuevos;
 
         guardarLocal();
-        renderDetalleAnioAdmin();
+        renderAdminAll();
         cerrarModal();
     });
 }
@@ -1108,10 +1165,169 @@ document.getElementById('btn-descargar').addEventListener('click', () => {
     a.download = 'data.json';
     a.click();
     URL.revokeObjectURL(url);
+    datosSincronizados = true;
 
     const texto = document.getElementById('publish-text');
     texto.innerHTML = 'Archivo descargado. Ahora <strong>reemplázalo</strong> en tu repositorio local (data.json), haz <strong>push</strong> a GitHub y los socios verán los cambios.';
 });
 
-// 21. INICIO
-cargarDatos();
+// 21. ENVIAR ESTADO DE CUENTA POR WHATSAPP (panel admin)
+function telLimpio(tel) {
+    return String(tel || '').replace(/\D/g, '');
+}
+
+function baseURL() {
+    if (location.protocol === 'file:') return location.href;
+    return location.origin + location.pathname;
+}
+
+function renderWhatsappTab() {
+    const selAnio = document.getElementById('wa-anio');
+    const actual = selAnio.value;
+    const anios = new Set();
+    DATOS.socios.forEach(s => (s.anios || []).forEach(a => anios.add(a.anio)));
+
+    selAnio.innerHTML = '<option value="">Todos los años</option>';
+    [...anios].sort((a, b) => a - b).forEach(y => {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = 'Año ' + y;
+        selAnio.appendChild(opt);
+    });
+    if (actual) selAnio.value = actual;
+
+    const cab = document.getElementById('wa-todos');
+    if (cab) cab.checked = false;
+
+    const tbody = document.getElementById('tabla-whatsapp');
+    tbody.innerHTML = '';
+    DATOS.socios.forEach(s => {
+        const tel = telLimpio(s.telefono);
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+            <td><input type="checkbox" class="wa-check" value="${esc(s.id)}" aria-label="Seleccionar a ${esc(s.nombre)}"></td>
+            <td>${esc(s.nombre)}</td>
+            <td>${tel ? esc(tel) : '<span class="texto-nulo">sin número</span>'}</td>
+            <td>${(s.anios || []).length}</td>
+        `;
+        tbody.appendChild(fila);
+    });
+
+    const nota = document.getElementById('wa-note');
+    nota.hidden = true;
+}
+
+document.getElementById('wa-todos').addEventListener('change', (e) => {
+    document.querySelectorAll('.wa-check').forEach(c => c.checked = e.target.checked);
+});
+
+document.getElementById('btn-wa-enviar').addEventListener('click', () => {
+    const marcados = [...document.querySelectorAll('.wa-check:checked')];
+    if (!marcados.length) {
+        alert('Marca al menos a una persona para enviar.');
+        return;
+    }
+    const anio = document.getElementById('wa-anio').value;
+    const titulo = anio ? 'del año ' + anio : 'de todos los años';
+
+    let sinTel = [];
+    let abiertos = 0;
+    marcados.forEach(c => {
+        const socio = DATOS.socios.find(s => s.id === c.value);
+        if (!socio) return;
+        const tel = telLimpio(socio.telefono);
+        if (!tel) { sinTel.push(socio.nombre); return; }
+        const link = baseURL() + '?share=' + encodeURIComponent(socio.id) + (anio ? '&anio=' + anio : '');
+        const msg = '👋 Hola, ' + socio.nombre + '. Te compartimos tu estado de cuenta '
+            + titulo + ' de la Asociación Valle Hermoso. Puedes consultarlo aquí: ' + link;
+        window.open('https://wa.me/' + tel + '?text=' + encodeURIComponent(msg), '_blank');
+        abiertos++;
+    });
+
+    const nota = document.getElementById('wa-note');
+    nota.textContent = abiertos
+        ? 'Se abrieron ' + abiertos + ' chat(s) de WhatsApp con el enlace al estado de cuenta.'
+        : 'No se pudo abrir ningún chat.';
+    if (sinTel.length) {
+        nota.textContent += ' Sin número registrado (agrégalo con "Editar socio"): ' + sinTel.join(', ');
+    }
+    nota.hidden = false;
+});
+
+// 22. VISTA PÚBLICA: ESTADO DE CUENTA COMPARTIDO POR ENLACE (?share=SOC-XXXX[&anio=YYYY])
+function iniciarModoPublico(socio, anioInicial) {
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('dashboard-section').style.display = 'none';
+    document.getElementById('admin-section').style.display = 'none';
+    document.getElementById('public-section').style.display = 'block';
+
+    document.getElementById('public-nombre').textContent = socio.nombre + ' · Estado de cuenta';
+    document.getElementById('public-cerrar').href = baseURL();
+
+    let anioSel = anioInicial && (socio.anios || []).some(a => a.anio === anioInicial) ? anioInicial : null;
+
+    const contPills = document.getElementById('public-pills');
+    const contDet = document.getElementById('public-detail');
+
+    function renderPub() {
+        contDet.innerHTML = '';
+        if (!(socio.anios || []).length) {
+            contDet.innerHTML = '<p class="detalle-vacio">Todavía no hay registros en su estado de cuenta.</p>';
+            return;
+        }
+        if (!anioSel) {
+            contDet.appendChild(renderResumenAniosTabla(socio, false));
+            socio.anios.slice().sort((a, b) => a.anio - b.anio).forEach(reg => {
+                contDet.appendChild(renderEstadoAnio(reg, { pdf: false, gestion: false }));
+            });
+            return;
+        }
+        contDet.appendChild(renderEstadoAnio(getAnio(socio, anioSel), { pdf: false, gestion: false }));
+    }
+
+    function renderPillsPub() {
+        contPills.innerHTML = '';
+        const hacerPill = (txt, anioVal, activo) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'year-pill' + (anioVal === null ? ' all' : '') + (activo ? ' active' : '');
+            b.textContent = txt;
+            b.addEventListener('click', () => {
+                anioSel = anioVal;
+                renderPillsPub();
+                renderPub();
+            });
+            contPills.appendChild(b);
+        };
+        hacerPill('General', null, anioSel === null);
+        socio.anios.slice().sort((a, b) => a.anio - b.anio).forEach(a => {
+            hacerPill(String(a.anio), a.anio, anioSel === a.anio);
+        });
+    }
+
+    renderPillsPub();
+    renderPub();
+    window.scrollTo(0, 0);
+}
+
+// 23. INICIO
+cargarDatos().then(() => {
+    const params = new URLSearchParams(location.search);
+    const share = params.get('share');
+    if (share) {
+        const socio = DATOS.socios.find(s => s.id === share);
+        if (socio) {
+            iniciarModoPublico(socio, Number(params.get('anio')) || null);
+            return;
+        }
+    }
+    // Modo normal: se muestra la pantalla de inicio (login/socio admin).
+});
+
+// 24. AVISO DE CAMBIOS SIN PUBLICAR (al recargar o cerrar la página)
+window.addEventListener('beforeunload', (e) => {
+    if (!datosSincronizados) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});

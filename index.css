@@ -936,6 +936,31 @@ tbody tr:last-child td {
     box-shadow: 0 0 0 3px rgba(14, 122, 95, 0.16);
 }
 
+.filtro-boton {
+    align-self: end;
+    margin-top: 0.35rem;
+}
+
+#wa-anio {
+    width: auto;
+    min-width: 160px;
+}
+
+@media (max-width: 640px) {
+    .filtros-admin {
+        grid-template-columns: 1fr;
+    }
+
+    .filtro-boton .btn {
+        width: 100%;
+    }
+
+    #wa-anio {
+        width: 100%;
+        min-width: 0;
+    }
+}
+
 .label-min {
     margin-top: 0.55rem;
     font-size: 0.78rem;

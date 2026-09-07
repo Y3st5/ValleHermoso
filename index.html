@@ -211,6 +211,7 @@
                 <button class="tab-btn active" data-tab="resumen" type="button">Resumen</button>
                 <button class="tab-btn" data-tab="socios" type="button">Socios</button>
                 <button class="tab-btn" data-tab="anios" type="button">Por año</button>
+                <button class="tab-btn" data-tab="whatsapp" type="button">WhatsApp</button>
             </div>
 
             <div id="tab-resumen" class="tab-panel">
@@ -299,6 +300,59 @@
                     </div>
                     <div id="detalle-anio-admin"></div>
                 </div>
+            </div>
+
+            <div id="tab-whatsapp" class="tab-panel" hidden>
+                <div class="card table-card">
+                    <div class="table-head">
+                        <h3>Enviar estado de cuenta por WhatsApp</h3>
+                        <span class="table-badge">Marca y envía</span>
+                    </div>
+                    <div class="filtros-admin">
+                        <div class="filtro">
+                            <label for="wa-anio">Estado a enviar</label>
+                            <select id="wa-anio">
+                                <option value="">Todos los años</option>
+                            </select>
+                        </div>
+                        <div class="filtro filtro-boton">
+                            <button id="btn-wa-enviar" class="btn btn-primary" type="button" title="Abre un chat de WhatsApp por cada socio marcado, con el enlace a su estado de cuenta">
+                                Enviar por WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 44px;"><input type="checkbox" id="wa-todos" title="Seleccionar a todos"></th>
+                                    <th>Socio</th>
+                                    <th>Teléfono</th>
+                                    <th>Años</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-whatsapp"></tbody>
+                        </table>
+                    </div>
+                    <p id="wa-note" class="detalle-vacio" hidden></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección pública: estado de cuenta abierto mediante enlace compartido por WhatsApp -->
+        <div id="public-section" style="display: none;">
+            <div class="dashboard-head card">
+                <div>
+                    <h2 class="public-nombre" id="public-nombre">Estado de cuenta</h2>
+                    <p class="user-id">Enviado por la Asociación Valle Hermoso · <a href="#" id="public-cerrar">volver al inicio</a></p>
+                </div>
+            </div>
+            <div class="card table-card">
+                <div class="table-head">
+                    <h3>Mi estado de cuenta</h3>
+                </div>
+                <div class="year-pills" id="public-pills"></div>
+                <div id="public-detail"></div>
             </div>
         </div>
 
