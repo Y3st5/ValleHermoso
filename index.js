@@ -325,18 +325,6 @@ function renderResumenAniosTabla(socio, gestion) {
         tbody.appendChild(fila);
     });
 
-    const tfoot = document.createElement('tfoot');
-    tfoot.innerHTML = `
-        <tr class="fila-total">
-            <td class="monto">Totales</td>
-            <td>${formatearMonto(totalAportado)}</td>
-            <td>${formatearMonto(totalDeuda)}</td>
-            <td class="texto-nulo">—</td>
-            <td></td>
-        </tr>
-    `;
-    tabla.appendChild(tfoot);
-
     wrapper.appendChild(tabla);
     return wrapper;
 }
