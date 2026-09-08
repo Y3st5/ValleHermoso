@@ -97,6 +97,7 @@ btnLogin.addEventListener('click', () => {
         sectionDashboard.style.display = 'block';
         socioActual = socioEncontrado;
         renderSocio(socioEncontrado);
+        setAccesoVisible(false);
     } else {
         msgError.style.display = 'block';
     }
@@ -110,6 +111,7 @@ function entrarAdmin(admin) {
     sectionAdmin.style.display = 'block';
     document.getElementById('admin-email').textContent = admin.email;
     renderAdminAll();
+    setAccesoVisible(true);
 
     if (!admin.password || admin.password.length < 8) {
         setTimeout(() => alert('ADVERTENCIA DE SEGURIDAD: la contraseña del administrador es demasiado corta. Se recomienda cambiarla en data.json (mínimo 8 caracteres).'), 0);
@@ -125,6 +127,7 @@ function cerrarSesion() {
     sectionAdmin.style.display = 'none';
     sectionLogin.style.display = 'block';
     activarRol('socio');
+    setAccesoVisible(false);
 }
 
 btnLogout.addEventListener('click', cerrarSesion);
@@ -1333,3 +1336,124 @@ btnTema.addEventListener('click', () => {
     localStorage.setItem('vh_tema', nuevo);
     btnTema.setAttribute('aria-label', nuevo === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo nocturno');
 });
+
+// 26. ACCESIBILIDAD VISUAL DEL PANEL DE ADMINISTRACIÓN (zoom + lupa)
+const accessActions = document.getElementById('access-actions');
+const btnZoom = document.getElementById('zoom-btn');
+const btnZoomOut = document.getElementById('zoom-out-btn');
+const btnLupa = document.getElementById('lupa-btn');
+const lupaCursor = document.getElementById('lupa-cursor');
+const lupaLens = document.createElement('div');
+lupaLens.className = 'lupa-lens';
+lupaCursor.appendChild(lupaLens);
+
+const PASOS_ZOOM = [100, 115, 130, 150];
+let zoomIndex = PASOS_ZOOM.indexOf(Number(localStorage.getItem('vh_zoom') || 100));
+if (zoomIndex < 0) zoomIndex = 0;
+
+function aplicarZoom() {
+    const pct = PASOS_ZOOM[zoomIndex];
+    document.documentElement.style.fontSize = pct + '%';
+    localStorage.setItem('vh_zoom', String(pct));
+}
+
+btnZoom.addEventListener('click', () => {
+    zoomIndex = Math.min(zoomIndex + 1, PASOS_ZOOM.length - 1);
+    aplicarZoom();
+});
+
+btnZoomOut.addEventListener('click', () => {
+    zoomIndex = Math.max(zoomIndex - 1, 0);
+    aplicarZoom();
+});
+
+/* Lupa que sigue el cursor (estilo Lupa de Windows) */
+let lupaActiva = false;
+let lupaSnap = null;
+let lupaRAF = null;
+const ZOOM_LUPA = 2.2;
+const LENS_R = 100;
+
+function obtenerHtml2canvas() {
+    if (window.html2canvas) return Promise.resolve(window.html2canvas);
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+        s.onload = () => resolve(window.html2canvas);
+        s.onerror = () => reject(new Error('No se pudo cargar html2canvas'));
+        document.head.appendChild(s);
+    });
+}
+
+async function refrescarLupa() {
+    if (!lupaActiva) return;
+    try {
+        const h2c = await obtenerHtml2canvas();
+        lupaCursor.hidden = true;
+        lupaSnap = await h2c(document.body, {
+            scale: ZOOM_LUPA,
+            useCORS: true,
+            backgroundColor: getComputedStyle(document.body).backgroundColor,
+            logging: false,
+            onclone: (doc) => {
+                doc.querySelectorAll('details:not([open]) > *:not(summary)').forEach(el => el.remove());
+            }
+        });
+        lupaCursor.hidden = false;
+        lupaSnap.dataURL = lupaSnap.toDataURL();
+        posicionarLupa();
+    } catch (e) {
+        setLupaActiva(false);
+        alert('La lupa no pudo activarse en este navegador.');
+    }
+}
+
+function posicionarLupa() {
+    if (!lupaActiva || !lupaSnap) return;
+    const lx = Math.max(0, Math.min(lastX - LENS_R, window.innerWidth - LENS_R * 2));
+    const ly = Math.max(0, Math.min(lastY - LENS_R, window.innerHeight - LENS_R * 2));
+    lupaCursor.style.left = lx + 'px';
+    lupaCursor.style.top = ly + 'px';
+    const cx = window.scrollX + lx + LENS_R;
+    const cy = window.scrollY + ly + LENS_R;
+    lupaLens.style.backgroundImage = "url('" + lupaSnap.dataURL + "')";
+    lupaLens.style.backgroundPosition = (LENS_R - cx * ZOOM_LUPA) + 'px ' + (LENS_R - cy * ZOOM_LUPA) + 'px';
+    lupaLens.style.backgroundSize = lupaSnap.width + 'px ' + lupaSnap.height + 'px';
+}
+
+let lastX = 0;
+let lastY = 0;
+
+document.addEventListener('pointermove', (e) => {
+    if (!lupaActiva) return;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    if (lupaRAF) return;
+    lupaRAF = requestAnimationFrame(() => {
+        lupaRAF = null;
+        posicionarLupa();
+    });
+});
+
+document.addEventListener('scroll', () => {
+    if (lupaActiva && lupaSnap) posicionarLupa();
+}, true);
+
+btnLupa.addEventListener('click', () => setLupaActiva(!lupaActiva));
+
+function setLupaActiva(activa) {
+    lupaActiva = activa;
+    btnLupa.classList.toggle('active', activa);
+    btnLupa.setAttribute('aria-pressed', String(activa));
+    btnLupa.setAttribute('title', activa ? 'Desactivar lupa que sigue el cursor' : 'Activar lupa que sigue el cursor');
+    lupaCursor.hidden = !activa;
+    if (!activa) lupaSnap = null;
+    else refrescarLupa();
+}
+
+function setAccesoVisible(visible) {
+    accessActions.hidden = !visible;
+    if (!visible) setLupaActiva(false);
+}
+
+aplicarZoom();
