@@ -6,12 +6,6 @@
 // actualizado y lo publica en el repositorio para los socios.
 // ==========================================================
 
-// 1. DATOS DE RESPALDO (si no se puede leer data.json)
-const DATOS_INICIALES = {
-    admin: { nombre: "Administración", email: "Williams@vallehermoso.com", password: "261201" },
-    socios: []
-};
-
 // 2. ESTADO GLOBAL
 let DATOS = null;                           // datos cargados (admin, socios)
 let rolActivo = 'socio';                    // 'socio' | 'admin'
@@ -210,6 +204,41 @@ function totalAportadoDe(socio) {
     return total;
 }
 
+function recalcularTotales(reg) {
+    if (!reg) return;
+
+    const totIngresos = round2((reg.aportaciones || []).reduce((acc, ap) => {
+        if (ap.monto !== null && ap.monto !== undefined && ap.monto !== '') return acc + Number(ap.monto);
+        return acc;
+    }, 0));
+
+    const deudaTotal = round2((reg.obligaciones || []).reduce((acc, ob) => {
+        if (ob.monto !== null && ob.monto !== undefined && ob.monto !== '') return acc + Number(ob.monto);
+        return acc;
+    }, 0));
+
+    const saldoFinal = round2(deudaTotal - totIngresos);
+
+    if (reg.totales == null) reg.totales = [];
+
+    const extras = reg.totales.filter(t =>
+        !t.concepto.toUpperCase().includes('TOTAL INGRESOS') &&
+        !t.concepto.toUpperCase().includes('DEUDA TOTAL') &&
+        !t.concepto.toUpperCase().includes('SALDO FINAL') &&
+        !t.concepto.toUpperCase().includes('ABONOS REALIZADOS')
+    );
+
+    reg.totales = [
+        { concepto: 'TOTAL INGRESOS', monto: totIngresos },
+        { concepto: 'DEUDA TOTAL', monto: deudaTotal },
+        { concepto: 'SALDO FINAL', monto: saldoFinal }
+    ].concat(extras);
+}
+
+function round2(n) {
+    return +n.toFixed(2);
+}
+
 function nuevoIdSocio() {
     let max = 0;
     DATOS.socios.forEach(s => {
@@ -304,6 +333,7 @@ function renderResumenAniosTabla(socio, gestion) {
     let totalDeuda = 0;
 
     anios.forEach((reg, i) => {
+        recalcularTotales(reg);
         const aportado = (reg.aportaciones || []).reduce((acc, ap) => {
             if (ap.monto !== null && ap.monto !== undefined && ap.monto !== '') return acc + Number(ap.monto);
             return acc;
@@ -331,6 +361,7 @@ function renderResumenAniosTabla(socio, gestion) {
 
 // 11. RENDERIZAR EL ESTADO DE UN AÑO (obligaciones + aportaciones + totales)
 function renderEstadoAnio(reg, opciones) {
+    recalcularTotales(reg);
     const cont = document.createElement('div');
     cont.className = 'ledger';
 
@@ -379,14 +410,6 @@ function renderEstadoAnio(reg, opciones) {
         fila.innerHTML = `<span>${esc(t.concepto)}</span><strong>${formatearMonto(t.monto)}</strong>`;
         bloqueTotales.appendChild(fila);
     });
-    if (opciones.gestion) {
-        const boton = document.createElement('button');
-        boton.type = 'button';
-        boton.className = 'btn btn-ghost btn-sm btn-totales';
-        boton.textContent = 'Editar totales';
-        boton.addEventListener('click', () => abrirFormTotales(reg));
-        bloqueTotales.appendChild(boton);
-    }
     cont.appendChild(bloqueTotales);
 
     return cont;
@@ -572,6 +595,7 @@ function htmlTotalesReporte(reg) {
 }
 
 function htmlEstadoAnioReporte(reg) {
+    recalcularTotales(reg);
     return `
         <div class="report-year">
             ${htmlObligacionesReporte(reg)}
@@ -584,6 +608,7 @@ function htmlEstadoAnioReporte(reg) {
 function htmlResumenReporte(socio) {
     let filas = '';
     socio.anios.slice().sort((a, b) => a.anio - b.anio).forEach(reg => {
+        recalcularTotales(reg);
         const aportado = (reg.aportaciones || []).reduce((acc, ap) => {
             if (ap.monto !== null && ap.monto !== undefined && ap.monto !== '') return acc + Number(ap.monto);
             return acc;
@@ -835,7 +860,11 @@ function abrirFormNuevoAnio(socio) {
         if (!anio) return alert('Indica un año válido.');
         if (socio.anios.some(a => a.anio === anio)) return alert('Ese año ya existe para este socio.');
 
-        socio.anios.push({ anio, obligaciones: [], aportaciones: [], totales: [] });
+        socio.anios.push({ anio, obligaciones: [], aportaciones: [], totales: [
+            { concepto: 'TOTAL INGRESOS', monto: 0 },
+            { concepto: 'DEUDA TOTAL', monto: 0 },
+            { concepto: 'SALDO FINAL', monto: 0 }
+        ] });
         socio.anios.sort((a, b) => a.anio - b.anio);
         guardarLocal();
         adminAnioSel = anio;
@@ -1011,6 +1040,7 @@ function abrirFormObligacion(reg, ob, idx) {
             else delete o.texto;
         }
 
+        recalcularTotales(reg);
         guardarLocal();
         renderAdminAll();
         cerrarModal();
@@ -1020,6 +1050,7 @@ function abrirFormObligacion(reg, ob, idx) {
 function eliminarObligacion(reg, idx) {
     if (!confirm('¿Eliminar la obligación "' + reg.obligaciones[idx].concepto + '"?')) return;
     reg.obligaciones.splice(idx, 1);
+    recalcularTotales(reg);
     guardarLocal();
     renderAdminAll();
 }
@@ -1068,6 +1099,7 @@ function abrirFormAportacion(reg, ap, idx) {
             a.monto = monto;
         }
 
+        recalcularTotales(reg);
         guardarLocal();
         renderAdminAll();
         cerrarModal();
@@ -1078,82 +1110,9 @@ function eliminarAportacion(reg, idx) {
     const ap = reg.aportaciones[idx];
     if (!confirm('¿Eliminar la aportación ' + (ap.recibo || '(sin recibo)') + ' (' + (ap.concepto || '—') + ')?')) return;
     reg.aportaciones.splice(idx, 1);
+    recalcularTotales(reg);
     guardarLocal();
     renderAdminAll();
-}
-
-// 18. TOTALES DE UN AÑO: EDITAR
-function abrirFormTotales(reg) {
-    const filas = reg.totales
-        .map((t, i) => `
-            <div class="field">
-                <label>Total ${i + 1} · concepto</label>
-                <input type="text" class="f-total-concepto" value="${esc(t.concepto)}">
-                <label class="label-min">Monto (S/) · vacío = sin monto</label>
-                <input type="text" class="f-total-monto" inputmode="decimal" value="${esc(t.monto ?? '')}" placeholder="120 o 1,222.45">
-            </div>
-        `)
-        .join('');
-
-    abrirModal('Totales ' + reg.anio, `
-        ${filas}
-        <button id="btn-add-total" class="btn btn-ghost btn-sm" type="button">+ Agregar total</button>
-        <div class="modal-actions">
-            <button id="modal-submit" class="btn btn-primary btn-block" type="button">Guardar</button>
-        </div>
-    `);
-
-    document.getElementById('btn-add-total').addEventListener('click', () => {
-        const campo = document.createElement('div');
-        campo.className = 'field';
-        campo.innerHTML = `
-            <label>Total · concepto</label>
-            <input type="text" class="f-total-concepto" placeholder="TOTAL INGRESOS">
-            <label class="label-min">Monto (S/)</label>
-            <input type="text" class="f-total-monto" inputmode="decimal" placeholder="120 o 1,222.45">
-        `;
-        document.getElementById('btn-add-total').before(campo);
-    });
-
-    document.getElementById('modal-submit').addEventListener('click', () => {
-        const conceptos = [...document.querySelectorAll('.f-total-concepto')].map(i => i.value.trim());
-        const montos = [...document.querySelectorAll('.f-total-monto')].map(i => parseMonto(i.value));
-
-        for (let i = 0; i < montos.length; i++) {
-            const inp = document.querySelectorAll('.f-total-monto')[i];
-            if (inp.value.trim() !== '' && montos[i] === null) {
-                alert('El monto "' + (conceptos[i] || 'Total ' + (i + 1)) + '" no es válido. Ejemplos: 120 o 1,222.45');
-                return;
-            }
-        }
-
-        const nuevos = conceptos
-            .map((c, i) => ({ concepto: c, monto: montos[i] }))
-            .filter(t => t.concepto !== '');
-
-        const saldo = nuevos.find(t => t.concepto.toUpperCase().includes('SALDO FINAL'));
-        const deudaTotal = nuevos.find(t => t.concepto.toUpperCase().includes('DEUDA TOTAL'));
-        const ingresos = nuevos.find(t => t.concepto.toUpperCase().includes('TOTAL INGRESOS'));
-
-        if (saldo && deudaTotal && saldo.monto !== null && deudaTotal.monto !== null) {
-            const sumaApartes = (reg.aportaciones || []).reduce((acc, ap) => {
-                if (ap.monto !== null && ap.monto !== undefined && ap.monto !== '') return acc + Number(ap.monto);
-                return acc;
-            }, 0);
-            const esperado = deudaTotal.monto - sumaApartes;
-            if (Math.abs(saldo.monto - esperado) > 0.01) {
-                if (!confirm('El SALDO FINAL (' + formatearMonto(saldo.monto) + ') no cuadra con DEUDA TOTAL - aportaciones (' + formatearMonto(esperado) + '). ¿Guardar de todas formas?')) {
-                    return;
-                }
-            }
-        }
-
-        reg.totales = nuevos;
-
-        guardarLocal();
-        renderAdminAll();
-        cerrarModal();
-    });
 }
 
 // 19. PESTAÑAS DEL PANEL ADMIN
