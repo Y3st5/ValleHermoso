@@ -532,9 +532,6 @@ function esc(s) {
 }
 
 function htmlCabeceraReporte(socio, titulo) {
-    const tc = socio.t_cambio
-        ? '<div class="report-meta-row"><span>TC</span>S/ ' + String(socio.t_cambio).replace('.', ',') + '</div>'
-        : '';
     return `
         <div class="report-head">
             <div class="report-brand">Valle Hermoso</div>
@@ -543,7 +540,6 @@ function htmlCabeceraReporte(socio, titulo) {
                 <div class="report-meta-row"><span>Socio</span>${esc(socio.nombre)}</div>
                 <div class="report-meta-row"><span>ID</span>${socio.id}</div>
                 <div class="report-meta-row"><span>Emitido</span>${new Date().toLocaleDateString('es-PE')}</div>
-                ${tc}
             </div>
         </div>
     `;
