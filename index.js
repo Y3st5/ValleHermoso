@@ -51,10 +51,22 @@ const loginSubtitle = document.getElementById('login-subtitle');
 function activarRol(rol) {
     rolActivo = rol;
     const esAdmin = rol === 'admin';
+    const loginInput = document.getElementById('login-id');
     loginTitle.textContent = esAdmin ? 'Acceso administrativo' : 'Bienvenido';
     loginSubtitle.textContent = esAdmin
-        ? 'Ingresa con tu cuenta de administración para gestionar socios y estados de cuenta.'
-        : 'Ingresa con tu correo y contraseña para consultar tu estado de cuenta.';
+        ? 'Ingresa con tu correo y contraseña para gestionar socios y estados de cuenta.'
+        : 'Ingresa con tu nombre y contraseña para consultar tu estado de cuenta.';
+    if (esAdmin) {
+        loginInput.type = 'email';
+        loginInput.placeholder = 'nombre@correo.com';
+        loginInput.autocomplete = 'email';
+        loginInput.closest('.field').querySelector('label').textContent = 'Correo electrónico';
+    } else {
+        loginInput.type = 'text';
+        loginInput.placeholder = 'Tu nombre completo';
+        loginInput.autocomplete = 'name';
+        loginInput.closest('.field').querySelector('label').textContent = 'Nombre';
+    }
     document.getElementById('admin-toggle-text').textContent = esAdmin
         ? '← Volver al acceso de socio'
         : '¿Eres administrador?';
@@ -68,11 +80,11 @@ document.getElementById('admin-toggle-link').addEventListener('click', (e) => {
 
 // 6. LÓGICA DE INICIO DE SESIÓN
 btnLogin.addEventListener('click', () => {
-    const emailIngresado = document.getElementById('email-input').value.trim();
+    const valorIngresado = document.getElementById('login-id').value.trim();
     const passwordIngresada = document.getElementById('password-input').value;
 
     if (rolActivo === 'admin') {
-        if (DATOS.admin.email === emailIngresado && DATOS.admin.password === passwordIngresada) {
+        if (valorIngresado.toLowerCase() === DATOS.admin.email.toLowerCase() && DATOS.admin.password === passwordIngresada) {
             entrarAdmin(DATOS.admin);
         } else {
             msgError.style.display = 'block';
@@ -81,7 +93,7 @@ btnLogin.addEventListener('click', () => {
     }
 
     const socioEncontrado = DATOS.socios.find(s =>
-        s.email === emailIngresado && s.password === passwordIngresada
+        normalizarNombre(s.nombre) === normalizarNombre(valorIngresado) && s.password === passwordIngresada
     );
 
     if (socioEncontrado) {
@@ -114,7 +126,7 @@ function entrarAdmin(admin) {
 
 // 8. LÓGICA DE CERRAR SESIÓN
 function cerrarSesion() {
-    document.getElementById('email-input').value = '';
+    document.getElementById('login-id').value = '';
     document.getElementById('password-input').value = '';
     socioActual = null;
     sectionDashboard.style.display = 'none';
@@ -128,6 +140,10 @@ btnLogout.addEventListener('click', cerrarSesion);
 btnLogoutAdmin.addEventListener('click', cerrarSesion);
 
 // 9. UTILIDADES COMUNES
+function normalizarNombre(n) {
+    return String(n || '').trim().toLowerCase();
+}
+
 function formatearMonto(valor) {
     if (valor === null || valor === undefined || valor === '') return '—';
     const n = Number(valor);
