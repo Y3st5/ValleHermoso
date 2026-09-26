@@ -141,7 +141,13 @@ btnLogoutAdmin.addEventListener('click', cerrarSesion);
 
 // 9. UTILIDADES COMUNES
 function normalizarNombre(n) {
-    return String(n || '').trim().toLowerCase();
+    // Tolera coma y puntos: el Excel de origen usa "AVILES ROMERO Carlos Douglas"
+    // y el portal "AVILES ROMERO, Carlos Douglas".
+    return String(n || '')
+        .toLowerCase()
+        .replace(/[.,]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
 }
 
 function formatearMonto(valor) {
