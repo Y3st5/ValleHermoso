@@ -29,6 +29,7 @@ Private Const COD_PREVIO As Long = 4
 Private Const COD_MOTOR As Long = 5
 Private Const COD_IMPORTADOR As Long = 6
 Private Const COD_PUSH As Long = 7
+Private Const COD_DESACTUALIZADO As Long = 9
 
 
 ' ===========================================================================
@@ -105,6 +106,48 @@ Public Sub SimularPublicacion()
     Else
         Aviso "La simulacion fallo", "No se toco nada. Abre el log para ver el detalle."
     End If
+End Sub
+
+
+' Estan al dia los Excel de cada socio?
+'
+' Los Excel de CUENTA POR PERSONA no se teclean: sus numeros vienen por vinculo
+' desde INGRESOS Y EGRESOS 20XX. Si se escribio en el anual y no se refrescaron
+' los individuales, al publicar se suben numeros viejos.
+'
+' Esto NO toca ningun Excel: copia los 24 a una carpeta temporal, ahi refresca
+' los vinculos, corre el importador sobre esa copia y compara el resultado con
+' el data.json publicado. Tarda cerca de un minuto.
+'
+' Conviene correrlo ANTES de publicar cuando se escribio algo en el anual.
+Public Sub VerificarSiEstaAlDia()
+    If Not RevisarExcelAbierto() Then Exit Sub
+
+    PonerEstado("Revisando si los Excel estan al dia... tarda un minuto.")
+    DoEvents
+
+    Dim cod As Long
+    cod = Ejecutar("-VerificarFrescura")
+
+    LimpiarEstado
+
+    Select Case cod
+        Case COD_OK
+            Aviso "Si estan al dia", _
+                  "Refresque los vinculos en una copia y arme el data.json de nuevo:" & vbCrLf & _
+                  "sale EXACTAMENTE igual al que esta publicado." & vbCrLf & vbCrLf & _
+                  "No hay nada viejo. Ya puedes darle Publicar."
+        Case COD_DESACTUALIZADO
+            Aviso "Hay datos sin refrescar", _
+                  "Al refrescar los vinculos, el data.json sale DISTINTO al publicado." & vbCrLf & vbCrLf & _
+                  "O sea que hay numeros en el Excel anual que todavia no llegaron a los Excel de cada socio." & vbCrLf & vbCrLf & _
+                  "Abre cada Excel de socio, dejalo actualizar los vinculos, guardalo, y despues dale Publicar." & vbCrLf & vbCrLf & _
+                  "El log te dice exactamente que cambio."
+        Case Else
+            Aviso "No se pudo revisar", _
+                  "La revision fallo. No se toco nada." & vbCrLf & vbCrLf & _
+                  "Casi siempre es que hay Excel abiertos. Cierralos y vuelve a intentar."
+    End Select
 End Sub
 
 
