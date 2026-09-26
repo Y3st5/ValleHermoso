@@ -22,6 +22,8 @@ param(
     [string]$Mensaje = '',
     [switch]$Simular,
     [switch]$SoloPush,
+    [switch]$RevisarVinculos,
+    [switch]$VerificarFrescura,
     [string]$Restaurar = ''
 )
 
@@ -111,7 +113,7 @@ Log "================ PUBLICAR ================"
 Log "repo         : $Repo"
 Log "origen excel : $OrigenExcel"
 Log "anios max    : $AniosMax"
-Log "modo         : $(if ($SoloPush) { 'SOLO PUSH' } elseif ($Restaurar) { 'RESTAURAR RESPALDO' } elseif ($Simular) { 'SIMULAR (no toca el repo ni hace push)' } else { 'PUBLICAR' })"
+Log "modo         : $(if ($VerificarFrescura) { 'REVISAR FRESCURA DE LOS EXCEL' } elseif ($SoloPush) { 'SOLO PUSH' } elseif ($Restaurar) { 'RESTAURAR RESPALDO' } elseif ($RevisarVinculos) { 'PUBLICAR + DIAGNOSTICO DE VINCULOS' } elseif ($Simular) { 'SIMULAR (no toca el repo ni hace push)' } else { 'PUBLICAR' })"
 Log "motor        : PowerShell $($PSVersionTable.PSVersion)"
 Log ""
 
@@ -363,8 +365,17 @@ function Get-CacheVinculos {
 }
 
 # Compara, para cada Excel de socio, los valores que tiene guardados del anual
-# contra los valores que el anual tiene ahora. Si no coinciden, ese archivo
-# todavia no se refresco.
+# contra los valores que el anual tiene ahora.
+#
+# ATENCION: este chequeo DIAGNOSTICA, NO DECIDE. Se probo el 2026-09-26 y marco
+# los 24 Excel como "vencidos" (entre 44 y 177 celdas distintas por socio), pero
+# al refrescar de verdad los vinculos sobre copias, el data.json salio IDENTICO
+# byte a byte al publicado. O sea que las diferencias estan en celdas de
+# 'CUADRO DE DEUDA 2026' y 'DETALLE DE FACTURAS' que el importador no lee.
+#
+# Por eso NO bloquea la publicacion: si lo hiciera, cada publicacion pararia y
+# nadie haria caso al aviso. Queda disponible con -RevisarVinculos para cuando
+# haya que averiguar de donde salio una diferencia.
 function Test-VinculosAlDia {
     $base = Split-Path -Parent $OrigenExcel
     $anuales = @{}
@@ -383,12 +394,14 @@ function Test-VinculosAlDia {
 
     $vencidos = New-Object System.Collections.Generic.List[string]
     $nopudo = 0
+    $revisados = 0
     $cacheAnuales = @{}
 
     foreach ($f in @(Get-ChildItem -LiteralPath $OrigenExcel -Filter *.xlsm | Sort-Object Name)) {
         $excluido = $false
         foreach ($e in $Excluir) { if ($f.BaseName -eq $e) { $excluido = $true; break } }
         if ($excluido) { continue }
+        $revisados++
 
         $info = Get-CacheVinculos $f.FullName
         if (-not $info) { $nopudo++; continue }
@@ -416,21 +429,150 @@ function Test-VinculosAlDia {
         if ($diffs -gt 0) { $vencidos.Add("$($f.Name)  ($diffs valores distintos, contra $contra)") }
     }
 
-    Log "   revisados: $(@(Get-ChildItem -LiteralPath $OrigenExcel -Filter *.xlsm).Count - $Excluir.Count)   vencidos: $($vencidos.Count)   ilegibles: $nopudo"
+    Log "   revisados: $revisados   con diferencias: $($vencidos.Count)   ilegibles: $nopudo"
 
     if ($vencidos.Count -gt 0) {
         Log ""
-        Log "ESTOS EXCEL TIENEN VALORES VIEJOS:"
+        Log "   (diagnostico) Estos Excel tienen celdas del vinculo que ya no coinciden"
+        Log "   con el annual. No es motivo para frenar: la prueba del 2026-09-26 dio que"
+        Log "   al refrescar de verdad el data.json sale igual. Se deja como dato."
         $vencidos | ForEach-Object { Log "   $_" }
-        Log ""
-        Die 8 "$($vencidos.Count) Excel de socio todavia no tienen los numeros de $contra."
     }
 }
 
-# --- 4. los vinculos de los Excel de socio estan al dia? ---------------------
-Log "--- revisando si los vinculos de los Excel de socio estan al dia ---"
-Test-VinculosAlDia
-Log ""
+# --- 4. ¿los Excel de socio estan al dia? (prueba real) ---------------------
+# Esta es la version que SI sirve, y es la que hay que usar.
+#
+# El problema: los archivos de CUENTA POR PERSONA no se teclean, sus numeros
+# vienen por vinculo desde INGRESOS Y EGRESOS 20XX. Si se escribio en el anual
+# y no se refrescaron los individuales, el importador lee lo que quedo guardado
+# y se publica informacion vieja.
+#
+# Comparar fechas NO sirve (el anual se puede volver a guardar sin cambiar nada
+# y despues sale con fecha nueva). Comparar el valor cacheado contra el del
+# anual TAMPOCO sirve: se probo y marco los 24 Excel como vencidos, pero al
+# refrescar de verdad las diferencias eran de celdas que el importador no lee.
+#
+# Asi que la unica forma exacta es la directa: se copia los Excel de socio a una
+# carpeta temporal, se refrescan los vinculos SOLO en las copias, se corre el
+# importador sobre esa carpeta y se compara el resultado con el data.json
+# publicado.
+#   - si sale identico  -> los Excel estan al dia, se puede publicar tranquilo
+#   - si sale distinto  -> hay algo sin refrescar, o los Excel cambiaron de verdad
+#
+# No se toca ni un solo archivo de CUENTA POR PERSONA: todo pasa en la temporal.
+function Test-ExcelAlDia {
+    $sello = Get-Date -Format 'yyyyMMdd-HHmmss'
+    $tmp = Join-Path $env:TEMP ('vh-frescura-' + $sello)
+    # La salida va FUERA de $tmp, porque $tmp se borra en el finally de abajo.
+    $salidaF = Join-Path $env:TEMP "vh-frescura-$sello.json"
+    $copiados = 0
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+
+    try {
+        New-Item -ItemType Directory -Force -Path $tmp | Out-Null
+        Log "   copiando los Excel de socio a una carpeta temporal..."
+        foreach ($f in @(Get-ChildItem -LiteralPath $OrigenExcel -Filter *.xlsm | Sort-Object Name)) {
+            $excluido = $false
+            foreach ($e in $Excluir) { if ($f.BaseName -eq $e) { $excluido = $true; break } }
+            if ($excluido) { continue }
+            try {
+                Copy-Item -LiteralPath $f.FullName -Destination (Join-Path $tmp $f.Name) -Force -ErrorAction Stop
+                $copiados++
+            } catch {
+                Log "   no se pudo copiar $($f.Name): $($_.Exception.Message)"
+            }
+        }
+        Log "   copiados: $copiados"
+        if ($copiados -lt 20) { Die 4 "Solo se pudieron copiar $copiados Excel. Cierra Excel y vuelve a intentar." }
+
+        Log "--- refrescando vinculos en las copias (esto no toca tus Excel) ---"
+        $xl = $null
+        try {
+            $xl = New-Object -ComObject Excel.Application
+            $xl.Visible = $false
+            $xl.DisplayAlerts = $false
+            $xl.AskToUpdateLinks = $false
+            $xl.AutomationSecurity = 3
+            $n = 0
+            foreach ($nombre in @(Get-ChildItem -LiteralPath $tmp -Filter *.xlsm | ForEach-Object { $_.Name })) {
+                $ruta = Join-Path $tmp $nombre
+                $abierto = $null
+                try {
+                    # UpdateLinks:=3 (xlUpdateLinksAlways), ReadOnly:=False
+                    $abierto = $xl.Workbooks.Open($ruta, 3, $false)
+                    $xl.CalculateFullRebuild()
+                    $abierto.Save()
+                    $n++
+                } catch {
+                    Log "   no se pudo refrescar $nombre : $($_.Exception.Message)"
+                } finally {
+                    if ($abierto) { try { $abierto.Close($false) } catch { } }
+                }
+            }
+            Log "   refrescados: $n de $copiados"
+            if ($n -lt 20) { Die 4 "Solo se refrescaron $n de $copiados Excel. Cierra Excel y vuelve a intentar." }
+        } finally {
+            if ($xl) { try { $xl.Quit() } catch { }; try { [void][Runtime.InteropServices.Marshal]::ReleaseComObject($xl) } catch { } }
+        }
+
+        Log "--- importando desde las copias ya refrescadas ---"
+        & (Join-Path $Repo 'tools\importar-excel.ps1') `
+            -OrigenExcel $tmp `
+            -DataJsonActual (Join-Path $Repo 'data.json') `
+            -Salida $salidaF `
+            -Reporte (Join-Path $tmp 'reporte.txt') `
+            -AniosMax $AniosMax `
+            -Excluir $Excluir *>&1 |
+            ForEach-Object { $t = [string]$_; if ($t.Trim()) { Log $t } }
+    } finally {
+        $sw.Stop()
+        Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
+    $sw.Stop()
+    Log "   (tardo $([int]$sw.Elapsed.TotalSeconds) segundos)"
+    Log ""
+    return $salidaF
+}
+
+if ($VerificarFrescura) {
+    Log "=== REVISANDO SI LOS EXCEL DE SOCIO ESTAN AL DIA ==="
+    Log "Se va a leer en una copia temporal. Ningun Excel tuyo se modifica."
+    Log ""
+    $fresca = Test-ExcelAlDia
+    if (-not $fresca -or -not (Test-Path -LiteralPath $fresca)) { Die 4 "No se pudo completar la revision." }
+
+    $h1 = (Get-FileHash (Join-Path $Repo 'data.json') -Algorithm SHA256).Hash
+    $h2 = (Get-FileHash $fresca -Algorithm SHA256).Hash
+
+    if ($h1 -eq $h2) {
+        Log "=== LOS EXCEL ESTAN AL DIA ==="
+        Log "Al refrescar los vinculos, el data.json sale EXACTAMENTE igual al que esta"
+        Log "publicado. Se puede publicar sin riesgo."
+        Salir 0
+    }
+
+    Log "=== HAY DIFERENCIAS ==="
+    Log "Al refrescar los vinculos, el data.json sale DISTINTO al publicado."
+    Log "O sea que hay algo que todavia no se reflejó en los Excel de cada socio."
+    Log ""
+    & (Join-Path $Repo 'tools\verificar.ps1') `
+        -Nuevo $fresca -Actual (Join-Path $Repo 'data.json') `
+        -Reporte (Join-Path $env:TEMP 'vh-frescura-reporte.txt') *>&1 |
+        ForEach-Object { $t = [string]$_; if ($t.Trim()) { Log $t } }
+    Log ""
+    Die 9 "Los Excel de socio no reflejan los numeros actuales. Abri cada uno, dejá que actualice los vinculos, guardá, y volvé a intentar."
+}
+
+# --- 5. diagnostico de vinculos (informativo, no frena) ----------------------
+# Apagado por defecto. Cuando se activo, el resultado es dato de diagnostico y
+# NO frena la publicacion (ver la nota en Test-VinculosAlDia).
+if ($RevisarVinculos) {
+    Log "--- revisando si los vinculos de los Excel de socio estan al dia (diagnostico) ---"
+    Test-VinculosAlDia
+    Log ""
+}
 
 # --- 5. importar ------------------------------------------------------------
 $scriptImportador = Join-Path $Repo 'tools\importar-excel.ps1'
