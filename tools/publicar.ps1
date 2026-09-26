@@ -20,22 +20,19 @@ param(
     [string]$OrigenExcel = 'D:\VALLE HERMOSO\CUENTA POR PERSONA',
     [int]$AniosMax = 2026,
     [string]$Mensaje = '',
-    [switch]$Simular
+    [switch]$Simular,
+    [switch]$SoloPush,
+    [string]$Restaurar = ''
 )
 
 $ErrorActionPreference = 'Stop'
 
 $rutaLog = Join-Path $Repo 'tools\publicar-ultimo.log'
+$rutaCodigo = Join-Path $Repo 'tools\publicar-ultimo.codigo'
 $lineas = New-Object System.Collections.Generic.List[string]
 function Log([string]$t) {
     $lineas.Add($t)
     Write-Host $t
-}
-function Die([int]$codigo, [string]$t) {
-    Log ''
-    Log "!!! $t"
-    Finalizar
-    exit $codigo
 }
 function Finalizar {
     if ($lineas.Count -gt 0) {
@@ -43,6 +40,23 @@ function Finalizar {
             [System.IO.File]::WriteAllLines($rutaLog, $lineas, (New-Object System.Text.UTF8Encoding($false)))
         } catch { }
     }
+}
+# El codigo de salida va en un archivo aparte porque VBA no puede leer el de
+# un proceso launched con Shell(). Es lo unico que la macro usa para saber
+# que paso.
+function Salir([int]$codigo) {
+    Log ''
+    Log "CODIGO DE SALIDA: $codigo"
+    Finalizar
+    try {
+        [System.IO.File]::WriteAllText($rutaCodigo, [string]$codigo, (New-Object System.Text.UTF8Encoding($false)))
+    } catch { }
+    exit $codigo
+}
+function Die([int]$codigo, [string]$t) {
+    Log ''
+    Log "!!! $t"
+    Salir $codigo
 }
 
 # --- archivos que hay que dejar excluidos ------------------------------------
@@ -97,9 +111,61 @@ Log "================ PUBLICAR ================"
 Log "repo         : $Repo"
 Log "origen excel : $OrigenExcel"
 Log "anios max    : $AniosMax"
-Log "modo         : $(if ($Simular) { 'SIMULAR (no toca el repo ni hace push)' } else { 'PUBLICAR' })"
+Log "modo         : $(if ($SoloPush) { 'SOLO PUSH' } elseif ($Restaurar) { 'RESTAURAR RESPALDO' } elseif ($Simular) { 'SIMULAR (no toca el repo ni hace push)' } else { 'PUBLICAR' })"
 Log "motor        : PowerShell $($PSVersionTable.PSVersion)"
 Log ""
+
+# --- modos que no necesitan los Excel -----------------------------------------
+# -Restaurar y -SoloPush no importan nada: solo mueven el data.json o lo suben.
+# Se atienden antes del preflight para que no dependan de que los Excel esten
+# donde deben.
+
+if ($Restaurar -or $SoloPush) {
+
+    if ($PSVersionTable.PSVersion.Major -lt 7) { Die 5 "Hay que correr esto con pwsh 7." }
+    if (-not $GitPath) { Die 3 "No se encontro git." }
+    if (-not (Test-Path -LiteralPath (Join-Path $Repo '.git'))) { Die 4 "No es un repositorio git: $Repo" }
+    $rama = (Invoke-Git @('rev-parse', '--abbrev-ref', 'HEAD')).Texto
+    Log "rama         : $rama"
+    Log ""
+
+    if ($Restaurar) {
+        Log "--- restaurando respaldo ---"
+        if (-not (Test-Path -LiteralPath $Restaurar)) { Die 4 "No existe el respaldo: $Restaurar" }
+        $dataJsonR = Join-Path $Repo 'data.json'
+        Copy-Item -LiteralPath $Restaurar -Destination $dataJsonR -Force
+        Log "data.json    : restaurado desde $Restaurar"
+        $msgR = "restaurado data.json desde $(Split-Path $Restaurar -Leaf)"
+        $addR = Invoke-Git @('add', 'data.json')
+        if ($addR.Codigo -ne 0) { Die 3 "git add fallo: $($addR.Texto)" }
+        $comR = Invoke-Git @('commit', '-m', $msgR)
+        if ($comR.Codigo -ne 0) { Die 3 "git commit fallo: $($comR.Texto)" }
+        $hashR = (Invoke-Git @('rev-parse', '--short', 'HEAD')).Texto
+        Log "commit       : $hashR"
+        Log ""
+        Log "=== RESTAURADO. El commit esta solo en esta PC; usa Reintentar push si lo quieres subir ==="
+        Salir 0
+    }
+
+    # SoloPush
+    Log "--- subiendo lo pendiente ---"
+    $fetch = Invoke-Git @('fetch', 'origin', $rama)
+    if ($fetch.Codigo -ne 0) { Die 3 "git fetch fallo: $($fetch.Texto). Revisa la conexion a internet." }
+    $adelantadoP = (Invoke-Git @('rev-list', '--count', "origin/$rama..HEAD")).Texto
+    if ($adelantadoP -and [int]$adelantadoP -eq 0) {
+        Log "No hay nada pendiente de subir."
+        Log "=== PUSH: nada que hacer ==="
+        Salir 0
+    }
+    Log "commits pendientes: $adelantadoP"
+    $pushP = Invoke-Git @('push', 'origin', $rama)
+    if ($pushP.Codigo -ne 0) {
+        Die 7 "El push fallo otra vez. Revisa la conexion a internet. Dice: $($pushP.Texto)"
+    }
+    Log ""
+    Log "=== PUSH OK ==="
+    Salir 0
+}
 
 # --- 1. preflight -----------------------------------------------------------
 if ($PSVersionTable.PSVersion.Major -lt 7) {
@@ -190,8 +256,7 @@ if ($codVer -ne 0) {
 
 if ($Simular) {
     Log "=== SIMULACION TERMINADA. No se toco el repo, no se hizo commit ni push. ==="
-    Finalizar
-    exit 0
+    Salir 0
 }
 
 # --- 6. respaldar -----------------------------------------------------------
@@ -211,8 +276,7 @@ $st = Invoke-Git @('status', '--porcelain')
 if (-not $st.Texto.Trim()) {
     Log "El data.json quedo igualito. No hay nada que commitear."
     Log "=== PUBLICADO (sin cambios) ==="
-    Finalizar
-    exit 0
+    Salir 0
 }
 
 if (-not $Mensaje) {
@@ -238,5 +302,4 @@ Log ""
 Log "=== PUBLICADO ==="
 Log "Los socios ya ven los datos nuevos en la pagina."
 Log "respaldo del anterior: $respaldo"
-Finalizar
-exit 0
+Salir 0
