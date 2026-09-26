@@ -226,7 +226,213 @@ if ($pull.Codigo -ne 0) {
 $pull.Texto -split "`n" | Where-Object { $_.Trim() } | ForEach-Object { Log "   $_" }
 Log ""
 
-# --- 4. importar ------------------------------------------------------------
+# ============================================================================
+#  VINCULOS DE LOS EXCEL DE SOCIO
+#  Los archivos de CUENTA POR PERSONA no se teclean: sus numeros vienen por
+#  vinculo desde INGRESOS Y EGRESOS 20XX. Si alguien escribio en el anual y no
+#  refresco los individuales, el importador lee los numeros viejos que quedaron
+#  guardados en el archivo del socio, y se publicaria informacion desactualizada
+#  sin que se note.
+#
+#  Por eso se compara VALOR contra VALOR y no fecha contra fecha. Un anual que se
+#  vuelve a guardar sin cambiar nada tiene fecha nueva pero datos iguales, y
+#  comparando solo fechas saldria un falso positivo.
+#
+#  Nada de esto abre ni guarda ningun Excel. Solo se leen los .xlsm como zip.
+# ============================================================================
+
+# Valores numericos de un libro, como tabla "nombreHoja|direccion" -> numero.
+# Las celdas de texto se ignoran: al importador solo le interesan los montos.
+# Devuelve $null si el archivo no se puede leer (por ejemplo, si esta abierto).
+function Get-NumerosLibro {
+    param([string]$Ruta)
+    $res = @{}
+    $tmp = $null
+    $zip = $null
+    try {
+        # Se copia primero porque Excel abre los archivos en modo compartido de
+        # lectura pero bloquea la escritura, y ZipFile pide escritura.
+        $tmp = Join-Path $env:TEMP ('vh-lee-' + [guid]::NewGuid().ToString('N') + '.zip')
+        Copy-Item -LiteralPath $Ruta -Destination $tmp -Force
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        $zip = [System.IO.Compression.ZipFile]::OpenRead($tmp)
+
+        $e = $zip.Entries | Where-Object { $_.FullName -eq 'xl/workbook.xml' }
+        if (-not $e) { return $null }
+        $sr = [System.IO.StreamReader]::new($e.Open())
+        $xml = $sr.ReadToEnd(); $sr.Close()
+        $nombres = @([regex]::Matches($xml, '<sheet name="([^"]+)"') | ForEach-Object { $_.Groups[1].Value })
+
+        $e = $zip.Entries | Where-Object { $_.FullName -eq 'xl/_rels/workbook.xml.rels' }
+        if (-not $e) { return $null }
+        $sr = [System.IO.StreamReader]::new($e.Open())
+        $rels = $sr.ReadToEnd(); $sr.Close()
+        $destinos = @([regex]::Matches($rels, 'Target="(worksheets/[^"]+)"') | ForEach-Object { $_.Groups[1].Value })
+
+        for ($i = 0; $i -lt $nombres.Count -and $i -lt $destinos.Count; $i++) {
+            $hoja = $nombres[$i]
+            $e = $zip.Entries | Where-Object { $_.FullName -eq "xl/$($destinos[$i])" }
+            if (-not $e) { continue }
+            $sr = [System.IO.StreamReader]::new($e.Open())
+            $sx = $sr.ReadToEnd(); $sr.Close()
+
+            foreach ($m in [regex]::Matches($sx, '<c r="([A-Z]+[0-9]+)"([^>]*?)(?:/>|>(.*?)</c>)', 'Singleline')) {
+                $attrs = $m.Groups[2].Value
+                # t="s" es indice de texto compartido, t="str" texto de formula,
+                # t="e" error, t="b" booleano. Ninguno es un monto.
+                if ($attrs -match 't="(s|str|e|b|inlineStr)"') { continue }
+                $v = [regex]::Match($m.Groups[3].Value, '<v>([^<]*)</v>')
+                if (-not $v.Success) { continue }
+                $d = 0.0
+                if ([double]::TryParse($v.Groups[1].Value, [ref]$d)) { $res["$hoja|$($m.Groups[1].Value)"] = $d }
+            }
+        }
+    } catch {
+        return $null
+    } finally {
+        if ($zip) { try { $zip.Dispose() } catch { } }
+        if ($tmp -and (Test-Path -LiteralPath $tmp)) { Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue }
+    }
+    return $res
+}
+
+# Para un archivo de socio: que libro trae cada vinculo, y que valores tiene
+# guardados de ese vinculo.
+function Get-CacheVinculos {
+    param([string]$Ruta)
+    $tmp = $null
+    $zip = $null
+    try {
+        $tmp = Join-Path $env:TEMP ('vh-lee-' + [guid]::NewGuid().ToString('N') + '.zip')
+        Copy-Item -LiteralPath $Ruta -Destination $tmp -Force
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        $zip = [System.IO.Compression.ZipFile]::OpenRead($tmp)
+
+        $sources = @{}
+        $cache = @{}
+        $n = 1
+        while ($true) {
+            $e = $zip.Entries | Where-Object { $_.FullName -eq "xl/externalLinks/externalLink$n.xml" }
+            if (-not $e) { break }
+            $sr = [System.IO.StreamReader]::new($e.Open())
+            $xml = $sr.ReadToEnd(); $sr.Close()
+
+            # ruta del libro de origen
+            $er = $zip.Entries | Where-Object { $_.FullName -eq "xl/externalLinks/_rels/externalLink$n.xml.rels" }
+            $origen = $null
+            if ($er) {
+                $sr2 = [System.IO.StreamReader]::new($er.Open())
+                $xr = $sr2.ReadToEnd(); $sr2.Close()
+                $t = [regex]::Match($xr, 'Target="(file:[^"]+)"')
+                if ($t.Success) {
+                    $ruta = [System.Uri]::UnescapeDataString($t.Groups[1].Value) -replace '^file:///', ''
+                    $origen = $ruta -replace '/', '\'
+                }
+            }
+
+            # nombres de hoja: el sheetId del cache es el indice en esta lista
+            $nombres = @([regex]::Matches($xml, '<sheetName val="([^"]*)"') | ForEach-Object { $_.Groups[1].Value })
+
+            $celdas = @{}
+            foreach ($sd in [regex]::Matches($xml, '<sheetData sheetId="(\d+)">(.*?)</sheetData>', 'Singleline')) {
+                $hoja = [int]$sd.Groups[1].Value
+                if ($hoja -ge $nombres.Count) { continue }
+                $prefijo = "$($nombres[$hoja])|"
+                foreach ($m in [regex]::Matches($sd.Groups[2].Value, '<cell r="([A-Z]+[0-9]+)"([^>]*?)(?:/>|>(.*?)</cell>)', 'Singleline')) {
+                    if ($m.Groups[2].Value -match 't="(s|str|e|b)"') { continue }
+                    $v = [regex]::Match($m.Groups[3].Value, '<v>([^<]*)</v>')
+                    if (-not $v.Success) { continue }
+                    $d = 0.0
+                    if ([double]::TryParse($v.Groups[1].Value, [ref]$d)) {
+                        $celdas["$prefijo$($m.Groups[1].Value)"] = $d
+                    }
+                }
+            }
+
+            if ($origen) { $sources[$n] = $origen }
+            $cache[$n] = $celdas
+            $n++
+        }
+    } catch {
+        return $null
+    } finally {
+        if ($zip) { try { $zip.Dispose() } catch { } }
+        if ($tmp -and (Test-Path -LiteralPath $tmp)) { Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue }
+    }
+    return [pscustomobject]@{ Sources = $sources; Cache = $cache }
+}
+
+# Compara, para cada Excel de socio, los valores que tiene guardados del anual
+# contra los valores que el anual tiene ahora. Si no coinciden, ese archivo
+# todavia no se refresco.
+function Test-VinculosAlDia {
+    $base = Split-Path -Parent $OrigenExcel
+    $anuales = @{}
+    foreach ($d in @(Get-ChildItem -LiteralPath $base -Directory -ErrorAction SilentlyContinue)) {
+        if ($d.Name -notlike 'INGRESOS EGRESOS 20*') { continue }
+        $f = @(Get-ChildItem -LiteralPath $d.FullName -File -ErrorAction SilentlyContinue |
+               Where-Object { $_.Name -like 'INGRESOS*.xlsm' })
+        if ($f.Count -gt 0) { $anuales[$f[0].FullName.ToLower()] = $f[0] }
+    }
+    if ($anuales.Count -eq 0) {
+        Log "   no encontre las carpetas 'INGRESOS EGRESOS 20xx' al lado de $OrigenExcel."
+        Log "   me salto la revision de vinculos (no la puedo hacer, no la hago pasar)."
+        return
+    }
+    Log "   anuales a comparar: $($anuales.Count)"
+
+    $vencidos = New-Object System.Collections.Generic.List[string]
+    $nopudo = 0
+    $cacheAnuales = @{}
+
+    foreach ($f in @(Get-ChildItem -LiteralPath $OrigenExcel -Filter *.xlsm | Sort-Object Name)) {
+        $excluido = $false
+        foreach ($e in $Excluir) { if ($f.BaseName -eq $e) { $excluido = $true; break } }
+        if ($excluido) { continue }
+
+        $info = Get-CacheVinculos $f.FullName
+        if (-not $info) { $nopudo++; continue }
+
+        $diffs = 0
+        $contra = ''
+        foreach ($n in $info.Sources.Keys) {
+            $clave = $info.Sources[$n].ToLower()
+            if (-not $anuales.ContainsKey($clave)) { continue }
+            if (-not $cacheAnuales.ContainsKey($clave)) {
+                $cacheAnuales[$clave] = Get-NumerosLibro $anuales[$clave].FullName
+            }
+            $libro = $cacheAnuales[$clave]
+            if ($null -eq $libro) { continue }
+            foreach ($k in $info.Cache[$n].Keys) {
+                if (-not $libro.ContainsKey($k)) { continue }
+                $a = [double]$libro[$k]
+                $b = [double]$info.Cache[$n][$k]
+                if ([math]::Abs($a - $b) -gt 0.0000001) {
+                    $diffs++
+                    if (-not $contra) { $contra = Split-Path $anuales[$clave].Name -Leaf }
+                }
+            }
+        }
+        if ($diffs -gt 0) { $vencidos.Add("$($f.Name)  ($diffs valores distintos, contra $contra)") }
+    }
+
+    Log "   revisados: $(@(Get-ChildItem -LiteralPath $OrigenExcel -Filter *.xlsm).Count - $Excluir.Count)   vencidos: $($vencidos.Count)   ilegibles: $nopudo"
+
+    if ($vencidos.Count -gt 0) {
+        Log ""
+        Log "ESTOS EXCEL TIENEN VALORES VIEJOS:"
+        $vencidos | ForEach-Object { Log "   $_" }
+        Log ""
+        Die 8 "$($vencidos.Count) Excel de socio todavia no tienen los numeros de $contra."
+    }
+}
+
+# --- 4. los vinculos de los Excel de socio estan al dia? ---------------------
+Log "--- revisando si los vinculos de los Excel de socio estan al dia ---"
+Test-VinculosAlDia
+Log ""
+
+# --- 5. importar ------------------------------------------------------------
 $scriptImportador = Join-Path $Repo 'tools\importar-excel.ps1'
 $scriptVerificar = Join-Path $Repo 'tools\verificar.ps1'
 $dataJson = Join-Path $Repo 'data.json'
@@ -258,7 +464,7 @@ Log "generado     : $($nuevoObj.socios.Count) socios / $nregs registros anuales"
 Log "reporte      : $reporteImp"
 Log ""
 
-# --- 5. verificar -----------------------------------------------------------
+# --- 6. verificar -----------------------------------------------------------
 Log "--- verificando que no se rompio nada ---"
 & $scriptVerificar -Nuevo $dataNuevo -Actual $dataJson -Reporte $reporteVer *>&1 |
     ForEach-Object { $t = [string]$_; if ($t.Trim()) { Log $t } }
@@ -276,19 +482,19 @@ if ($Simular) {
     Salir 0
 }
 
-# --- 6. respaldar -----------------------------------------------------------
+# --- 7. respaldar -----------------------------------------------------------
 $sello = Get-Date -Format 'yyyyMMdd-HHmmss'
 $respaldo = Join-Path $Repo "data.json.bak-$sello"
 Copy-Item -LiteralPath $dataJson -Destination $respaldo -Force
 Log "respaldo     : $respaldo"
 Log ""
 
-# --- 7. reemplazar ----------------------------------------------------------
+# --- 8. reemplazar ----------------------------------------------------------
 Copy-Item -LiteralPath $dataNuevo -Destination $dataJson -Force
 Log "data.json    : reemplazado"
 Log ""
 
-# --- 8. commit --------------------------------------------------------------
+# --- 9. commit --------------------------------------------------------------
 $st = Invoke-Git @('status', '--porcelain')
 if (-not $st.Texto.Trim()) {
     Log "El data.json quedo igualito. No hay nada que commitear."
@@ -309,7 +515,7 @@ $hash = (Invoke-Git @('rev-parse', '--short', 'HEAD')).Texto
 Log "commit       : $hash"
 Log ""
 
-# --- 9. push ----------------------------------------------------------------
+# --- 10. push ----------------------------------------------------------------
 $push = Invoke-Git @('push', 'origin', $rama)
 if ($push.Codigo -ne 0) {
     Die 7 "COMMIT $hash HECHO en esta PC, pero el PUSH FALLO. Los socios todavia NO ven los cambios. Clic en Reintentar push. Dice: $($push.Texto)"
