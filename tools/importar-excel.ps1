@@ -1,9 +1,15 @@
+# CORRER CON pwsh 7, NO con powershell.exe 5.1.
+# 5.1 serializa los double como "50" y pwsh 7 como "50.0". El data.json publicado
+# esta en formato pwsh 7, asi que correrlo en 5.1 no cambia ni un centavo pero
+# reescribe todos los numeros del archivo: el diff de git pasa a marcar las
+# ~15000 lineas y es imposible de revisar.
+#   pwsh -NoProfile -File tools\importar-excel.ps1
 param(
     [string]$OrigenExcel = "D:\OneDrive_Juan\OneDrive\Escritorio\VALLHERMOSOPORPERSONA",
     [string]$DataJsonActual = "D:\OneDrive_Juan\GitHub\ValleHermoso\data.json",
     [string]$Salida = "D:\OneDrive_Juan\GitHub\ValleHermoso\data.nuevo.json",
     [string]$Reporte = "C:\Users\vales\AppData\Local\Temp\opencode\reporte.txt",
-    [int]$AniosMax = 2024,
+    [int]$AniosMax = 2026,
     [string[]]$Excluir = @("CAMARENA LOPEZ Wilder M", "CAMARENA LOPEZ Wilder M. 2017 AL 2026", "GUERRERO PORTILLA RUBEN", "LOPEZ QUICAÑO Gaby Elisa")
 )
 
