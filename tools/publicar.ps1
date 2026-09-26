@@ -135,6 +135,20 @@ if ($Restaurar -or $SoloPush) {
         $dataJsonR = Join-Path $Repo 'data.json'
         Copy-Item -LiteralPath $Restaurar -Destination $dataJsonR -Force
         Log "data.json    : restaurado desde $Restaurar"
+
+        # Si el respaldo resulto ser identico al archivo que ya estaba, git no
+        # tiene nada que commitear y "git commit" sale con error. Sin este
+        # chequeo el usuario veria un fallo rojo cuando en realidad no hay
+        # nada que restaurar.
+        $cambioR = Invoke-Git @('status', '--porcelain', '--', 'data.json')
+        if ($cambioR.Codigo -ne 0) { Die 3 "git status fallo: $($cambioR.Texto)" }
+        if (-not $cambioR.Texto.Trim()) {
+            Log ""
+            Log "El respaldo es identico al data.json que ya estaba."
+            Log "=== RESTAURAR: no habia nada que hacer ==="
+            Salir 0
+        }
+
         $msgR = "restaurado data.json desde $(Split-Path $Restaurar -Leaf)"
         $addR = Invoke-Git @('add', 'data.json')
         if ($addR.Codigo -ne 0) { Die 3 "git add fallo: $($addR.Texto)" }
@@ -143,7 +157,10 @@ if ($Restaurar -or $SoloPush) {
         $hashR = (Invoke-Git @('rev-parse', '--short', 'HEAD')).Texto
         Log "commit       : $hashR"
         Log ""
-        Log "=== RESTAURADO. El commit esta solo en esta PC; usa Reintentar push si lo quieres subir ==="
+        Log "=== RESTAURADO ==="
+        Log "Ojo: todavia NO se subiu. El portal sigue mostrando los datos de antes"
+        Log "del restore. Si quieres que los socios vean el data.json restaurado,"
+        Log "dale a Reintentar push."
         Salir 0
     }
 

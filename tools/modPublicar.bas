@@ -71,7 +71,7 @@ Public Sub PublicarDatos()
                   "Hay algo que arreglar antes de importar. El data.json NO se toco." & vbCrLf & vbCrLf & _
                   "Abre el log para ver el detalle."
         Case COD_IMPORTADOR, COD_GIT
-            Aviso "Falló", _
+            Aviso "No se pudo completar", _
                   "No se pudo completar. El data.json NO se toco." & vbCrLf & vbCrLf & _
                   "Abre el log para ver el detalle."
         Case Else
@@ -150,7 +150,10 @@ Public Sub RestaurarUltimoRespaldo()
     LimpiarEstado
 
     If cod = COD_OK Then
-        Aviso "Restaurado", "El data.json volvio al estado anterior. El commit se puede deshacer con git si quieres."
+        Aviso "Restaurado", _
+              "El data.json de esta PC volvio al estado anterior y quedo commiteado." & vbCrLf & vbCrLf & _
+              "Ojo: todavia NO se subio, asi que el portal sigue mostrando los datos de antes." & vbCrLf & _
+              "Si quieres que los socios vean el restaurado, dale a Reintentar push."
     Else
         Aviso "No se pudo restaurar", "Abre el log para ver el detalle."
     End If
@@ -167,7 +170,9 @@ Public Sub AbrirLog()
 End Sub
 
 
-' Al abrir el libro, avisa como quedo la ultima corrida.
+' Al abrir el libro, avisa SOLO si quedo algo pendiente de la ultima corrida.
+' Si todo fue bien no dice nada: un mensaje de "todo ok" cada vez que se abre
+' el archivo solo molesta.
 Public Sub Auto_Open()
     On Error Resume Next
     If Len(Dir$(RutaCodigo())) = 0 Then Exit Sub
@@ -181,12 +186,14 @@ Public Sub Auto_Open()
     Close #f
 
     Select Case cod
-        Case COD_OK
-            Aviso "Ultima publicacion", "Termino bien. Los datos estan publicados."
         Case COD_PUSH
             Aviso "Pendiente un push", _
-                  "La ultima vez los datos se generaron y se commitearon, pero el push fallo." & vbCrLf & _
-                  "Clic en Reintentar push."
+                  "La ultima vez los datos se generaron y se commitearon, pero el push fallo." & vbCrLf & vbCrLf & _
+                  "Los socios todavia NO ven esos cambios. Clic en Reintentar push."
+        Case COD_GIT, COD_PREVIO
+            Aviso "La ultima vez quedo a medias", _
+                  "La corrida anterior se detuvo antes de publicar, asi que el data.json del portal" & vbCrLf & _
+                  "sigue como estaba. No se perdio nada. Clic en Ver el log para ver que paso."
     End Select
 End Sub
 
@@ -211,7 +218,12 @@ Private Function Ejecutar(ByVal argumentos As String) As Long
         Exit Function
     End If
 
+    ' Borra el codigo de la corrida anterior. Si esta abierto en el Bloc de
+    ' notas el borrado falla, y eso no puede parar la publicacion: el script
+    ' lo sobreescribe igual y solo se perderia el codigo viejo.
+    On Error Resume Next
     If Len(Dir$(RutaCodigo())) > 0 Then Kill RutaCodigo()
+    On Error GoTo 0
 
     Dim cmd As String
     cmd = """" & pwsh & """ -NoProfile -ExecutionPolicy Bypass -File """ & RutaScript() & """" & _
@@ -222,8 +234,9 @@ Private Function Ejecutar(ByVal argumentos As String) As Long
 
     On Error GoTo fallo
     ' vbNormalFocus a proposito: se ve la consola con el log, para que se sepa
-    ' que esta pasando y no parezca que Excel se colgó.
-    Shell cmd, vbNormalFocus, "", True
+    ' que esta pasando y no parezca que Excel se colgo.
+    ' El 3er argumento de Shell es Wait (True = esperar a que termine).
+    Shell cmd, vbNormalFocus, True
     On Error GoTo 0
 
     If Len(Dir$(RutaCodigo())) = 0 Then
@@ -250,21 +263,29 @@ End Function
 ' ===========================================================================
 
 Private Function Cfg(ByVal clave As String, ByVal defecto As String) As String
-    On Error Resume Next
     Dim ws As Worksheet
-    Set ws = ThisWorkbook.Worksheets(HOJA_CONFIG)
-    If ws Is Nothing Then
-        Cfg = defecto
-        Exit Function
-    End If
     Dim celda As Range
-    Set celda = ws.Range("B" & Application.Match(clave, ws.Range("A:A"), 0))
-    If Len(Trim$(CStr(celda.Value))) = 0 Then
-        Cfg = defecto
-    Else
-        Cfg = Trim$(CStr(celda.Value))
-    End If
+    Cfg = defecto
+
+    On Error Resume Next
+    Set ws = ThisWorkbook.Worksheets(HOJA_CONFIG)
     On Error GoTo 0
+    If ws Is Nothing Then Exit Function
+
+    On Error Resume Next
+    Set celda = ws.Range("B" & Application.Match(clave, ws.Range("A:A"), 0))
+    On Error GoTo 0
+    ' Si la clave no existe en la hoja CONFIG, Match falla y celda queda vacio.
+    ' Sin este chequeo la funcion devolveria "" en vez del valor por defecto, y
+    ' las rutas se quedarian en blanco sin avisar nada.
+    If celda Is Nothing Then Exit Function
+
+    Dim texto As String
+    On Error Resume Next
+    texto = Trim$(CStr(celda.Value))
+    On Error GoTo 0
+
+    If Len(texto) > 0 Then Cfg = texto
 End Function
 
 Private Function RutaRepo() As String
@@ -297,30 +318,35 @@ End Function
 ' programa y en otras es el alias de la Tienda de Windows, y ese alias a
 ' veces no responde cuando se llama desde Shell.
 Private Function RutaPwsh() As String
+    Dim localApp As String
+    localApp = Environ$("LOCALAPPDATA")
+
     Dim candidatos As Variant
     candidatos = Array( _
         Cfg("PWSH", ""), _
         "C:\Program Files\PowerShell\7\pwsh.exe", _
         "C:\Program Files (x86)\PowerShell\7\pwsh.exe", _
-        Replace(Environ$("LOCALAPPDATA"), "\", "\") & "\Programs\PowerShell\7\pwsh.exe", _
-        Replace(Environ$("LOCALAPPDATA"), "\", "\") & "\Microsoft\WindowsApps\pwsh.exe")
+        localApp & "\Programs\PowerShell\7\pwsh.exe", _
+        localApp & "\Microsoft\WindowsApps\pwsh.exe")
 
     Dim i As Long
     For i = LBound(candidatos) To UBound(candidatos)
         If Len(candidatos(i)) > 0 Then
-            If Dir$(candidatos(i)) <> "" Then
+            On Error Resume Next
+            Dim existe As Boolean
+            existe = (Dir$(candidatos(i)) <> "")
+            On Error GoTo 0
+            If existe Then
                 RutaPwsh = candidatos(i)
                 Exit Function
             End If
         End If
     Next i
 
-    ' ultimo recurso: el que aparezca en el PATH
-    On Error Resume Next
-    Dim p As String
-    p = Environ$("PATH")
-    On Error GoTo 0
-    RutaPwsh = ""
+    ' Ultimo recurso: devolver el nombre pelado. Shell() lo busca en el PATH, y
+    ' ahi si esta el de Windows. Se devuelve "pwsh" y no "" porque ""eria
+    ' disparar el aviso de "Falta PowerShell 7" cuando en realidad si esta.
+    RutaPwsh = "pwsh"
 End Function
 
 
