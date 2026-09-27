@@ -578,11 +578,24 @@ if ($RevisarVinculos) {
 $scriptImportador = Join-Path $Repo 'tools\importar-excel.ps1'
 $scriptVerificar = Join-Path $Repo 'tools\verificar.ps1'
 $dataJson = Join-Path $Repo 'data.json'
-$dataNuevo = Join-Path $Repo 'data.nuevo.json'
+# El borrador y el respaldo NO van dentro del repo: el usuario quiere ver ahi
+# solamente data.json. El borrador es puro intermedio y va a la carpeta
+# temporal de la corrida. El respaldo va a una carpeta fija del usuario, con
+# nombre fijo, para que la macro lo encuentre sin tener que buscar el mas
+# nuevo (ver UltimoRespaldo en tools\modPublicar.bas).
 $tmp = Join-Path $env:TEMP ('vallehermoso-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
 New-Item -ItemType Directory -Force -Path $tmp | Out-Null
+$dataNuevo = Join-Path $tmp 'data.nuevo.json'
+$carpetaRespaldo = Join-Path $env:LOCALAPPDATA 'ValleHermoso'
+New-Item -ItemType Directory -Force -Path $carpetaRespaldo | Out-Null
 $reporteImp = Join-Path $tmp 'reporte-importador.txt'
 $reporteVer = Join-Path $tmp 'reporte-verificacion.txt'
+
+# Restos de versiones anteriores, que si vivian en el repo. Se limpian siempre
+# para que la carpeta quede con data.json y nada mas.
+Get-ChildItem -LiteralPath $Repo -Filter 'data.json.bak-*' -File -ErrorAction SilentlyContinue |
+    ForEach-Object { Remove-Item -LiteralPath $_.FullName -Force -ErrorAction SilentlyContinue }
+Remove-Item -LiteralPath (Join-Path $Repo 'data.nuevo.json') -Force -ErrorAction SilentlyContinue
 
 Log "--- importando (puede tardar un par de minutos) ---"
 $sw = [Diagnostics.Stopwatch]::StartNew()
@@ -625,14 +638,16 @@ if ($Simular) {
 }
 
 # --- 7. respaldar -----------------------------------------------------------
-$sello = Get-Date -Format 'yyyyMMdd-HHmmss'
-$respaldo = Join-Path $Repo "data.json.bak-$sello"
+# Fuera del repo, en carpeta fija del usuario. El nombre no lleva fecha: solo
+# se guarda el anterior, y el historial completo ya esta en git.
+$respaldo = Join-Path $carpetaRespaldo 'data.json.anterior'
 Copy-Item -LiteralPath $dataJson -Destination $respaldo -Force
 Log "respaldo     : $respaldo"
 Log ""
 
 # --- 8. reemplazar ----------------------------------------------------------
 Copy-Item -LiteralPath $dataNuevo -Destination $dataJson -Force
+Remove-Item -LiteralPath $dataNuevo -Force -ErrorAction SilentlyContinue
 Log "data.json    : reemplazado"
 Log ""
 

@@ -410,19 +410,15 @@ End Function
 
 
 Private Function UltimoRespaldo() As String
-    Dim carpeta As String
-    carpeta = RutaRepo()
+    ' El respaldo ya NO vive en el repo, porque el usuario quiere ver ahi
+    ' solamente data.json. Queda en una carpeta fija del usuario y con nombre
+    ' fijo, asi que no hay que buscar el mas nuevo como antes.
     Dim f As String
-    Dim ultimo As String
-    f = Dir$(carpeta & "\data.json.bak-*", vbNormal)
-    Do While Len(f) > 0
-        If f > ultimo Then ultimo = f
-        f = Dir$()
-    Loop
-    If Len(ultimo) = 0 Then
-        UltimoRespaldo = ""
+    f = Environ$("LOCALAPPDATA") & "\ValleHermoso\data.json.anterior"
+    If Len(Dir$(f, vbNormal)) > 0 Then
+        UltimoRespaldo = f
     Else
-        UltimoRespaldo = carpeta & "\" & ultimo
+        UltimoRespaldo = ""
     End If
 End Function
 
