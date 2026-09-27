@@ -21,6 +21,16 @@ Option Explicit
 Private Const HOJA_CONFIG As String = "CONFIG"
 Private Const HOJA_PORTADA As String = "Portada"
 
+' Celda donde se escribe el mensaje de "estado" mientras corre algo.
+' En la portada nueva la etiqueta ESTADO esta en B4, y el mensaje va en C4.
+Private Const CELDA_ESTADO As String = "C4"
+
+' Colores de la portada. Son los mismos de index.css, en RGB de VBA.
+Private Const COLOR_ESTADO As Long = 15528931     ' brand-soft  #e3f3ec
+Private Const COLOR_ESTADO_TXT As Long = 4742154 ' brand-dark  #0a5c48
+Private Const COLOR_CARD As Long = 16185332      ' fondo tarjeta #f4f7f6
+Private Const COLOR_TEXTO As Long = 2829599      ' text         #1f2d2b
+
 ' codigos de salida de publicar.ps1
 Private Const COD_OK As Long = 0
 Private Const COD_VERIFICACION As Long = 2
@@ -468,20 +478,26 @@ End Sub
 
 Private Sub PonerEstado(ByVal texto As String)
     On Error Resume Next
-    With ThisWorkbook.Worksheets(HOJA_PORTADA).Range("B4")
+    With ThisWorkbook.Worksheets(HOJA_PORTADA).Range(CELDA_ESTADO)
         .Value = texto
         .Font.Bold = True
     End With
-    ThisWorkbook.Worksheets(HOJA_PORTADA).Range("B4").Interior.Color = RGB(255, 243, 224)
+    With ThisWorkbook.Worksheets(HOJA_PORTADA).Range(CELDA_ESTADO)
+        .Interior.Color = COLOR_ESTADO
+        .Font.Color = COLOR_ESTADO_TXT
+    End With
     On Error GoTo 0
 End Sub
 
 Private Sub LimpiarEstado()
     On Error Resume Next
-    With ThisWorkbook.Worksheets(HOJA_PORTADA).Range("B4")
+    With ThisWorkbook.Worksheets(HOJA_PORTADA).Range(CELDA_ESTADO)
         .Value = ""
         .Font.Bold = False
-        .Interior.Pattern = xlNone
+        ' No se pone "sin relleno": esa celda vive dentro de la tarjeta
+        ' blanca y si queda sin relleno se ve del color de la hoja.
+        .Interior.Color = COLOR_CARD
+        .Font.Color = COLOR_TEXTO
     End With
     On Error GoTo 0
 End Sub
