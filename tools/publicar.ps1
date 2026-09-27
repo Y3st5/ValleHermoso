@@ -18,7 +18,10 @@
 param(
     [string]$Repo = 'C:\Users\sis\Documents\GitHub\ValleHermoso',
     [string]$OrigenExcel = 'D:\VALLE HERMOSO\CUENTA POR PERSONA',
-    [int]$AniosMax = 2026,
+    # 9999 = trae TODOS los anios que encuentre en los Excel. No hay que
+    # cambiar nada en enero. El importador solo reconoce anios entre 1900 y
+    # 2100 (importar-excel.ps1 linea 137), asi que un ano inventado no pasa.
+    [int]$AniosMax = 9999,
     [string]$Mensaje = '',
     [switch]$Simular,
     [switch]$SoloPush,
