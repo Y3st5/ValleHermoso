@@ -221,10 +221,14 @@ Public Sub Auto_Open()
     If Len(Dir$(RutaCodigo())) = 0 Then Exit Sub
     If Len(Dir$(RutaLog())) = 0 Then Exit Sub
 
+    ' La ruta va en una variable: la sentencia Open de VBA no acepta llamadas
+    ' a funcion entre parentesis.
+    Dim rutaCod As String
     Dim f As Integer
     Dim cod As Long
+    rutaCod = RutaCodigo()
     f = FreeFile
-    Open RutaCodigo() For Input As #f
+    Open rutaCod For Input As #f
     cod = Val(Trim$(Input$(LOF(f), f)))
     Close #f
 
@@ -276,20 +280,32 @@ Private Function Ejecutar(ByVal argumentos As String) As Long
           " " & argumentos
 
     On Error GoTo fallo
-    ' vbNormalFocus a proposito: se ve la consola con el log, para que se sepa
+    ' No se usa Shell() para esto. En esta instalacion de Excel la sentencia
+    ' Shell() solo acepta 2 argumentos y no tiene forma de esperar: con 3
+    ' argumentos el compilador tira "El numero de argumentos es incorrecto".
+    '(probado: con 3 y con 2+estilo numerico falla igual; con 2 compila pero no
+    ' espera, y entonces la macro leeria el codigo de la corrida anterior.)
+    ' WScript.Shell.Run si tiene parametro de espera, asi que se usa ese.
+    ' El 1 es la ventana normal: se ve la consola con el log, para que se sepa
     ' que esta pasando y no parezca que Excel se colgo.
-    ' El 3er argumento de Shell es Wait (True = esperar a que termine).
-    Shell cmd, vbNormalFocus, True
+    Dim sh As Object
+    Set sh = CreateObject("WScript.Shell")
+    sh.Run cmd, 1, True
     On Error GoTo 0
 
-    If Len(Dir$(RutaCodigo())) = 0 Then
+    ' La ruta va en una variable. La sentencia Open de VBA es antigua y no
+    ' acepta una llamada a funcion entre parentesis: hay que darle una variable.
+    Dim rutaCod As String
+    rutaCod = RutaCodigo()
+
+    If Len(Dir$(rutaCod)) = 0 Then
         Ejecutar = -1
         Exit Function
     End If
 
     Dim f As Integer
     f = FreeFile
-    Open RutaCodigo() For Input As #f
+    Open rutaCod For Input As #f
     Ejecutar = Val(Trim$(Input$(LOF(f), f)))
     Close #f
     Exit Function
