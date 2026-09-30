@@ -1228,14 +1228,14 @@ async function compartirPDF(socio, anio, btn) {
     }
 
     const src = document.getElementById('pdf-source');
-    src.innerHTML = html;
+    src.innerHTML = '<div class="pdf-inner">' + html + '</div>';
 
     if (btn) { btn.disabled = true; btn.textContent = 'Generando…'; }
 
     try {
         const blob = await new Promise((resolve, reject) => {
             html2pdf()
-                .from(src)
+                .from(src.firstElementChild)
                 .set({
                     margin: [8, 8, 8, 8],
                     filename: nombreArchivo(socio, titulo),
@@ -1259,6 +1259,7 @@ async function compartirPDF(socio, anio, btn) {
             window.print();
         }
     } finally {
+        src.innerHTML = '';
         if (btn) { btn.disabled = false; btn.textContent = 'Compartir PDF'; }
     }
 }
