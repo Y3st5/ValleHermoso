@@ -3570,7 +3570,7 @@
             },
             {
               "recibo": "980",
-              "concepto": "DEUDAS VARIAS",
+              "concepto": "INGRESOS VARIOS",
               "monto": 100.0
             }
           ],
@@ -4075,8 +4075,8 @@
               "recibo": "3"
             },
             {
-              "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "concepto": "AUTOVALUO 2025/2026",
+              "monto": 59.81,
               "recibo": "4"
             },
             {
@@ -4109,11 +4109,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 556.41
+              "monto": 616.22
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 556.41
+              "monto": 616.22
             },
             {
               "concepto": "ABONOS REALIZADOS",
