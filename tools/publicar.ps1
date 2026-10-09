@@ -65,21 +65,21 @@ function Die([int]$codigo, [string]$t) {
 }
 
 # --- archivos que hay que dejar excluidos ------------------------------------
-# El importador trae 4 nombres por defecto, pero la carpeta de esta PC tiene
-# dos archivos mas que se cuelan y hay que quitar:
-#   - "CAMARENA LOPEZ Wilder M." (con punto final): el default trae el nombre
-#     SIN punto, asi que no matchea y se cuela como socio nuevo.
-#   - "CTA X PERSONA CONSOLIDADA": es el consolidado, no una persona, pero su
-#     celda A1 dice "VALLEJOS RIVEROS Eugenia" y trae 2025-2026, asi que se
-#     fusiona con el socio real y lo deja duplicado.
-# Se pasan por parametro, no editando el importador, para no tocar un archivo
-# que ya esta verificado. Ademas asi el "n" de LOPEZ QUICANO viaja en UTF-8,
-# cosa que no se puede conseguir desde la linea de comandos de VBA (ANSI).
+# La carpeta de esta PC trae los 27 socios. Ademas pueden aparecer archivos
+# que NO son socio y hay que dejar fuera:
+#   - "LOPEZ QUICAÑO Gaby Elisa": no es socio, no figura en el data.json.
+#   - "CAMARENA LOPEZ Wilder M. 2017 AL 2026": copia del socio CAMARENA
+#     (mismo A1). Si entran las dos, sale duplicado. Se deja entrar el archivo
+#     "CAMARENA LOPEZ Wilder M..xlsm".
+#   - "CTA X PERSONA CONSOLIDADA": el consolidado, no una persona; su A1 dice
+#     "VALLEJOS RIVEROS Eugenia" y se fusiona con el socio real.
+# Se dejan en la lista aunque alguno ya no este en la carpeta: si vuelve a
+# aparecer, queda excluido solo. Se pasan por parametro, no editando el
+# importador, para no tocar un archivo ya verificado; ademas asi la "n" de
+# LOPEZ QUICANO viaja en UTF-8, cosa que no se puede conseguir desde la linea
+# de comandos de VBA (ANSI).
 $Excluir = @(
-    'CAMARENA LOPEZ Wilder M',
     'CAMARENA LOPEZ Wilder M. 2017 AL 2026',
-    'CAMARENA LOPEZ Wilder M.',
-    'GUERRERO PORTILLA RUBEN',
     'LOPEZ QUICAÑO Gaby Elisa',
     'CTA X PERSONA CONSOLIDADA'
 )

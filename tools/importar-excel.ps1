@@ -10,7 +10,7 @@ param(
     [string]$Salida = "D:\OneDrive_Juan\GitHub\ValleHermoso\data.nuevo.json",
     [string]$Reporte = "C:\Users\vales\AppData\Local\Temp\opencode\reporte.txt",
     [int]$AniosMax = 2026,
-    [string[]]$Excluir = @("CAMARENA LOPEZ Wilder M", "CAMARENA LOPEZ Wilder M. 2017 AL 2026", "GUERRERO PORTILLA RUBEN", "LOPEZ QUICAÑO Gaby Elisa")
+    [string[]]$Excluir = @("CAMARENA LOPEZ Wilder M. 2017 AL 2026", "LOPEZ QUICAÑO Gaby Elisa", "CTA X PERSONA CONSOLIDADA")
 )
 
 $ErrorActionPreference = 'Stop'
