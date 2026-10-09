@@ -130,10 +130,13 @@ foreach ($f in $archivos) {
     }
 
     $filasAnio = @()
-    for ($r = 4; $r -le $maxR; $r++) {
+    for ($r = 1; $r -le $maxR; $r++) {
         $v = $G[$r, 1]
         if ($v -is [double] -or $v -is [int]) {
             $y = [int][math]::Round([double]$v, 0)
+            if ($y -ge 1900 -and $y -le 2100) { $filasAnio += , @($y, $r) }
+        } elseif ($v -is [string] -and $v -match '^\s*A.O\s+(\d{4})\s*$') {
+            $y = [int]$Matches[1]
             if ($y -ge 1900 -and $y -le 2100) { $filasAnio += , @($y, $r) }
         }
     }
