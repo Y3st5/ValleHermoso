@@ -584,7 +584,7 @@
             },
             {
               "concepto": "AUTOVALUO 2018 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -626,11 +626,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 169.26
+              "monto": 168.88
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 169.26
+              "monto": 168.88
             }
           ]
         },
@@ -639,7 +639,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 169.26,
+              "monto": 168.88,
               "recibo": "2"
             },
             {
@@ -649,7 +649,7 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -676,11 +676,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 169.26
+              "monto": 200.81
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 169.26
+              "monto": 200.81
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -1273,7 +1273,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -1315,11 +1315,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 208.85
+              "monto": 208.47
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 208.85
+              "monto": 208.47
             }
           ]
         },
@@ -1328,7 +1328,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 208.85,
+              "monto": 208.47,
               "recibo": "2"
             },
             {
@@ -1338,12 +1338,12 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
               "concepto": "CUOTA MENSUAL",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -1371,11 +1371,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 343.85
+              "monto": 420.4
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 343.85
+              "monto": 420.4
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -1950,7 +1950,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -1992,11 +1992,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 860.76
+              "monto": 860.38
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 860.76
+              "monto": 860.38
             }
           ]
         },
@@ -2005,7 +2005,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 860.76,
+              "monto": 860.38,
               "recibo": "2"
             },
             {
@@ -2015,7 +2015,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2026",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -2025,7 +2025,7 @@
             },
             {
               "concepto": "CUOTA MENSUAL 2026",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -2057,11 +2057,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 995.76
+              "monto": 1072.31
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 995.76
+              "monto": 1072.31
             }
           ]
         }
@@ -2656,7 +2656,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -2698,11 +2698,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1822.21
+              "monto": 1821.83
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1822.21
+              "monto": 1821.83
             }
           ]
         },
@@ -2711,7 +2711,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 1822.21,
+              "monto": 1821.83,
               "recibo": "2"
             },
             {
@@ -2721,12 +2721,12 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
               "concepto": "CUOTA MENSUAL",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -2748,11 +2748,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1957.21
+              "monto": 2033.76
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1957.21
+              "monto": 2033.76
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -3343,7 +3343,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -3385,11 +3385,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 208.85
+              "monto": 208.47
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 208.85
+              "monto": 208.47
             }
           ]
         },
@@ -3398,7 +3398,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 208.85,
+              "monto": 208.47,
               "recibo": "2"
             },
             {
@@ -3408,12 +3408,12 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
               "concepto": "CUOTA MENSUAL",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -3435,11 +3435,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 343.85
+              "monto": 420.4
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 343.85
+              "monto": 420.4
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -4011,7 +4011,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -4053,11 +4053,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 421.41
+              "monto": 421.03
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 421.41
+              "monto": 421.03
             }
           ]
         },
@@ -4066,7 +4066,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 421.41,
+              "monto": 421.03,
               "recibo": "2"
             },
             {
@@ -4076,12 +4076,12 @@
             },
             {
               "concepto": "AUTOVALUO 2025/2026",
-              "monto": 59.81,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
               "concepto": "CUOTA MENSUAL",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -4109,11 +4109,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 616.22
+              "monto": 632.96
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 616.22
+              "monto": 632.96
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -4699,7 +4699,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -4741,11 +4741,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1446.36
+              "monto": 1445.98
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1446.36
+              "monto": 1445.98
             }
           ]
         },
@@ -4754,7 +4754,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 1446.36,
+              "monto": 1445.98,
               "recibo": "2"
             },
             {
@@ -4764,12 +4764,12 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
               "concepto": "CUOTA MENSUAL",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -4797,11 +4797,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1581.36
+              "monto": 1657.91
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1196.36
+              "monto": 1272.91
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -5384,7 +5384,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -5432,11 +5432,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 87.05
+              "monto": 86.67
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 87.05
+              "monto": 86.67
             }
           ]
         },
@@ -5445,7 +5445,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 23.05,
+              "monto": 22.67,
               "recibo": "2"
             },
             {
@@ -5455,7 +5455,7 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -5488,11 +5488,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 23.05
+              "monto": 54.6
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 23.05
+              "monto": 54.6
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -6080,7 +6080,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -6128,11 +6128,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 208.85
+              "monto": 208.47
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 179.86
+              "monto": 179.48
             }
           ]
         },
@@ -6141,7 +6141,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 179.86,
+              "monto": 179.48,
               "recibo": "2"
             },
             {
@@ -6151,12 +6151,12 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
               "concepto": "CUOTA MENSUAL",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -6178,11 +6178,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 314.86
+              "monto": 391.41
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 314.86
+              "monto": 391.41
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -6762,7 +6762,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -6804,11 +6804,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1053.1
+              "monto": 1052.72
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1053.1
+              "monto": 1052.72
             }
           ]
         },
@@ -6817,7 +6817,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 1053.1,
+              "monto": 1052.72,
               "recibo": "2"
             },
             {
@@ -6827,12 +6827,12 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
               "concepto": "CUOTA MENSUAL",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -6854,11 +6854,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1188.1
+              "monto": 1264.65
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1188.1
+              "monto": 1264.65
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -8148,7 +8148,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -8190,11 +8190,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1219.49
+              "monto": 1219.11
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1219.49
+              "monto": 1219.11
             }
           ]
         },
@@ -8203,7 +8203,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 1219.49,
+              "monto": 1219.11,
               "recibo": "2"
             },
             {
@@ -8213,12 +8213,12 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
               "concepto": "CUOTA MENSUAL",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -8240,11 +8240,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1354.49
+              "monto": 1431.04
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1354.49
+              "monto": 1431.04
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -8815,7 +8815,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -8857,11 +8857,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 339.81
+              "monto": 339.43
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 339.81
+              "monto": 339.43
             }
           ]
         },
@@ -8870,7 +8870,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 339.81,
+              "monto": 339.43,
               "recibo": "2"
             },
             {
@@ -8880,7 +8880,7 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -8907,11 +8907,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 339.81
+              "monto": 371.36
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 339.81
+              "monto": 371.36
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -9486,7 +9486,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -9528,11 +9528,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 185.45
+              "monto": 185.07
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 185.45
+              "monto": 185.07
             }
           ]
         },
@@ -9541,7 +9541,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 185.45,
+              "monto": 185.07,
               "recibo": "2"
             },
             {
@@ -9551,12 +9551,12 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
               "concepto": "CUOTA MENSUAL",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -9578,11 +9578,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 320.45
+              "monto": 397.0
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 320.45
+              "monto": 397.0
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -10186,7 +10186,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": -37.39,
+              "monto": -37.77,
               "recibo": "2"
             },
             {
@@ -10196,7 +10196,7 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -10223,11 +10223,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": -37.39
+              "monto": -5.84
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": -37.39
+              "monto": -5.84
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -10818,7 +10818,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -10860,11 +10860,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 298.85
+              "monto": 298.47
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 298.85
+              "monto": 298.47
             }
           ]
         },
@@ -10873,7 +10873,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 298.85,
+              "monto": 298.47,
               "recibo": "2"
             },
             {
@@ -10883,12 +10883,12 @@
             },
             {
               "concepto": "AUTOVALUO",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
               "concepto": "CUOTA MENSUAL",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -10910,11 +10910,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 433.85
+              "monto": 510.4
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 433.85
+              "monto": 510.4
             },
             {
               "concepto": "ABONOS REALIZADOS",
@@ -11553,7 +11553,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2025",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -11595,11 +11595,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 176.71
+              "monto": 176.33
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 176.71
+              "monto": 176.33
             }
           ]
         },
@@ -11608,7 +11608,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 176.71,
+              "monto": 176.33,
               "recibo": "2"
             },
             {
@@ -11618,7 +11618,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2026",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -11628,7 +11628,7 @@
             },
             {
               "concepto": "CUOTA MENSUAL 2026",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -11660,11 +11660,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 311.71
+              "monto": 388.26
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 311.71
+              "monto": 388.26
             }
           ]
         }
@@ -12255,7 +12255,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -12297,11 +12297,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1417.76
+              "monto": 1417.38
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1417.76
+              "monto": 1417.38
             }
           ]
         },
@@ -12310,7 +12310,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 1417.76,
+              "monto": 1417.38,
               "recibo": "2"
             },
             {
@@ -12320,7 +12320,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2026",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -12330,7 +12330,7 @@
             },
             {
               "concepto": "CUOTA MENSUAL 2026",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -12368,11 +12368,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1552.76
+              "monto": 1629.31
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1552.76
+              "monto": 1629.31
             }
           ]
         }
@@ -12969,7 +12969,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -13011,11 +13011,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 977.76
+              "monto": 977.38
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 977.76
+              "monto": 977.38
             }
           ]
         },
@@ -13024,7 +13024,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 977.76,
+              "monto": 977.38,
               "recibo": "2"
             },
             {
@@ -13034,7 +13034,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2026",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -13044,7 +13044,7 @@
             },
             {
               "concepto": "CUOTA MENSUAL 2026",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -13087,11 +13087,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1112.76
+              "monto": 1189.31
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1112.76
+              "monto": 1189.31
             }
           ]
         }
@@ -13662,7 +13662,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -13704,11 +13704,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1306.76
+              "monto": 1306.38
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1306.76
+              "monto": 1306.38
             }
           ]
         },
@@ -13717,7 +13717,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 1306.76,
+              "monto": 1306.38,
               "recibo": "2"
             },
             {
@@ -13727,7 +13727,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2026",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -13737,7 +13737,7 @@
             },
             {
               "concepto": "CUOTA MENSUAL 2026",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -13769,11 +13769,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1441.76
+              "monto": 1518.31
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1441.76
+              "monto": 1518.31
             }
           ]
         }
@@ -14339,7 +14339,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -14381,11 +14381,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 4381.36
+              "monto": 4380.98
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 4381.36
+              "monto": 4380.98
             }
           ]
         },
@@ -14394,7 +14394,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 4381.36,
+              "monto": 4380.98,
               "recibo": "2"
             },
             {
@@ -14404,7 +14404,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2026",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -14414,7 +14414,7 @@
             },
             {
               "concepto": "CUOTA MENSUAL 2026",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -14446,11 +14446,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 4516.36
+              "monto": 4592.91
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 4516.36
+              "monto": 4592.91
             }
           ]
         }
@@ -15039,7 +15039,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -15081,11 +15081,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 166.76
+              "monto": 166.38
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 166.76
+              "monto": 166.38
             }
           ]
         },
@@ -15094,7 +15094,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 116.76,
+              "monto": 116.38,
               "recibo": "2"
             },
             {
@@ -15104,7 +15104,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2026",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -15146,11 +15146,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 116.76
+              "monto": 148.31
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 116.76
+              "monto": 148.31
             }
           ]
         }
@@ -15789,7 +15789,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -15831,11 +15831,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1570.91
+              "monto": 1570.53
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1570.91
+              "monto": 1570.53
             }
           ]
         },
@@ -15844,7 +15844,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 1570.91,
+              "monto": 1570.53,
               "recibo": "2"
             },
             {
@@ -15854,7 +15854,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2026",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -15864,7 +15864,7 @@
             },
             {
               "concepto": "CUOTA MENSUAL 2026",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -15902,11 +15902,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 1705.91
+              "monto": 1782.46
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 1705.91
+              "monto": 1782.46
             }
           ]
         }
@@ -16488,7 +16488,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2023",
-              "monto": 28.85,
+              "monto": 28.47,
               "recibo": "4"
             },
             {
@@ -16530,11 +16530,11 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 2189.71
+              "monto": 2189.33
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 2189.71
+              "monto": 2189.33
             }
           ]
         },
@@ -16543,7 +16543,7 @@
           "obligaciones": [
             {
               "concepto": "SALDO DEUDA AL CIERRE 2025",
-              "monto": 2189.71,
+              "monto": 2189.33,
               "recibo": "2"
             },
             {
@@ -16553,7 +16553,7 @@
             },
             {
               "concepto": "AUTOVALUO 2019 AL 2026",
-              "monto": 0.0,
+              "monto": 31.93,
               "recibo": "4"
             },
             {
@@ -16563,7 +16563,7 @@
             },
             {
               "concepto": "CUOTA MENSUAL 2026",
-              "monto": 135.0,
+              "monto": 180.0,
               "recibo": "8"
             },
             {
@@ -16595,11 +16595,1420 @@
             },
             {
               "concepto": "DEUDA TOTAL",
-              "monto": 2324.71
+              "monto": 2401.26
             },
             {
               "concepto": "SALDO FINAL",
-              "monto": 2324.71
+              "monto": 2401.26
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SOC-0025",
+      "nombre": "CAMARENA LOPEZ Wilder M.",
+      "email": "m.camarena@email.com",
+      "password": "123",
+      "telefono": "",
+      "t_cambio": 3.321,
+      "anios": [
+        {
+          "anio": 2018,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2017",
+              "monto": 1097.12
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2018",
+              "monto": 50.0
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2018",
+              "monto": 48.15
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2018",
+              "monto": 120.0
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": null
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2018",
+              "monto": 60.0
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 25.0
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2018",
+              "monto": 0.0
+            }
+          ],
+          "aportaciones": [
+            {
+              "recibo": "681",
+              "concepto": "VARIOS",
+              "monto": 100.0
+            },
+            {
+              "recibo": "934",
+              "concepto": "INAUGURACION PISTA",
+              "monto": 25.0
+            },
+            {
+              "recibo": "935",
+              "concepto": "SANTA ROSA 2018",
+              "monto": 50.0
+            },
+            {
+              "recibo": "815",
+              "concepto": "CUOTA MENSUAl ENE-Oct",
+              "monto": 100.0
+            }
+          ],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 275.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1400.27
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1125.27
+            }
+          ]
+        },
+        {
+          "anio": 2019,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2018",
+              "monto": 1125.27
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2019",
+              "monto": 0.0
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2019",
+              "monto": 57.09
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2019",
+              "monto": 120.0
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2019",
+              "monto": 60.0
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2019",
+              "monto": 0.0
+            }
+          ],
+          "aportaciones": [
+            {
+              "recibo": "716",
+              "concepto": "F.EMERG ENE-DIC Y CUOTA MENS 2018",
+              "monto": 80.0
+            },
+            {
+              "recibo": "717",
+              "concepto": "MENSUAL ENE-FEB 2019",
+              "monto": 20.0
+            },
+            {
+              "recibo": "718",
+              "concepto": "MENS NOV-DIC F.EMERG ENE-DIC 2018 Y AUTOVALUO",
+              "monto": 88.5
+            },
+            {
+              "recibo": "719",
+              "concepto": "FONDO DE EMERG. 2016",
+              "monto": 55.0
+            },
+            {
+              "recibo": "699",
+              "concepto": "SANTA ROSA 2019",
+              "monto": 100.0
+            }
+          ],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 343.5
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1362.36
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1018.86
+            }
+          ]
+        },
+        {
+          "anio": 2020,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2019",
+              "monto": 1018.86
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2020",
+              "monto": 0.0
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2020",
+              "monto": 54.73
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2020",
+              "monto": 120.0
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2020",
+              "monto": 60.0
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2020",
+              "monto": 0.0
+            }
+          ],
+          "aportaciones": [],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1253.59
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1253.59
+            }
+          ]
+        },
+        {
+          "anio": 2021,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2020",
+              "monto": 1253.59
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2021",
+              "monto": 0.0
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2021",
+              "monto": 56.94
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2021",
+              "monto": 120.0
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": null
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2021",
+              "monto": 60.0
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2021",
+              "monto": 0.0
+            }
+          ],
+          "aportaciones": [],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1490.53
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1490.53
+            }
+          ]
+        },
+        {
+          "anio": 2022,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2021",
+              "monto": 1490.53
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2022",
+              "monto": 0.0
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2022",
+              "monto": 61.8
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2022",
+              "monto": 120.0
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2022",
+              "monto": 60.0
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2022",
+              "monto": 0.0
+            }
+          ],
+          "aportaciones": [],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1732.33
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1732.33
+            }
+          ]
+        },
+        {
+          "anio": 2023,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2022",
+              "monto": 1732.33
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2023",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2023",
+              "monto": 31.6,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "9"
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2023",
+              "monto": null,
+              "recibo": "8"
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": 0.0,
+              "recibo": "5"
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2023",
+              "monto": 60.0,
+              "recibo": "6"
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0,
+              "recibo": "7"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2023",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [
+            {
+              "recibo": "851",
+              "concepto": "AUTOVALUO 2019-2023",
+              "monto": 263.35
+            },
+            {
+              "recibo": "852",
+              "concepto": "AUTOVALUO 2019-2023",
+              "monto": 75.0
+            }
+          ],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 338.35
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1823.93
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1485.58
+            }
+          ]
+        },
+        {
+          "anio": 2024,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2023",
+              "monto": 1485.58
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2024",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2024",
+              "monto": 31.6,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "9"
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2024",
+              "monto": 180.0,
+              "recibo": "8"
+            },
+            {
+              "concepto": "INTERESES",
+              "monto": 0.0,
+              "recibo": "5"
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2024",
+              "monto": 0.0,
+              "recibo": "6"
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0,
+              "recibo": "7"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2023",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [
+            {
+              "recibo": "783",
+              "concepto": "PAGO DEUDA AL 2017 AL 2024",
+              "monto": 789.0
+            },
+            {
+              "recibo": "878",
+              "concepto": "CUOTA MENSUAL",
+              "monto": 180.0
+            }
+          ],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 969.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1697.18
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 728.18
+            }
+          ]
+        },
+        {
+          "anio": 2025,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2024",
+              "monto": 728.18,
+              "recibo": "2"
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2023",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2023",
+              "monto": 28.47,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "9"
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2023",
+              "monto": 180.0,
+              "recibo": "8"
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": 0.0,
+              "recibo": "5"
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2023",
+              "monto": 0.0,
+              "recibo": "6"
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0,
+              "recibo": "7"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2023",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 936.65
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 936.65
+            }
+          ]
+        },
+        {
+          "anio": 2026,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2025",
+              "monto": 936.65,
+              "recibo": "2"
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO",
+              "monto": 31.93,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA MENSUAL",
+              "monto": 180.0,
+              "recibo": "8"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS",
+              "monto": 0.0,
+              "recibo": "11"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [
+            {
+              "recibo": "",
+              "concepto": "",
+              "monto": 1097.12
+            }
+          ],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 1097.12
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1148.58
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 51.46
+            },
+            {
+              "concepto": "ABONOS REALIZADOS",
+              "monto": 0.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SOC-0026",
+      "nombre": "GUERRERO PORTILLA Ruben",
+      "email": "ruben.guerrero@email.com",
+      "password": "123",
+      "telefono": "",
+      "t_cambio": null,
+      "anios": [
+        {
+          "anio": 2026,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2025",
+              "monto": 0.0,
+              "recibo": "2"
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO",
+              "monto": 31.93,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA MENSUAL",
+              "monto": 180.0,
+              "recibo": "8"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS",
+              "monto": 0.0,
+              "recibo": "11"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [
+            {
+              "recibo": "8",
+              "concepto": "MENSUALIDAD ENERO 2026",
+              "monto": null
+            },
+            {
+              "recibo": "16",
+              "concepto": "CUOTA MENSUAL 2026",
+              "monto": null
+            }
+          ],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 211.93
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 211.93
+            },
+            {
+              "concepto": "ABONOS REALIZADOS",
+              "monto": 0.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SOC-0027",
+      "nombre": "LEON PEDRAZA Teofila",
+      "email": "teofila.leon@email.com",
+      "password": "123",
+      "telefono": "",
+      "t_cambio": 3.321,
+      "anios": [
+        {
+          "anio": 2017,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2016",
+              "monto": 1189.45,
+              "recibo": "2"
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2017",
+              "monto": 50.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2017",
+              "monto": 228.5,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "11"
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2017",
+              "monto": 120.0,
+              "recibo": "9"
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": 0.0,
+              "recibo": "12"
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2018",
+              "monto": 60.0,
+              "recibo": "6"
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0,
+              "recibo": "7"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2017",
+              "monto": 0.0,
+              "recibo": "10"
+            }
+          ],
+          "aportaciones": [],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1647.95
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1647.95
+            }
+          ]
+        },
+        {
+          "anio": 2018,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2017",
+              "monto": 1124.45,
+              "recibo": "2"
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2018",
+              "monto": null,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2018",
+              "monto": 48.15,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "10"
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2018",
+              "monto": 120.0,
+              "recibo": "9"
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": 0.0,
+              "recibo": "12"
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2018",
+              "monto": 60.0,
+              "recibo": "6"
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 25.0,
+              "recibo": "7"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2018",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [
+            {
+              "recibo": "802",
+              "concepto": "FONDO EMERGENCIA",
+              "monto": 60.0
+            },
+            {
+              "recibo": "928",
+              "concepto": "INAUGURACION PISTA",
+              "monto": 25.0
+            },
+            {
+              "recibo": "945",
+              "concepto": "CUOTA FONDO MAY-AGO",
+              "monto": 60.0
+            },
+            {
+              "recibo": "821",
+              "concepto": "INGRESOS VARIOS",
+              "monto": 60.0
+            }
+          ],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 205.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1377.6
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1172.6
+            }
+          ]
+        },
+        {
+          "anio": 2019,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2018",
+              "monto": 1172.6
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2019",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2019",
+              "monto": 57.09,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "9"
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2019",
+              "monto": 120.0,
+              "recibo": "8"
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": null
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2019",
+              "monto": 60.0,
+              "recibo": "6"
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0,
+              "recibo": "7"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2019",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [
+            {
+              "recibo": "710",
+              "concepto": "AUTOVALUO LOCAL",
+              "monto": 48.2
+            },
+            {
+              "recibo": "698",
+              "concepto": "C.MENS-F.EMERG ENE-ABRIL",
+              "monto": 60.0
+            }
+          ],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 108.2
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1409.69
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1301.49
+            }
+          ]
+        },
+        {
+          "anio": 2020,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2019",
+              "monto": 1301.49,
+              "recibo": "2"
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2020",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2020",
+              "monto": 54.73,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "9"
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2020",
+              "monto": 120.0,
+              "recibo": "8"
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": null
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2020",
+              "monto": 60.0,
+              "recibo": "6"
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0,
+              "recibo": "7"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2020",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1536.22
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1536.22
+            }
+          ]
+        },
+        {
+          "anio": 2021,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2020",
+              "monto": 1536.22,
+              "recibo": "2"
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2021",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2021",
+              "monto": 56.94,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "9"
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2021",
+              "monto": 120.0,
+              "recibo": "8"
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": null
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2021",
+              "monto": 60.0,
+              "recibo": "6"
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0,
+              "recibo": "7"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2021",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [
+            {
+              "recibo": "746",
+              "concepto": "GASTOS ADMINISTRATIVOS 2020-2021",
+              "monto": 360.0
+            },
+            {
+              "recibo": "747",
+              "concepto": "AUTOVALUO  2019-2020",
+              "monto": 90.0
+            }
+          ],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 450.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1773.16
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1323.16
+            }
+          ]
+        },
+        {
+          "anio": 2022,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2021",
+              "monto": 1323.16,
+              "recibo": "2"
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2022",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2022",
+              "monto": 61.8,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "9"
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2022",
+              "monto": 120.0,
+              "recibo": "8"
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": null
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2022",
+              "monto": 60.0,
+              "recibo": "6"
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0,
+              "recibo": "7"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2022",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1564.96
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1564.96
+            }
+          ]
+        },
+        {
+          "anio": 2023,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2022",
+              "monto": 1564.96,
+              "recibo": "2"
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2023",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2023",
+              "monto": 31.6,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "9"
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2023",
+              "monto": 120.0,
+              "recibo": "8"
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": null
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2023",
+              "monto": 60.0,
+              "recibo": "6"
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0,
+              "recibo": "7"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2023",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [
+            {
+              "recibo": "754",
+              "concepto": "CUOTA MENS/F.EMERG ENE-DIC  2022",
+              "monto": 180.0
+            },
+            {
+              "recibo": "755",
+              "concepto": "AUTOVALUO 2022",
+              "monto": 61.8
+            },
+            {
+              "recibo": "855",
+              "concepto": "AUTOVALUO 2019 Y 2023",
+              "monto": 89.0
+            }
+          ],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 330.8
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1776.56
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1445.76
+            }
+          ]
+        },
+        {
+          "anio": 2024,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2023",
+              "monto": 1445.76,
+              "recibo": "2"
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2023",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2023",
+              "monto": 31.6,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "9"
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2023",
+              "monto": 180.0,
+              "recibo": "8"
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": null
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2023",
+              "monto": 0.0,
+              "recibo": "6"
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0,
+              "recibo": "7"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2023",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [
+            {
+              "recibo": "774",
+              "concepto": "INGRESOS VARIOS",
+              "monto": 250.0
+            },
+            {
+              "recibo": "776",
+              "concepto": "DEPOSITO INGRESOS VARIOS",
+              "monto": 600.0
+            },
+            {
+              "recibo": "787",
+              "concepto": "PAGO AUTOVALUO AL 2024",
+              "monto": 144.15
+            },
+            {
+              "recibo": "788",
+              "concepto": "INGRESOS VARIOS",
+              "monto": 55.85
+            }
+          ],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 1050.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1657.36
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 607.36
+            }
+          ]
+        },
+        {
+          "anio": 2025,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2024",
+              "monto": 607.36,
+              "recibo": "2"
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA 2023",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO 2019 AL 2023",
+              "monto": 28.47,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "9"
+            },
+            {
+              "concepto": "CUOTA MENSUAL 2023",
+              "monto": 180.0,
+              "recibo": "8"
+            },
+            {
+              "concepto": "DEUDA DE LETRAS",
+              "monto": 0.0,
+              "recibo": "5"
+            },
+            {
+              "concepto": "FONDO DE EMERGENCIA 2023",
+              "monto": 0.0,
+              "recibo": "6"
+            },
+            {
+              "concepto": "INAUGURACION PISTA",
+              "monto": 0.0,
+              "recibo": "7"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS 2023",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 815.83
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 815.83
+            }
+          ]
+        },
+        {
+          "anio": 2026,
+          "obligaciones": [
+            {
+              "concepto": "SALDO DEUDA AL CIERRE 2025",
+              "monto": 815.83,
+              "recibo": "2"
+            },
+            {
+              "concepto": "CUOTA SANTA ROSA",
+              "monto": 0.0,
+              "recibo": "3"
+            },
+            {
+              "concepto": "AUTOVALUO",
+              "monto": 31.93,
+              "recibo": "4"
+            },
+            {
+              "concepto": "CUOTA MENSUAL",
+              "monto": 180.0,
+              "recibo": "8"
+            },
+            {
+              "concepto": "MULTA INASISTENCIAS",
+              "monto": 0.0,
+              "recibo": "11"
+            },
+            {
+              "concepto": "CUOTA INGRESO",
+              "monto": 0.0,
+              "recibo": "11"
+            }
+          ],
+          "aportaciones": [],
+          "totales": [
+            {
+              "concepto": "TOTAL INGRESOS",
+              "monto": 0.0
+            },
+            {
+              "concepto": "DEUDA TOTAL",
+              "monto": 1027.76
+            },
+            {
+              "concepto": "SALDO FINAL",
+              "monto": 1027.76
+            },
+            {
+              "concepto": "ABONOS REALIZADOS",
+              "monto": 0.0
             }
           ]
         }
