@@ -195,13 +195,7 @@ function badgeEstado(deuda, etiquetaAlDia) {
 }
 
 function getAnio(socio, anio) {
-    let reg = socio.anios.find(a => a.anio === anio);
-    if (!reg) {
-        reg = { anio, obligaciones: [], aportaciones: [], totales: [] };
-        socio.anios.push(reg);
-        socio.anios.sort((a, b) => a.anio - b.anio);
-    }
-    return reg;
+    return socio.anios.find(a => a.anio === anio) || null;
 }
 
 function saldoFinalDe(anioReg) {
@@ -335,6 +329,10 @@ function renderDetalleSocio(socio, anio) {
     }
 
     const reg = getAnio(socio, anio);
+    if (!reg) {
+        cont.innerHTML = '<p class="detalle-vacio">Todavía no hay registros en tu estado de cuenta para este año.</p>';
+        return;
+    }
     cont.appendChild(renderEstadoAnio(reg, { pdf: true, gestion: false }));
 }
 
@@ -644,6 +642,10 @@ function htmlResumenReporte(socio) {
 }
 
 function imprimirReporte(socio, anio) {
+    if (anio && !socio.anios.some(a => a.anio === anio)) {
+        alert(socio.nombre + ' no tiene registros del año ' + anio + ' en su estado de cuenta.');
+        return;
+    }
     const cuerpo = anio
         ? htmlEstadoAnioReporte(getAnio(socio, anio))
         : htmlResumenReporte(socio) + socio.anios.slice().sort((a, b) => a.anio - b.anio).map(htmlEstadoAnioReporte).join('');
@@ -851,6 +853,10 @@ function renderDetalleAnioAdmin() {
 
     const anio = Number(selAnio.value);
     const reg = getAnio(socio, anio);
+    if (!reg) {
+        cont.innerHTML = '<p class="detalle-vacio">Este socio no tiene registros para este año.</p>';
+        return;
+    }
 
     cont.appendChild(renderEstadoAnio(reg, { pdf: false, gestion: true }));
 
@@ -1213,6 +1219,10 @@ window.addEventListener('load', () => {
 });
 
 async function compartirPDF(socio, anio, btn) {
+    if (anio && !socio.anios.some(a => a.anio === anio)) {
+        alert(socio.nombre + ' no tiene registros del año ' + anio + ' en su estado de cuenta.');
+        return;
+    }
     const titulo = anio ? 'Estado de cuenta ' + anio : 'Estado de cuenta completo';
     const cuerpo = anio
         ? htmlEstadoAnioReporte(getAnio(socio, anio))
